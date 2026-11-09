@@ -894,7 +894,7 @@ const READS = [
 // ---------- the stepper ----------
 const $ = id => document.getElementById(id);
 const stage = $("stage"), copy = $("copy"), progress = $("progress"), count = $("count"), prev = $("prev"), next = $("next");
-let reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let reduced = false; // motion on by default, even where the system asks for less; the button turns it off and is remembered
 try { const m = localStorage.getItem("orbis.journey.motion"); if (m) reduced = m === "off"; } catch { /* blocked */ }
 let cur = -1, mediaOff = false;
 const motionBtn = $("motion");

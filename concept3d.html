@@ -668,7 +668,7 @@ const personTag = label("1.8 m"); personTag.scale.set(1.1, .28, 1); personTag.po
 scene.add(person);
 
 // ---------- state, camera control ----------
-let reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let reduced = false; // motion on by default, even where the system asks for less; the button turns it off and is remembered
 try { const m = localStorage.getItem("orbis.models.motion"); if (m) reduced = m === "off"; } catch { /* blocked */ }
 const state = { turn: !reduced, life: !reduced, person: true, light: "dusk" };
 let cur = null, model = null, yaw = .5, pitch = .22, dist = 6, distMul = 1, target = V(0, 1, 0), t0 = performance.now(), dragging = false;
