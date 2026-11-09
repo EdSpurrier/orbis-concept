@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbis Environment Round 1</title>
+<meta name="description" content="Orbis environment, round 1: what makes a world feel alien, the biomes from equator to pole, swamps, goo seas instead of oceans, plants, storms, the desert giant, and what each region is good for.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%237656c9'/%3E%3Cpath d='M6 19c6-3 14-3 20 0' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<style>
+  table.plain { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.plain th, table.plain td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.plain th { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  .opt3 { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--bg); }
+  .opt3 h3 { margin: 4px 0 6px; }
+  .pick { display: inline-block; font-size: 11.5px; font-weight: 800; color: var(--green); border: 1.5px solid var(--green);
+    border-radius: 8px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; }
+  .wrap-scroll { overflow-x: auto; }
+  .wrap-scroll table.plain { min-width: 680px; }
+
+  /* biome colours: this page only, light and dark */
+  :root {
+    --b-mire: #4c6b5c; --b-scrub: #c0773f; --b-desert: #dcc08a; --b-forest: #8c3d55; --b-pale: #c4bfcc;
+    --b-glass: #9fdbe0; --b-spines: #7b7f86; --b-goo: #2aa89c; --b-hollow: #33434a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --b-mire: #3f6355; --b-scrub: #a86536; --b-desert: #b89c64; --b-forest: #7a3149; --b-pale: #8f8a99;
+      --b-glass: #5fb3ba; --b-spines: #5f646b; --b-goo: #2fc1b2; --b-hollow: #26343a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --b-mire: #3f6355; --b-scrub: #a86536; --b-desert: #b89c64; --b-forest: #7a3149; --b-pale: #8f8a99;
+    --b-glass: #5fb3ba; --b-spines: #5f646b; --b-goo: #2fc1b2; --b-hollow: #26343a;
+  }
+  .st-mire { stop-color: var(--b-mire); } .st-scrub { stop-color: var(--b-scrub); } .st-desert { stop-color: var(--b-desert); }
+  .st-forest { stop-color: var(--b-forest); } .st-pale { stop-color: var(--b-pale); } .st-glass { stop-color: var(--b-glass); }
+  .f-mire { fill: var(--b-mire); } .f-scrub { fill: var(--b-scrub); } .f-desert { fill: var(--b-desert); }
+  .f-forest { fill: var(--b-forest); } .f-pale { fill: var(--b-pale); } .f-glass { fill: var(--b-glass); }
+  .f-spines { fill: var(--b-spines); } .f-goo { fill: var(--b-goo); } .f-hollow { fill: var(--b-hollow); }
+  .s-goo { stroke: var(--b-goo); } .s-glass { stroke: var(--b-glass); } .s-mire { stroke: var(--b-mire); }
+  .sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; }
+  .bcard h3 { display: flex; align-items: center; gap: 2px; }
+  .bcard .where { font-size: 12.5px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; }
+  .bcard p { margin-bottom: 0.4em; }
+  .prin .for { font-size: 14px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .prin .for b { color: var(--violet); }
+  .stack > * + * { margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="f-violet"/><path d="M6 19c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none"/></svg>
+      <span>Orbis environment 1</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="index.html">☰ Menu</a>
+      <a href="#research">Research</a>
+      <a href="#biomes">Biomes</a>
+      <a href="#swamps">Swamps</a>
+      <a href="#liquids">Goo, not oceans</a>
+      <a href="#plants">Plants</a>
+      <a href="#storms">Storms</a>
+      <a href="#sky">The sky</a>
+      <a href="#giant">The desert giant</a>
+      <a href="#gameplay">In play</a>
+      <a href="#feasible">Can we draw it</a>
+      <a href="#questions">Environment round 1</a>
+      <a href="settle1.html">Settlement 1 →</a>
+    </nav>
+    <button class="theme" id="theme" type="button" title="Switch light / dark">Theme</button>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+
+  <section class="hero">
+    <div class="kicker">Orbis · environment round 1 · towards concept v2</div>
+    <h1>A world that isn't Earth</h1>
+    <p class="pitch">How films and games make an alien world feel alien, and what Orbis takes from it. The lesson is
+      the same everywhere: start from real ground, then change the life, the liquids and the light, and tie it all to
+      one idea. Orbis already has that idea: the substance. Near the equator the planet looks almost like home. Toward
+      the poles the substance rises, and the world gets stranger, richer and angrier. Overhead, two moons and a broken
+      moon's ring make the sky the planet's calendar.</p>
+  </section>
+
+  <!-- RESEARCH --------------------------------------------------------------------------------------->
+  <section class="part" id="research">
+    <div class="part-head"><span class="num">01</span><h2>What other worlds do</h2></div>
+    <p class="takeaway">Ten principles from films and games. We take the principle, never the design: no sandworm, no
+      Pandora. Each card ends with what it means for Orbis.</p>
+    <div class="grid2 even">
+      <div class="card prin">
+        <h3>1 · Start from real ground, then change one thing</h3>
+        <p class="small">Prometheus shot its alien world in Iceland, Dune's Arrakis is real desert in Jordan and Abu
+          Dhabi, and Starship Troopers' Klendathu is real badlands. Earth already has alien places: Ethiopia's Dallol
+          gets its yellows and greens from sulphur and salt. Subnautica's team found real reefs already look alien, so
+          they pushed theirs further.</p>
+        <div class="for"><b>For Orbis:</b> keep the photo-scanned rock and sand (stage 8). Change the life, the
+          liquids and the light.</div>
+      </div>
+      <div class="card prin">
+        <h3>2 · The life is the strange part, not the rock</h3>
+        <p class="small">Annihilation's designers built the Shimmer's look on refraction and mutation: several species
+          growing from one stem, trees in human shapes, crystal trees on a beach. Pandora's plants glow and react to
+          touch. Science agrees colour can change: under a different sun, plants could be black or purple.</p>
+        <div class="for"><b>For Orbis:</b> the native plants aren't green (section 05).</div>
+      </div>
+      <div class="card prin">
+        <h3>3 · One idea explains the whole world</h3>
+        <p class="small">On Arrakis the lack of water, the spice and the giants are one cycle. Nausicaä's toxic jungle
+          turns out to be cleaning poisoned soil. On Metroid Prime's Tallon IV a corruption spreads from one crater,
+          and the regions show how far it got.</p>
+        <div class="for"><b>For Orbis:</b> the substance. How close it lies to the surface shapes every biome, and the
+          goo is the substance as a liquid (sections 02 and 04).</div>
+      </div>
+      <div class="card prin">
+        <h3>4 · The world is one living system</h3>
+        <p class="small">Pandora's life is one network. Warhammer 40,000's death worlds make every plant a predator:
+          the world itself is the enemy, not what lives on it.</p>
+        <div class="for"><b>For Orbis:</b> v1 has this already (everything is the immune system). So biomes aren't
+          scenery: they're how the planet's body is laid out, and they fight back in their own ways.</div>
+      </div>
+      <div class="card prin">
+        <h3>5 · Hazards with rules you can learn</h3>
+        <p class="small">On Arrakis you learn how to cross open sand without calling the giant. In Subnautica depth is
+          danger, and you always know how deep you are. Each of Returnal's biomes on Atropos has its own enemies and
+          hazards.</p>
+        <div class="for"><b>For Orbis:</b> every hazard has a tell (you see or hear it coming) and a counter. Noise
+          draws giants (v1).</div>
+      </div>
+      <div class="card prin">
+        <h3>6 · Ground that belongs to the enemy</h3>
+        <p class="small">StarCraft's creep is living ground: the Zerg move faster on it, nobody else can build on it,
+          and it spreads. In They Are Billions the map type sets how hard and how rich a game is.</p>
+        <div class="for"><b>For Orbis:</b> the creeping forest and the bloom are ground that spreads. Biome borders
+          move, and they're part of the fight.</div>
+      </div>
+      <div class="card prin">
+        <h3>7 · Night is a second world</h3>
+        <p class="small">Pandora glows at night; Subnautica's deep water is dark and full of lights. The same place
+          becomes somewhere else.</p>
+        <div class="for"><b>For Orbis:</b> by day a strange wilderness; by night the core's cold teal light shows in
+          the plants, the goo and the Given (lore page: they glow with it). v1's long nights are when the planet is
+          strongest.</div>
+      </div>
+      <div class="card prin">
+        <h3>8 · One impossible thing, at scale</h3>
+        <p class="small">Pandora's floating mountains; the vast built shapes in Prometheus' natural valley; Klendathu's
+          bugs firing into orbit. Supreme Commander and Planetary Annihilation make scale readable by zooming from one
+          unit out to the whole planet.</p>
+        <div class="for"><b>For Orbis:</b> giants and megaflora taller than any building, and every biome has one thing
+          you can see from orbit.</div>
+      </div>
+      <div class="card prin">
+        <h3>9 · Stranger the deeper you go</h3>
+        <p class="small">No Man's Sky's art director said worlds grow more unsettling toward the galaxy's centre.
+          Returnal's biomes run in order. Metroid Prime puts frozen drifts next to magma caverns. Planetary
+          Annihilation's planet types (desert, ice, lava, metal) each change what you can mine.</p>
+        <div class="for"><b>For Orbis:</b> the equator is almost Earth; the poles are the alien heart. v1 already pushes
+          you from the equator toward a pole.</div>
+      </div>
+      <div class="card prin">
+        <h3>10 · Every place has a palette</h3>
+        <p class="small">No Man's Sky took its colours from old sci-fi book covers: each planet has a personality.
+          Returnal is dark with one glowing accent, beauty and aggression together.</p>
+        <div class="for"><b>For Orbis:</b> each biome has its own palette and one accent. The core's teal is the planet's
+          signature, in every biome.</div>
+      </div>
+    </div>
+    <div class="note"><b>What to avoid: Earth with a filter.</b> The same grass and pines, tinted purple. Supreme
+      Commander's maps are Earth's biomes, which suits its war but isn't alien. The fix is to change shapes and
+      behaviour, not only the colour: plants that move, liquids that set into stone, ground that heaves.</div>
+  </section>
+
+  <!-- BIOMES ----------------------------------------------------------------------------------------->
+  <section class="part" id="biomes">
+    <div class="part-head"><span class="num">02</span><h2>The biomes, equator to pole</h2></div>
+    <p class="takeaway">Two of Earth's rules plus one of ours. Orbis's climate already sets the ground by temperature
+      (latitude and height) and moisture. Add a third: <b>the substance</b>, how close the core's energy lies to the
+      surface. It's low at the equator and rises toward the poles, so the world gets stranger the further you push.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 340" style="min-width:640px" role="img" aria-label="A strip from the equator on the left to the pole on the right. Temperature falls and the substance rises from left to right. Six biomes blend into each other: the Mire, the Scrub, the Deep Desert, the Creeping Forest, the Pale and the Glass. Between them are blend zones: the reed margin, the dry fringe, the buried wood, the grey wood and the frost-glass line. Below, three biomes that appear anywhere: the Spines on high ground, goo basins in low ground, and the Hollows round the pits.">
+        <defs>
+          <linearGradient id="bands" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" class="st-mire"/><stop offset="0.07" class="st-mire"/>
+            <stop offset="0.215" class="st-scrub"/><stop offset="0.38" class="st-desert"/>
+            <stop offset="0.57" class="st-forest"/><stop offset="0.744" class="st-pale"/>
+            <stop offset="0.91" class="st-glass"/><stop offset="1" class="st-glass"/>
+          </linearGradient>
+        </defs>
+        <g font-size="12" font-weight="800">
+          <text x="20" y="22">Equator</text><text x="740" y="22" text-anchor="end">Pole</text>
+        </g>
+        <!-- temperature and substance -->
+        <path d="M20 52 C 250 56, 520 80, 740 104" class="s-red" stroke-width="2.5" fill="none"/>
+        <path d="M20 104 C 300 102, 560 76, 740 44" class="s-violet" stroke-width="3" fill="none"/>
+        <text x="30" y="46" font-size="10.5" class="f-red-t">temperature: hot</text>
+        <text x="730" y="118" font-size="10.5" text-anchor="end" class="f-red-t">cold</text>
+        <text x="30" y="118" font-size="10.5" class="f-violet-t">substance: deep down</text>
+        <text x="730" y="38" font-size="10.5" text-anchor="end" class="f-violet-t">near the surface</text>
+        <!-- the strip -->
+        <rect x="20" y="126" width="720" height="70" rx="10" fill="url(#bands)"/>
+        <g class="f-violet" opacity="0.9">
+          <path d="M640 168 l7 -12 l7 12 z"/><path d="M660 176 l6 -10 l6 10 z"/><path d="M690 164 l8 -14 l8 14 z"/>
+          <path d="M710 178 l6 -10 l6 10 z"/><path d="M560 176 l5 -8 l5 8 z"/><path d="M584 170 l4 -7 l4 7 z"/>
+        </g>
+        <g font-size="10.5" font-weight="700" style="paint-order:stroke;stroke:var(--surface);stroke-width:3px">
+          <text x="175" y="146" text-anchor="middle">▼ you land</text>
+          <text x="675" y="146" text-anchor="middle">great pits</text>
+        </g>
+        <!-- boundaries -->
+        <g class="s-muted" stroke-width="1.5" stroke-dasharray="3 4">
+          <path d="M120 196 V250"/><path d="M230 196 V250"/><path d="M360 196 V250"/><path d="M500 196 V250"/><path d="M610 196 V250"/>
+        </g>
+        <g font-size="12" font-weight="800" text-anchor="middle">
+          <text x="70" y="214">The Mire</text><text x="175" y="214">The Scrub</text><text x="295" y="214">Deep Desert</text>
+          <text x="430" y="214">Creeping Forest</text><text x="555" y="214">The Pale</text><text x="675" y="214">The Glass</text>
+        </g>
+        <g font-size="10.5" text-anchor="middle" class="mut">
+          <text x="70" y="230">hot, wet, swamp</text><text x="175" y="230">rust grass, towers</text>
+          <text x="295" y="230">dunes, glass storms</text><text x="430" y="230">wine-red, and it moves</text>
+          <text x="555" y="230">lichen, frost</text><text x="675" y="230">ice, crystal, aurora</text>
+        </g>
+        <g font-size="10.5" font-style="italic" text-anchor="middle" class="f-violet-t">
+          <text x="120" y="264">reed margin</text><text x="230" y="264">dry fringe</text><text x="360" y="264">buried wood</text>
+          <text x="500" y="264">grey wood</text><text x="610" y="264">frost-glass line</text>
+        </g>
+        <!-- anywhere -->
+        <path d="M20 282 H740" class="s-line" stroke-width="1.5"/>
+        <text x="20" y="304" font-size="11" font-weight="800">Anywhere, set by the ground:</text>
+        <rect x="200" y="292" width="16" height="16" rx="4" class="f-spines"/>
+        <text x="222" y="304" font-size="11" font-weight="700">The Spines</text><text x="222" y="320" font-size="10.5" class="mut">high ground: a colder cap</text>
+        <rect x="390" y="292" width="16" height="16" rx="4" class="f-goo"/>
+        <text x="412" y="304" font-size="11" font-weight="700">Goo basins</text><text x="412" y="320" font-size="10.5" class="mut">low ground (section 04)</text>
+        <rect x="580" y="292" width="16" height="16" rx="4" class="f-hollow"/>
+        <text x="602" y="304" font-size="11" font-weight="700">The Hollows</text><text x="602" y="320" font-size="10.5" class="mut">round the pits</text>
+      </svg>
+      </div>
+      <p class="cap">Two v1 rules are built in: you land near the equator and push toward a pole, and the poles hold the
+        richest seams, the deepest ruins and the great pits. Violet marks the substance showing through.</p>
+    </figure>
+
+    <div class="grid3" style="margin-top:14px">
+      <div class="card bcard">
+        <h3><span class="sw f-mire" style="background:var(--b-mire)"></span>The Mire</h3>
+        <div class="where">equator · hot · wet · low</div>
+        <p class="small">Flat, warm swamp: black water between firm hummocks, trees standing on their roots, mist every
+          dawn. The richest life on the planet.</p>
+        <p class="small muted">From orbit: a dark belt under morning mist.</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-scrub)"></span>The Scrub</h3>
+        <div class="where">tropics · hot · dry seasons</div>
+        <p class="small">Open rust-red grassland with groves of spore towers standing like chimneys. Firm, open ground:
+          where you land and build first.</p>
+        <p class="small muted">From orbit: the towers' plumes of mist.</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-desert)"></span>The Deep Desert</h3>
+        <div class="where">dry band · hot days, cold nights</div>
+        <p class="small">Dunes, salt pans and rust brine springs. Almost nothing grows. Glass storms, and the giants
+          that swim under the sand (section 08).</p>
+        <p class="small muted">From orbit: the giants' wakes, and storm walls.</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-forest)"></span>The Creeping Forest</h3>
+        <div class="where">temperate · wet · seasons</div>
+        <p class="small">Tall trunks under wine-red and black-violet sheet canopies. The megaflora's home: the forest
+          moves toward you and swallows walls (v1).</p>
+        <p class="small muted">From orbit: a dark-red belt whose edge shifts.</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-pale)"></span>The Pale</h3>
+        <div class="where">cold · long seasonal nights</div>
+        <p class="small">Grey-white lichen, bone-coloured trees, freezing fog. The substance is close enough that the
+          frost glitters with it. Ruins start to appear.</p>
+        <p class="small muted">From orbit: white with a glitter.</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-glass)"></span>The Glass</h3>
+        <div class="where">pole · night for a mission</div>
+        <p class="small">Ice and crystal grown together, so you can't tell which is which. The great pits, the aurora,
+          the long dark. The endgame.</p>
+        <p class="small muted">From orbit: the aurora (v1: the core breaking through).</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-spines)"></span>The Spines</h3>
+        <div class="where">high ground · any latitude</div>
+        <p class="small">Rock ridges with crystal outcrops, wind and lightning. Height counts as cold, so a high Spine
+          near the equator wears a little Pale and Glass on top.</p>
+        <p class="small muted">From orbit: glittering ridge lines.</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-goo)"></span>Goo basins</h3>
+        <div class="where">low ground · more toward the poles</div>
+        <p class="small">Where the substance wells up as a liquid and pools: warm, thick, glowing faintly. Shores crusted
+          with crystal (section 04).</p>
+        <p class="small muted">From orbit: teal glow at night.</p>
+      </div>
+      <div class="card bcard">
+        <h3><span class="sw" style="background:var(--b-hollow)"></span>The Hollows</h3>
+        <div class="where">round every pit</div>
+        <p class="small">Wet, dark ground in cold teal light, pale growth like fungus, mist pouring out (the lore page's
+          pits). The Given's ground.</p>
+        <p class="small muted">From orbit: a column of mist.</p>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3>How they blend</h3>
+        <ul class="points small">
+          <li><b>Wide edges with their own character.</b> Not a colour fade but a place: the reed margin floods in the
+            wet season, the buried wood is dead forest under dunes, the frost-glass line is where crystal starts to grow
+            out of frost.</li>
+          <li><b>Height moves you toward the pole.</b> The climate already cools with height; mountains anywhere get the
+            colder biomes on top.</li>
+          <li><b>Rich seams bring a little pole with them.</b> Wherever the substance is close, even near the equator,
+            you see glass and teal. That's how you spot good ground, and the danger that comes with it.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Borders move <span class="pick">my pick</span></h3>
+        <ul class="points small">
+          <li><b>The forest creeps</b> into the Scrub while a region is quiet, and into your base if you let it.</li>
+          <li><b>The desert grows</b> behind a giant's wake, burying the forest edge.</li>
+          <li><b>The Hollows widen</b> as a pit grows (lore page: pits left alone get wider).</li>
+          <li><b>You push back:</b> fire, clearing, draining, terraforming. Over a campaign the map you hold looks
+            different from the one you landed on.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWAMPS ----------------------------------------------------------------------------------------->
+  <section class="part" id="swamps">
+    <div class="part-head"><span class="num">03</span><h2>Swamps: the Mire</h2></div>
+    <p class="takeaway">Few RTS games have real swamps, so this is a chance to make one that plays differently. The rule
+      of the Mire: <b>the planet's creatures move freely, your heavy army doesn't</b>. You fight along chains of firm
+      ground, and the Given come up out of the water.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 260" style="min-width:640px" role="img" aria-label="A cross-section of a swamp. A firm hummock with a wall and turret; a tank stuck in the mud; a building on pilings over the water; reeds hiding a Given; and a drained patch kept dry by a pump. A layer of mist lies over the water and gas bubbles rise from the mud.">
+        <!-- mud and water -->
+        <rect x="0" y="150" width="760" height="110" class="f-mire"/>
+        <path d="M0 236 C 120 228, 260 244, 380 236 S 640 230, 760 238 V260 H0 Z" class="f-ambersoft" opacity="0.8"/>
+        <!-- mist -->
+        <rect x="0" y="104" width="600" height="46" class="f-muted" opacity="0.16"/>
+        <!-- hummock with a wall and turret -->
+        <path d="M30 150 Q 120 112 210 150 Z" class="f-ambersoft"/>
+        <path d="M30 150 Q 120 112 210 150" class="s-amber" stroke-width="2" fill="none"/>
+        <rect x="86" y="112" width="12" height="22" class="f-blue"/><rect x="104" y="104" width="22" height="26" rx="3" class="f-blue"/>
+        <path d="M118 108 H140" class="s-blue" stroke-width="4"/>
+        <!-- stuck tank -->
+        <rect x="232" y="142" width="48" height="18" rx="4" class="f-blue"/><path d="M256 142 V134 H276" class="s-blue" stroke-width="3" fill="none"/>
+        <path d="M222 156 Q 256 148 290 156" class="s-ink" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <!-- pilings -->
+        <g class="s-muted" stroke-width="3"><path d="M338 132 V238"/><path d="M362 132 V238"/><path d="M386 132 V238"/><path d="M410 132 V238"/></g>
+        <rect x="330" y="112" width="88" height="22" rx="3" class="f-blue"/>
+        <!-- reeds and a Given -->
+        <g class="s-green" stroke-width="2" opacity="0.8">
+          <path d="M470 150 V112"/><path d="M478 150 V104"/><path d="M486 150 V116"/><path d="M494 150 V100"/><path d="M502 150 V110"/>
+          <path d="M510 150 V106"/><path d="M518 150 V118"/><path d="M526 150 V102"/><path d="M534 150 V114"/><path d="M542 150 V108"/>
+        </g>
+        <path d="M494 152 q8 -16 22 -10 q6 4 12 10 z" class="f-violet"/>
+        <circle cx="508" cy="142" r="2" class="f-glass"/>
+        <!-- gas bubbles -->
+        <g class="s-amber" stroke-width="1.5" fill="none">
+          <circle cx="440" cy="214" r="5"/><circle cx="446" cy="196" r="4"/><circle cx="438" cy="178" r="3"/><circle cx="444" cy="164" r="2.5"/>
+        </g>
+        <!-- drained patch with pump -->
+        <path d="M600 150 V128 H760 V150 Z" class="f-ambersoft"/>
+        <path d="M600 128 H760" class="s-amber" stroke-width="2"/>
+        <rect x="630" y="104" width="26" height="24" rx="3" class="f-blue"/><path d="M643 128 V170" class="s-blue" stroke-width="4"/>
+        <rect x="684" y="108" width="40" height="20" rx="3" class="f-blue"/>
+        <!-- labels -->
+        <g font-size="12" font-weight="800" text-anchor="middle">
+          <text x="118" y="30">1 · Hummock</text><text x="256" y="30">2 · Mud</text><text x="374" y="30">3 · Pilings</text>
+          <text x="506" y="30">4 · Reeds</text><text x="680" y="30">5 · Drained</text>
+        </g>
+        <g font-size="10.5" text-anchor="middle" class="mut">
+          <text x="118" y="46">firm: full speed, build</text><text x="256" y="46">tanks bog down</text>
+          <text x="374" y="46">anywhere, +50% cost</text><text x="506" y="46">hide units, both sides</text>
+          <text x="680" y="46">dry while the pump runs</text>
+          <text x="440" y="250">rot gas: fire sets it off</text>
+          <text x="300" y="98">dawn and night mist: sight halved</text>
+        </g>
+      </svg>
+      </div>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card">
+        <h3>Movement</h3>
+        <ul class="points small">
+          <li><b>Black water</b> (shallow, most of it): infantry 60%, tracked vehicles 50%, wheeled can't enter, legged
+            and hover units full speed.</li>
+          <li><b>Deep channels:</b> hover and amphibious only, plus the Given, who swim (they were made in the wet
+            dark).</li>
+          <li><b>Hummocks:</b> firm islands at full speed. A chain of them is a road, and a natural choke point.</li>
+          <li><b>The planet's own</b> beasts and Given move at full speed. In the Mire they're faster than you.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Building <span class="pick">my pick: all three</span></h3>
+        <ul class="points small">
+          <li><b>On hummocks:</b> normal cost. Few and far apart: natural strongpoints.</li>
+          <li><b>On pilings:</b> anywhere shallow, at +50% cost and time. Walls on pilings are weaker.</li>
+          <li><b>Drain it:</b> engineers drain a patch into firm ground (terraforming). Slow, raises irritation, and the
+            Mire creeps back unless a pump keeps running. Lose the power and the base floods: the power grid matters
+            twice here.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Visibility</h3>
+        <ul class="points small">
+          <li><b>Mist</b> at dawn and through the night: sight halved.</li>
+          <li><b>Reeds hide</b> anything in them until it's close, for both sides. The Given use them; so can you.</li>
+          <li><b>Sound carries over water:</b> sensors hear a wave from further off (lore page: sound before sight).</li>
+          <li><b>Orbit sees little:</b> the mist blocks the uplink (v1) until you clear it.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3>Hazards, and chances</h3>
+        <ul class="points small">
+          <li><b>Rot gas</b> pools under the water. Fire or a big explosion sets it off: a sheet of fire across the
+            water. Light it under a wave and it's a weapon; under your base it's a disaster.</li>
+          <li><b>Drowners:</b> snare plants under the surface that grab infantry and pull them down.</li>
+          <li><b>Flooded pits:</b> the Mire's pits are under water, so the Given come up where you can't see a nest.</li>
+          <li><b>Lightning jumps further</b> on wet ground (weapons page): tesla towers are at their best here, and so
+            is the planet's own lightning. Fire is weak, apart from the gas.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Why go into the Mire</h3>
+        <ul class="points small">
+          <li><b>Wildlife:</b> the richest specimens on the planet. Every kind of beast passes through.</li>
+          <li><b>Seams that grow back:</b> the substance crystallises fast in standing water. Small seams, but they
+            regrow.</li>
+          <li><b>Ancients:</b> drowned ruins. The first colony landed by water, and the Mire took it.</li>
+          <li><b>A natural moat:</b> a base on a hummock ring is hard to reach for heavy enemies (and the rival).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIQUIDS ---------------------------------------------------------------------------------------->
+  <section class="part" id="liquids">
+    <div class="part-head"><span class="num">04</span><h2>No real oceans: goo seas and glass rivers</h2></div>
+    <p class="takeaway">No open sea. Low ground holds patches of liquid instead, and the main one is the substance
+      itself. The proposal: <b>the substance has a life cycle</b>. It rises from the core as a liquid, flows downhill,
+      and sets into crystal as it cools. The seams in the rock are old goo.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 270" style="min-width:640px" role="img" aria-label="A cross-section from a vent on high ground down to a basin. The substance wells up at the vent, flows down a glass river that turns from liquid to crust to solid crystal, and pools in a goo sea whose shore is crusted with crystal. An energy well stands on the shore. A dashed line shows the energy rising from the core to the vent.">
+        <!-- ground with the basin -->
+        <path d="M0 90 C 140 88, 220 100, 330 140 S 470 176, 500 178 Q 530 244 620 246 Q 720 244 744 178 L 760 150 V270 H0 Z" class="f-ambersoft"/>
+        <path d="M0 90 C 140 88, 220 100, 330 140 S 470 176, 500 178 Q 530 244 620 246 Q 720 244 744 178 L 760 150" class="s-amber" stroke-width="2.5" fill="none"/>
+        <!-- goo -->
+        <path d="M503 184 Q 532 243 620 244 Q 718 243 741 184 Z" class="f-goo"/>
+        <path d="M503 184 H741" class="s-glass" stroke-width="2"/>
+        <!-- crust on the shore -->
+        <g class="f-violet">
+          <path d="M488 180 l7 -11 l7 11 z"/><path d="M504 186 l6 -9 l6 9 z"/><path d="M736 184 l6 -10 l6 10 z"/><path d="M748 172 l5 -9 l5 9 z"/>
+        </g>
+        <!-- core line -->
+        <path d="M80 262 C 70 200, 96 150, 80 96" class="s-violet" stroke-width="2.5" stroke-dasharray="6 6" fill="none"/>
+        <text x="96" y="256" font-size="10.5" class="f-violet-t">energy rising from the core</text>
+        <!-- vent -->
+        <path d="M64 92 Q 80 76 96 92" class="f-goo"/>
+        <g class="f-goo"><circle cx="74" cy="78" r="3"/><circle cx="86" cy="72" r="2.5"/><circle cx="80" cy="64" r="2"/></g>
+        <!-- glass river: liquid, crust, solid -->
+        <path d="M96 92 C 150 92, 190 98, 230 110" class="s-goo" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M230 110 C 280 124, 320 142, 370 160" class="s-goo" stroke-width="7" fill="none"/>
+        <path d="M230 110 C 280 124, 320 142, 370 160" class="s-glass" stroke-width="7" stroke-dasharray="8 6" fill="none"/>
+        <path d="M370 160 C 410 168, 440 170, 470 172" class="s-violet" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <!-- energy well on the shore -->
+        <rect x="474" y="146" width="28" height="26" rx="3" class="f-blue"/><path d="M502 164 L 548 204" class="s-blue" stroke-width="4"/>
+        <path d="M482 146 V134 M494 146 V138" class="s-blue" stroke-width="3"/>
+        <!-- fumes -->
+        <g class="s-muted" stroke-width="1.5" fill="none" opacity="0.7">
+          <path d="M600 176 q6 -8 0 -16 q-6 -8 0 -16"/><path d="M640 176 q6 -8 0 -16 q-6 -8 0 -16"/><path d="M680 176 q6 -8 0 -16 q-6 -8 0 -16"/>
+        </g>
+        <!-- labels -->
+        <g font-size="12" font-weight="800" text-anchor="middle">
+          <text x="80" y="30">1 · Vent</text><text x="200" y="30">2 · Liquid</text><text x="310" y="30">3 · Crust</text>
+          <text x="430" y="30">4 · Crystal</text><text x="630" y="30">5 · Goo sea</text>
+        </g>
+        <g font-size="10.5" text-anchor="middle" class="mut">
+          <text x="80" y="46">it wells up</text><text x="200" y="46">flows; impassable</text>
+          <text x="310" y="46">infantry only</text><text x="430" y="46">solid: a seam to mine</text>
+          <text x="630" y="46">warm, thick, glows at night</text>
+          <text x="488" y="124">energy well</text><text x="620" y="264">crystal-crusted shore, the richest surface seam</text>
+        </g>
+      </svg>
+      </div>
+    </figure>
+
+    <div class="grid3" style="margin-top:14px">
+      <div class="opt3">
+        <span class="tag violet">A</span><span class="pick">my pick</span>
+        <h3>No ocean at all</h3>
+        <p class="small">Goo seas in basins, glass rivers, the Mire's black water and a few smaller liquids. Nothing you
+          could sail. Every body of liquid is a place with a purpose.</p>
+        <p class="small"><b>Good:</b> unmistakably not Earth; no naval game to build.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag blue">B</span>
+        <h3>One small real sea, plus goo</h3>
+        <p class="small">A shallow water sea near the equator (the landing coast), goo everywhere else.</p>
+        <p class="small"><b>Good:</b> a familiar start that turns stranger. <b>Less good:</b> it's the Earth part.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag amber">C</span>
+        <h3>A great goo sea at each pole</h3>
+        <p class="small">As A, plus a frozen-over goo sea at each pole around the great pits, crusted and cracking.</p>
+        <p class="small"><b>Good:</b> a huge image from orbit. <b>Less good:</b> big poles are hard to build on.</p>
+      </div>
+    </div>
+
+    <div class="wrap-scroll" style="margin-top:14px">
+    <table class="plain">
+      <tr><th>Liquid</th><th>What it is</th><th>Where</th><th>Use</th><th>Hazard</th><th>Ties to</th></tr>
+      <tr><td><span class="sw" style="background:var(--b-goo)"></span><b>Goo</b><br><span class="tag violet">core</span></td>
+        <td>the substance as a liquid: warm, thick, faint teal glow</td><td>basins; more toward the poles and near pits</td>
+        <td><b>energy wells</b> on the shore (big power); refined into the substance's own ammo; the crust shore is the
+          richest surface seam</td>
+        <td>nothing of yours crosses it; pumping it raises irritation; the Given wade it</td>
+        <td>material taps it; beasts drink at it (a lure point); ancients built on its shores</td></tr>
+      <tr><td><span class="sw" style="background:var(--b-glass)"></span><b>Glass rivers</b><br><span class="tag violet">core</span></td>
+        <td>goo running downhill from a vent, setting as it goes</td><td>from vents, down to the basins</td>
+        <td>crust to mine along its length; a river is a ready-made defence line</td>
+        <td>the crust breaks under heavy vehicles; liquid at the head burns</td>
+        <td>a wall for tanks but not for runners</td></tr>
+      <tr><td><span class="sw" style="background:var(--b-mire)"></span><b>Black water</b><br><span class="tag violet">core</span></td>
+        <td>ordinary water stained by the Mire's plants</td><td>the Mire</td>
+        <td>the colony's water once filtered</td><td>drowners, rot gas, flooded pits</td><td>section 03</td></tr>
+      <tr><td><b>Rust brine</b><br><span class="tag">extra</span></td>
+        <td>hot mineral springs, red and yellow, acid (Earth has these: Dallol)</td><td>the Deep Desert, the Spines</td>
+        <td>refineries next to it work faster; wildlife's acid weapons are brewed from it</td>
+        <td>corrodes armour wading through</td><td>material and wildlife</td></tr>
+      <tr><td><b>Sap pools</b><br><span class="tag">extra</span></td>
+        <td>the creeping forest bleeding amber sap into hollows</td><td>the Creeping Forest</td>
+        <td>fuel: cheaper flamers and napalm</td><td>burns: a fuse for forest fires</td><td>fire weapons (weapons page)</td></tr>
+      <tr><td><b>Meltwater</b><br><span class="tag">extra</span></td>
+        <td>the only clean water on the planet</td><td>the Pale, the edge of the Glass</td>
+        <td>people (if the domes need water)</td><td>freezes; long nights</td><td>settlement page</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- PLANTS ----------------------------------------------------------------------------------------->
+  <section class="part" id="plants">
+    <div class="part-head"><span class="num">05</span><h2>Plant life, biome by biome</h2></div>
+    <p class="takeaway">v1's megaflora (the creeping forest, spore towers, snare plants, the bloom) are the planet's
+      defenders. Each biome grows them its own way, alongside everyday plants that make the ground look alive and give
+      the megaflora somewhere to come from.</p>
+    <div class="wrap-scroll">
+    <table class="plain">
+      <tr><th>Biome</th><th>Everyday plants</th><th>Megaflora there</th><th>Colours</th></tr>
+      <tr><td><b>The Mire</b></td><td>trees standing on stilt roots; floating mats that drift; reed beds</td>
+        <td><b>snare plants</b> at their strongest (drowners); <b>the bloom</b> flowers on the water</td><td>black-green, teal</td></tr>
+      <tr><td><b>The Scrub</b></td><td>rust-red blade grass; fan plants; thorn clumps</td>
+        <td><b>spore towers</b> in groves: the region's mist comes from here</td><td>rust, ochre</td></tr>
+      <tr><td><b>Deep Desert</b></td><td>almost nothing; glass bulbs that store the substance</td>
+        <td><b>the bloom</b> in flashes: after a giant passes, the wake flowers for a few minutes and heals the swarm</td><td>ochre, white, a violet flash</td></tr>
+      <tr><td><b>Creeping Forest</b></td><td>tall trunks with sheet canopies; climbers; sap that bleeds</td>
+        <td><b>the creeping forest</b> itself: it moves toward you and swallows walls</td><td>wine-red, black-violet</td></tr>
+      <tr><td><b>The Pale</b></td><td>lichen sheets; bone-white trees; frost ferns</td>
+        <td><b>spore towers</b> asleep in winter, waking in the short summer: a seasonal threat</td><td>grey-white, lilac</td></tr>
+      <tr><td><b>The Glass</b></td><td>glass coral: crystal that grows like a plant. Near the heart, life and mineral blur</td>
+        <td><b>the glass bloom:</b> the bloom grown into crystal, which heals the Given</td><td>ice-white, teal</td></tr>
+      <tr><td><b>The Spines</b></td><td>crystal lichen on the rock; wind-bent stalks</td>
+        <td><b>snare thickets</b> grown across the passes</td><td>slate, glitter</td></tr>
+      <tr><td><b>The Hollows</b></td><td>pale, wet growth like fungus, glowing teal in the dark</td>
+        <td><b>snare plants</b> walling in the nests (v1)</td><td>grey, teal</td></tr>
+    </table>
+    </div>
+    <div class="grid3" style="margin-top:14px">
+      <div class="opt3">
+        <span class="tag violet">A</span><span class="pick">my pick</span>
+        <h3>Native life isn't green</h3>
+        <p class="small">Rust, wine-red, black-violet and teal. The only green on the planet is what you bring: your
+          crops and gardens. From orbit, your settlements are the green spots: the infection, seen from the planet's
+          side.</p>
+        <p class="small"><b>Good:</b> instantly alien with real rock and sky. On the Stabilise path the green and the
+          native colours mix.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag blue">B</span>
+        <h3>Green, with alien shapes</h3>
+        <p class="small">Familiar colours; the strangeness is in the shapes (stilt roots, sheets, towers) and the
+          behaviour.</p>
+        <p class="small"><b>Good:</b> easy to read as "plants". <b>Less good:</b> close to Earth with a filter.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag amber">C</span>
+        <h3>Greener at the equator</h3>
+        <p class="small">Near-Earth greens where you land, turning rust, red, then white and glass toward the pole.</p>
+        <p class="small"><b>Good:</b> the "stranger the further you go" idea in colour. <b>Less good:</b> a gentler
+          first look.</p>
+      </div>
+    </div>
+    <div class="note"><b>Plants are part of the fight.</b> Fire is the answer to megaflora (weapons page), and Orbis
+      already burns forests (stage 16: trees catch, fire runs through a wood and stops at gaps). Sap pools and rot gas
+      give fire more to work with; rain and the Mire take it away.</div>
+  </section>
+
+  <!-- STORMS ----------------------------------------------------------------------------------------->
+  <section class="part" id="storms">
+    <div class="part-head"><span class="num">06</span><h2>Storms and weather</h2></div>
+    <p class="takeaway">Weather already moves over Orbis: clouds, fronts, rain, snow, fog and wind. Each biome gets its
+      own storm, and the big ones ride the agitation: <b>an angry region brews worse weather</b>, and when the heart
+      crosses a threshold (v1's planet-wide surges), every biome's storm comes at once.</p>
+    <div class="wrap-scroll">
+    <table class="plain">
+      <tr><th>Biome</th><th>Everyday weather</th><th>Its storm</th><th>What the storm does to you</th></tr>
+      <tr><td><b>The Mire</b></td><td>warm rain, dawn mist</td><td><b>Rot squall:</b> heavy rain, gas rising, lightning on the water</td>
+        <td>lightning hits tall structures; gas fires; sight halved</td></tr>
+      <tr><td><b>The Scrub</b></td><td>dry wind, spore haze</td><td><b>Spore season:</b> the towers breathe out together</td>
+        <td>the mist thickens over the region, cutting orbit; infantry slowed outside</td></tr>
+      <tr><td><b>Deep Desert</b></td><td>heat, dust devils, cold nights</td><td><b>Glass storm:</b> a wall of grit full of crystal dust</td>
+        <td>wears down exposed units and buildings; lasers lose range; orbit cut; sight down to a few tiles; sand
+          piles against your walls into ramps the runners can climb; static lightning</td></tr>
+      <tr><td><b>Creeping Forest</b></td><td>rain, wind, seasons</td><td><b>Thunderstorm</b></td>
+        <td>lightning starts forest fires that can reach your outposts in the trees</td></tr>
+      <tr><td><b>The Pale</b></td><td>snow, freezing fog</td><td><b>Whiteout</b></td>
+        <td>everything slowed; sight nearly gone; the grid works harder (heat)</td></tr>
+      <tr><td><b>The Glass</b></td><td>the long night, still cold</td><td><b>Aurora storm:</b> the core breaking through the sky</td>
+        <td>drains the grid: turrets flicker and shields drop; the Given are at their strongest</td></tr>
+      <tr><td><b>Goo basins</b></td><td>warm vapour</td><td><b>Fume fog</b> on cold nights</td>
+        <td>sight short; raises the region's irritation while it lasts</td></tr>
+      <tr><td><b>The Spines</b></td><td>high wind</td><td><b>Lightning crowns:</b> storms that cling to the ridges</td>
+        <td>strikes the highest thing around, usually your tower</td></tr>
+    </table>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3>Warning, so storms are fair</h3>
+        <ul class="points small">
+          <li><b>From orbit</b> you watch them build: the cloud systems are already there.</li>
+          <li><b>A forecast</b> on the clock: "glass storm in four minutes".</li>
+          <li><b>On the ground:</b> the sky changes colour, the wind turns, dust lifts at the horizon.</li>
+          <li>The point (principle 5): you can always prepare. Storms punish bases that weren't ready, not bad luck.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Storms and weapons (weapons page)</h3>
+        <ul class="points small">
+          <li>Rain puts out fire and makes lightning jump further.</li>
+          <li>Mist, dust and glass storms cut laser range; guns and explosives don't care.</li>
+          <li>Aurora storms hurt everything that runs on the grid, so a material base with stockpiled mass rides them
+            out better than an energy base.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKY -------------------------------------------------------------------------------------------->
+  <section class="part" id="sky">
+    <div class="part-head"><span class="num">07</span><h2>The sky: moons and close planets</h2></div>
+    <p class="takeaway">The sky is where scale lives, and Orbis's camera goes from the ground to space, so whatever hangs
+      there has to work from both. The proposal: <b>the sky is the planet's calendar</b>. Eclipses, tides and the worst
+      nights all show up in it before they arrive.</p>
+
+    <div class="grid2 even">
+      <div class="card prin">
+        <h3>What other skies do</h3>
+        <ul class="points small">
+          <li><b>A clock you can see.</b> Majora's Mask's moon falls over three days, and you watch it come. Pitch
+            Black's eclipse comes every 22 years, and its creatures come out with the dark.</li>
+          <li><b>One huge thing that never leaves.</b> Pandora hangs beside a gas giant; Subnautica's world shares its
+            sky with a planet that never moves; Bloodborne's moon tells you it's the late game.</li>
+          <li><b>A sky that hurts.</b> In Outer Wilds, Brittle Hollow sits under a volcanic moon that bombards it while
+            its own surface crumbles away.</li>
+          <li><b>One image says "not Earth".</b> Tatooine's two suns need no explaining.</li>
+        </ul>
+        <div class="for"><b>For Orbis:</b> the sky warns you, tells you where you are on the planet, and now and then
+          hurts.</div>
+      </div>
+      <div class="card prin">
+        <h3>Real geometry sells it</h3>
+        <ul class="points small">
+          <li><b>A ring lies over the equator.</b> From the equator you see it edge-on, a thin line straight overhead.
+            Further out it's a wide arc toward the equator. Near the poles it sinks below the horizon.</li>
+          <li><b>A moon locked face to face</b> (a twin planet) never moves in the sky. Half the planet always sees it;
+            the other half never does.</li>
+          <li><b>Moons pull tides</b>, and two moons in line pull hardest.</li>
+        </ul>
+        <div class="for"><b>For Orbis:</b> the sky changes as you push from the equator to the pole, so it doubles as
+          a map. At the pole the ring is gone and the aurora takes its place.</div>
+      </div>
+    </div>
+
+    <figure class="card" style="margin-top:14px">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 300" style="min-width:640px" role="img" aria-label="Left: the planet seen from space, with a ring round its equator, a big slow moon on a wide orbit and a small fast moon on a close one, and the sun to the left. Right: three all-sky views from the ground. At the equator the ring is a thin line straight overhead; at mid-latitudes it is a wide arc toward the equator; at the pole there is no ring, only the aurora.">
+        <text x="190" y="24" font-size="12" font-weight="800" text-anchor="middle">From space</text>
+        <!-- sun -->
+        <circle cx="34" cy="150" r="16" class="f-amber"/>
+        <g class="s-amber" stroke-width="2"><path d="M34 124 V116"/><path d="M34 176 V184"/><path d="M8 150 H0"/><path d="M52 132 l6 -6"/><path d="M52 168 l6 6"/></g>
+        <!-- orbits -->
+        <ellipse cx="190" cy="150" rx="128" ry="74" class="s-muted" stroke-width="1.5" stroke-dasharray="4 5" fill="none"/>
+        <ellipse cx="190" cy="150" rx="66" ry="42" class="s-muted" stroke-width="1.5" stroke-dasharray="3 4" fill="none" transform="rotate(-20 190 150)"/>
+        <!-- ring back half, planet, ring front half -->
+        <path d="M108 150 A 82 17 0 0 1 272 150" class="s-violet" stroke-width="5" fill="none" opacity="0.55"/>
+        <circle cx="190" cy="150" r="40" class="f-forest"/>
+        <path d="M150 150 A 40 40 0 0 1 230 150 A 40 12 0 0 1 150 150 Z" class="f-desert" opacity="0.55"/>
+        <path d="M168 120 A 30 18 0 0 1 212 120" class="f-glass" opacity="0.9"/>
+        <path d="M108 150 A 82 17 0 0 0 272 150" class="s-violet" stroke-width="5" fill="none"/>
+        <!-- moons -->
+        <circle cx="300" cy="104" r="17" class="f-pale"/><path d="M300 87 A 17 17 0 0 1 300 121 A 9 17 0 0 0 300 87 Z" class="f-muted" opacity="0.6"/>
+        <circle cx="140" cy="186" r="6" class="f-pale"/>
+        <g font-size="10.5" class="mut">
+          <text x="300" y="72" text-anchor="middle">big moon: slow, tides</text>
+          <text x="120" y="214" text-anchor="middle">small moon: fast</text>
+          <text x="236" y="190">the ring: a broken moon</text>
+        </g>
+        <path d="M350 30 V280" class="s-line" stroke-width="1.5"/>
+        <!-- all-sky views -->
+        <g font-size="12" font-weight="800" text-anchor="middle">
+          <text x="430" y="52">Equator</text><text x="560" y="52">Mid-latitudes</text><text x="690" y="52">Pole</text>
+        </g>
+        <g class="f-bluesoft"><circle cx="430" cy="130" r="56"/><circle cx="560" cy="130" r="56"/></g>
+        <circle cx="690" cy="130" r="56" class="f-hollow"/>
+        <g class="s-line" stroke-width="1.5" fill="none"><circle cx="430" cy="130" r="56"/><circle cx="560" cy="130" r="56"/><circle cx="690" cy="130" r="56"/></g>
+        <!-- equator: ring edge-on overhead -->
+        <path d="M374 130 H486" class="s-violet" stroke-width="3"/>
+        <circle cx="452" cy="104" r="9" class="f-pale"/>
+        <!-- mid: wide arc toward the equator -->
+        <path d="M506 150 Q 560 104 614 150" class="s-violet" stroke-width="9" fill="none" opacity="0.75"/>
+        <circle cx="584" cy="100" r="9" class="f-pale"/>
+        <!-- pole: aurora -->
+        <g class="s-goo" stroke-width="3" fill="none" opacity="0.9">
+          <path d="M650 110 q10 -10 20 0 t20 0 t20 0"/><path d="M656 128 q10 -10 20 0 t20 0 t16 0"/><path d="M662 146 q10 -8 18 0 t18 0"/>
+        </g>
+        <g font-size="10.5" text-anchor="middle" class="mut">
+          <text x="430" y="206">the ring: a thin line</text><text x="430" y="221">straight overhead</text>
+          <text x="560" y="206">a wide arc toward</text><text x="560" y="221">the equator</text>
+          <text x="690" y="206">no ring: below the</text><text x="690" y="221">horizon; the aurora</text>
+        </g>
+        <text x="560" y="262" font-size="10.5" text-anchor="middle" class="mut">All-sky views: the circle is the horizon, the middle is straight up.</text>
+      </svg>
+      </div>
+    </figure>
+
+    <div class="grid2 even" style="margin-top:14px">
+      <div class="opt3">
+        <span class="tag violet">A</span><span class="pick">my pick</span>
+        <h3>Two moons</h3>
+        <p class="small">A big slow moon, about four times the width of ours, with phases over several days. It pulls
+          the goo tides and now and then crosses the sun. And a small fast moon, a bright point crossing the sky twice a
+          night: a clock you can count to dawn.</p>
+        <p class="small"><b>Good:</b> tides, eclipses and a calendar at the lowest cost. Readable at a glance.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag amber">B</span><span class="pick">my pick, added to A</span>
+        <h3>A broken moon: the ring</h3>
+        <p class="small">A ring of glittering debris over the equator, all that's left of a third moon. It glitters
+          teal because it's full of the substance: the heart broke it long ago. Pieces still fall as meteors, and each
+          one leaves fresh crystal where it lands.</p>
+        <p class="small"><b>Good:</b> the shot from orbit, a lore warning (this is what the heart can do), and meteor
+          events.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag blue">C</span>
+        <h3>A twin planet</h3>
+        <p class="small">A sister world locked face to face with Orbis, fixed in one place in the sky. On the near side
+          it hangs there forever and nights are never fully dark (twin-light). On the far side it's never seen and the
+          nights are black.</p>
+        <p class="small"><b>Good:</b> the geography decides the night: the far side is where the Given are strongest.
+          <b>Less good:</b> one huge image, the same everywhere on the near side.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag red">D</span>
+        <h3>Orbis is a giant's moon</h3>
+        <p class="small">A banded giant planet fills a quarter of the sky, and in some regions it eclipses the sun
+          every day.</p>
+        <p class="small"><b>Good:</b> the biggest image of all. <b>Less good:</b> close to Pandora's sky, so it would
+          need a strong look of its own; daily eclipses wear thin.</p>
+      </div>
+    </div>
+
+    <div class="wrap-scroll" style="margin-top:14px">
+    <table class="plain">
+      <tr><th>Event</th><th>When</th><th>What you see</th><th>What it does</th></tr>
+      <tr><td><b>Eclipse</b></td><td>the big moon crosses the sun: a few times a campaign per region, predicted</td>
+        <td>darkness at noon, a ring of light round a black disc</td>
+        <td>for a few minutes it's night: the Given come out, and anything that runs on sunlight stops</td></tr>
+      <tr><td><b>Tide night</b></td><td>both moons in line and full, on a calendar</td>
+        <td>a huge moon, high goo, mist pouring from the pits</td>
+        <td>the biggest waves of a region; if the heart is high, a planet-wide surge (v1)</td></tr>
+      <tr><td><b>Goo tides</b></td><td>daily, with the big moon</td><td>shores flood and drain</td>
+        <td>energy wells low on the shore flood at high tide; crusts crack and refreeze</td></tr>
+      <tr><td><b>Meteor fall</b></td><td>from the ring; more often as the heart's agitation rises</td>
+        <td>streaks at night, a flash and a crater</td>
+        <td>a fresh crystal seam where it lands (rich, but the Given come for it); one can hit your base</td></tr>
+      <tr><td><b>Moonless night</b></td><td>both moons down</td><td>true dark, under the stars and the ring's glow</td>
+        <td>the Given at their strongest; the night your floodlights matter most</td></tr>
+    </table>
+    </div>
+
+    <div class="grid3" style="margin-top:14px">
+      <div class="card">
+        <h3>Colour and light</h3>
+        <ul class="points small">
+          <li><b>One sun</b> (my pick), a touch whiter than ours. A second, distant sun would be a bright star by
+            day and give a second dusk; two real suns mean two shadows, which is engine work.</li>
+          <li><b>The day sky</b> can be Earth blue, or slightly wrong (pale teal, amber haze). Real ground with a
+            slightly wrong sky reads alien without trying hard.</li>
+          <li><b>Nights near the equator</b> are lit by the ring after dusk; <b>nights at the poles</b> are truly dark,
+            matching v1's darkest nights at the poles.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Ties to the story</h3>
+        <ul class="points small">
+          <li><b>The ring</b> is what's left of the heart's last great surge. The ruins' murals show a sky without
+            it.</li>
+          <li><b>Your station</b> is a moving star: the uplink (v1's orbital support). Storms and mist hide it.</li>
+          <li><b>The rival</b> shows as a new light that grows over several missions: a countdown you can see.</li>
+          <li><b>The ancients' home</b> could be a faint red star the ruins point at, where the beacon calls (lore
+            page, section 03).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Can Orbis draw it?</h3>
+        <ul class="points small">
+          <li><b>Today:</b> one sun, the stars turning with the planet, the atmosphere, and moonlight as a second
+            light. The moon itself isn't drawn.</li>
+          <li><b>Game work:</b> goo tides (move the water level; all goo shares it), meteors (an effect, a crater, a
+            seam), dimming the sun and sky in an eclipse (both are settings).</li>
+          <li><b>Atlas work:</b> moons and planets drawn at game scale, with phases, so they're right from the ground
+            and from orbit; a ring that's lit, shadowed and casts a shadow on the land; an eclipse's black disc; more
+            than one moon's light.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- GIANT ------------------------------------------------------------------------------------------>
+  <section class="part" id="giant">
+    <div class="part-head"><span class="num">08</span><h2>The desert giant</h2></div>
+    <p class="takeaway">You imagined great burrowing worms. To keep it ours and not a sandworm, the proposal is a
+      different body with a different reason: <b>a giant that swims under the sand and feeds on the substance</b>. It
+      comes for the same seams you mine.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 250" style="min-width:640px" role="img" aria-label="A cross-section of the desert. A broad, flat giant swims under the sand; above it a dune moves against the wind, with crystal plates breaking the surface. Behind it the wake is churned, with crystal showing and the bloom flowering. Ahead an extractor on a seam makes noise that draws it.">
+        <!-- sand -->
+        <path d="M0 132 C 60 126, 110 140, 170 130 S 250 136, 290 128 C 320 96, 410 86, 450 126 C 500 132, 560 130, 760 132 V250 H0 Z" class="f-desert"/>
+        <path d="M0 132 C 60 126, 110 140, 170 130 S 250 136, 290 128 C 320 96, 410 86, 450 126 C 500 132, 560 130, 760 132" class="s-amber" stroke-width="2.5" fill="none"/>
+        <!-- the body under the sand -->
+        <ellipse cx="370" cy="150" rx="96" ry="22" class="f-muted" opacity="0.55"/>
+        <g class="s-muted" stroke-width="3" opacity="0.7">
+          <path d="M300 160 l-18 14"/><path d="M330 168 l-12 16"/><path d="M410 168 l12 16"/><path d="M440 160 l18 14"/>
+        </g>
+        <!-- plates through the dune -->
+        <g class="f-violet">
+          <path d="M330 104 l8 -18 l8 18 z"/><path d="M352 96 l9 -22 l9 22 z"/><path d="M376 94 l9 -24 l9 24 z"/><path d="M400 98 l8 -20 l8 20 z"/><path d="M422 108 l7 -14 l7 14 z"/>
+        </g>
+        <!-- movement arrow and wind -->
+        <path d="M470 76 H530" class="s-ink" stroke-width="2.5"/><path d="M530 70 L542 76 L530 82 Z" class="f-ink"/>
+        <text x="506" y="66" font-size="10.5" text-anchor="middle">it moves</text>
+        <path d="M260 84 H200" class="s-muted" stroke-width="2" stroke-dasharray="5 4"/><path d="M200 79 L190 84 L200 89 Z" class="f-muted"/>
+        <text x="226" y="76" font-size="10.5" text-anchor="middle" class="mut">wind</text>
+        <!-- wake: churn, crystal, bloom -->
+        <g class="s-amber" stroke-width="1.5" fill="none" opacity="0.8">
+          <path d="M30 150 q10 -6 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0"/>
+          <path d="M40 166 q10 -6 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0"/>
+        </g>
+        <g class="f-violet"><path d="M70 132 l6 -10 l6 10 z"/><path d="M130 130 l7 -12 l7 12 z"/><path d="M200 132 l6 -10 l6 10 z"/><path d="M250 130 l5 -9 l5 9 z"/></g>
+        <g class="f-red"><circle cx="96" cy="126" r="3.5"/><circle cx="112" cy="124" r="2.5"/><circle cx="160" cy="124" r="3"/><circle cx="226" cy="125" r="3.5"/><circle cx="240" cy="122" r="2"/></g>
+        <!-- extractor and seam -->
+        <g class="f-violet"><path d="M612 160 l10 -10 l10 10 l-10 8 z"/><path d="M636 166 l8 -8 l8 8 l-8 6 z"/></g>
+        <rect x="608" y="108" width="40" height="24" rx="4" class="f-blue"/>
+        <g class="s-red" stroke-width="2" fill="none" opacity="0.8">
+          <path d="M596 100 a 36 36 0 0 0 0 40"/><path d="M584 92 a 50 50 0 0 0 0 56"/>
+        </g>
+        <!-- labels -->
+        <g font-size="12" font-weight="800" text-anchor="middle">
+          <text x="150" y="30">The wake</text><text x="378" y="30">A dune moving against the wind</text><text x="660" y="30">Your extractor</text>
+        </g>
+        <g font-size="10.5" text-anchor="middle" class="mut">
+          <text x="150" y="46">crystal showing; a flash bloom</text><text x="378" y="46">plates through the sand; a rumble</text>
+          <text x="660" y="46">its noise and seam draw it</text>
+          <text x="370" y="200">the body stays under the sand</text>
+          <text x="150" y="196">mine it fast: the bloom heals the swarm</text>
+        </g>
+      </svg>
+      </div>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="opt3">
+        <span class="tag violet">A</span><span class="pick">my pick</span>
+        <h3>Ploughs</h3>
+        <p class="small">Broad, flat, many-paddled giants that swim just under the sand, grinding crystal seams. Their
+          backs are ridged with crystal plates, so all you see is a dune moving against the wind with plates breaking
+          the surface. They don't swallow anything: they heave the ground.</p>
+        <p class="small"><b>Good:</b> the danger is to your base and the land itself, not a mouth; ties straight into
+          the substance; cheap to draw (section 10).</p>
+      </div>
+      <div class="opt3">
+        <span class="tag blue">B</span>
+        <h3>Spine-sleepers</h3>
+        <p class="small">A giant that lies still for years as a ridge of crystal spines: a landmark you'd build next
+          to. When the region's irritation peaks it wakes, drags itself out of the ground and walks off, leaving a
+          trench.</p>
+        <p class="small"><b>Good:</b> a betrayal you can see coming if you watch the meter. <b>Less good:</b> rare by
+          design.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag amber">C</span>
+        <h3>Storm-walkers</h3>
+        <p class="small">Tall, stilt-legged giants that walk inside the glass storms: the storm is their dust. In the
+          murk you see only legs. When the storm clears, the giant has gone and so has whatever stood in its path.</p>
+        <p class="small"><b>Good:</b> storms and giants become one threat. <b>Less good:</b> not burrowing.</p>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3>How Ploughs play</h3>
+        <ul class="points small">
+          <li><b>They feed on seams.</b> Rich ground draws them, and so does the noise of your extractors and drills
+            (v1: giants follow noise and vibration). Your mine is eating their food.</li>
+          <li><b>You see them coming:</b> a dune moving against the wind, a rumble, sand sliding off the plates.
+            Ground sensors (the slice's sensors) track them under the sand.</li>
+          <li><b>They heave the ground.</b> On their path buildings crack and topple, walls break, and a ridge rises
+            where there wasn't one. The map is changed.</li>
+          <li><b>The wake is rich:</b> churned sand with crystal showing, and a flash bloom that heals the swarm. Mine
+            it fast, before the next wave.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What you can do about one</h3>
+        <ul class="points small">
+          <li><b>Lure it:</b> thumpers away from your base (wildlife's lures, weapons page).</li>
+          <li><b>Dig in deep:</b> hardened foundations on salt pans and bedrock ride out a pass.</li>
+          <li><b>Kill it:</b> a giant fight. Armoured class: plasma, acid, the substance's own weapons.</li>
+          <li><b>Let it pass</b> and rebuild on the new ridge, with a rich wake to mine.</li>
+          <li><b>Guide it</b> (wildlife, late): on the Stabilise path a Plough can be steered, ploughing the ground
+            for you.</li>
+        </ul>
+        <p class="small muted" style="margin-top:8px">Names to try: Ploughs, sand-rays, tillers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAMEPLAY --------------------------------------------------------------------------------------->
+  <section class="part" id="gameplay">
+    <div class="part-head"><span class="num">09</span><h2>Each region in play</h2></div>
+    <p class="takeaway">Every biome should change how you fight and build, and each should be good for something and
+      bad for something else. Numbers are a first pass, to tune in play.</p>
+    <div class="wrap-scroll">
+    <table class="plain">
+      <tr><th>Biome</th><th>Movement</th><th>Building</th><th>Sight</th><th>Hazards</th><th>Good for</th><th>Bad for</th></tr>
+      <tr><td><b>The Scrub</b></td><td>normal</td><td>anywhere</td><td>long; hazy in spore season</td><td>spore towers, beast packs</td>
+        <td>landing, first bases, open fields of fire</td><td>few seams; nowhere to hide</td></tr>
+      <tr><td><b>The Mire</b></td><td>vehicles 50%, infantry 60%; hover and legs full</td><td>hummocks, pilings, drained ground</td>
+        <td>short: mist and reeds</td><td>rot gas, drowners, flooded pits</td><td>specimens, regrowing seams, drowned ruins, lightning defence</td><td>heavy armies, supply</td></tr>
+      <tr><td><b>Deep Desert</b></td><td>normal on salt pans, 80% on dunes</td><td>on pans and bedrock; dunes shift</td>
+        <td>very long, nil in storms</td><td>glass storms, Ploughs, heat</td><td>rich wakes, artillery sight lines</td><td>holding anything for long</td></tr>
+      <tr><td><b>Creeping Forest</b></td><td>70% in the trees, roads full</td><td>in clearings; the forest grows back in</td>
+        <td>short in the trees</td><td>the forest itself, fire, ambushes</td><td>cover, hidden outposts, specimens, sap fuel</td><td>walls (swallowed); fire risk</td></tr>
+      <tr><td><b>The Spines</b></td><td>slow uphill, fast down</td><td>ledges only: few flat sites</td>
+        <td>longest (high ground)</td><td>lightning crowns, wind, rockfalls</td><td>fortresses, choke points, rock seams</td><td>space, long power lines</td></tr>
+      <tr><td><b>The Pale</b></td><td>80% in snow</td><td>anywhere, slower on frozen ground</td>
+        <td>medium; nil in whiteouts</td><td>whiteouts, long nights, cold draining power</td><td>richer seams, the first deep ruins</td><td>power, long nights</td></tr>
+      <tr><td><b>The Glass</b></td><td>90% on crust; thin glass breaks</td><td>bedrock only</td>
+        <td>by aurora light; the long dark</td><td>aurora storms, great pits, the Given at full strength</td><td>the richest seams, the great pits, the endgame</td><td>everything else</td></tr>
+      <tr><td><b>Goo shores</b></td><td>can't cross the goo</td><td>on the crust</td>
+        <td>medium; fume fog</td><td>fumes, the Given wading out</td><td>energy wells, crust seams</td><td>crossing; irritation</td></tr>
+      <tr><td><b>The Hollows</b></td><td>70%, wet</td><td>not near the rim until the pit is sealed</td>
+        <td>short: mist</td><td>the Given</td><td>the way into the ruins (lore page)</td><td>everything else</td></tr>
+    </table>
+    </div>
+    <div class="note"><b>The shape of a campaign:</b> land on the Scrub, push through either the Mire or the Deep Desert
+      (two very different fights), into the Creeping Forest, through the Pale, and onto the Glass. Each band is a new
+      problem, and the substance, the pits and the planet's anger rise with every step.</div>
+  </section>
+
+  <!-- FEASIBLE --------------------------------------------------------------------------------------->
+  <section class="part" id="feasible">
+    <div class="part-head"><span class="num">10</span><h2>What Orbis can draw today</h2></div>
+    <p class="takeaway">Much of this is already in Orbis, or is game work on top of what's there. The engine work is
+      mostly liquids: more than one kind, at more than one height, flowing and glowing.</p>
+    <div class="wrap-scroll">
+    <table class="plain">
+      <tr><th>Feature</th><th>Today</th><th>Work needed</th></tr>
+      <tr><td><b>Biome bands by climate</b></td><td>yes: climate sliders, temperature by latitude and height, moisture, eight ground layers (stage 8)</td>
+        <td>Mire mud, glass and crust are new ground layers. The terrain has two splat maps (eight layers), so they replace old ones, or Atlas adds a third map</td></tr>
+      <tr><td><b>The substance as a third axis</b></td><td>no</td><td>game: a substance map in the planet generator, feeding the biome weights</td></tr>
+      <tr><td><b>Non-green plants</b></td><td>grass and trees by biome (stage 15, flora), made in code or tinted per instance</td>
+        <td>game: new colours and shapes; the photo ground layers can be hue-shifted when they're baked</td></tr>
+      <tr><td><b>Mire water</b></td><td>yes, if the Mire sits just below sea level: Atlas water with colour and absorption gives shallow murky water</td>
+        <td>game: movement costs per tile on the nav grid; reeds as a new grass patch</td></tr>
+      <tr><td><b>Mist, fog, rain, snow, wet ground, wind</b></td><td>yes (stages 9, 11, 13)</td><td>tuning per biome</td></tr>
+      <tr><td><b>Goo seas</b></td><td>partly: the one water surface sits at sea level; coloured like goo, every basin below it fills with goo</td>
+        <td><b>Atlas:</b> separate liquid bodies, each with its own height and look; goo that glows at night</td></tr>
+      <tr><td><b>Glass rivers</b></td><td>no</td><td>game: river strips and a crust ground layer; <b>Atlas:</b> a flowing liquid material</td></tr>
+      <tr><td><b>Glass storms</b></td><td>first pass: fog banks, wind and particles; mist volumes can be placed and moved</td>
+        <td>game: a wall of mist volumes driven by the wind. A true storm front is Atlas work</td></tr>
+      <tr><td><b>Lightning, aurora</b></td><td>no (the 978 converted effects may have a bolt)</td><td><b>Atlas:</b> a lightning flash light; an aurora in the sky</td></tr>
+      <tr><td><b>Night glow</b></td><td>emissive materials; instance tint (the Given's glow)</td><td>check: emissive in Atlas's foliage material for glowing plants</td></tr>
+      <tr><td><b>A not-quite-blue sky</b></td><td>the planet atmosphere has sliders (stage 12)</td><td>check: the air's colour is its scattering per colour; a tint is likely a setting</td></tr>
+      <tr><td><b>Moving borders</b></td><td>plants are placed once; fire already removes them (stage 16)</td><td>game: plants that spread and regrow over time</td></tr>
+      <tr><td><b>Ploughs</b></td><td>the land is editable, edits rebuild only the touched chunks, and pathfinding re-routes (P5)</td>
+        <td>game: a moving bulge in the heightfield, a plates model, dust. Check the rebuild cost at that rate</td></tr>
+      <tr><td><b>Rot gas, sap</b></td><td>the fire simulation (stage 16)</td><td>game: extra fuel cells for the fire</td></tr>
+      <tr><td><b>Moons, the ring, eclipses</b></td><td>one sun, stars, atmosphere; moonlight as a second light, no moon drawn</td>
+        <td>game: tides, meteors, dimming for eclipses; <b>Atlas:</b> moons and planets at game scale with phases, a ring, more than one moon's light (section 07)</td></tr>
+      <tr><td><b>Caves, overhangs</b></td><td>no: the land is a heightfield</td><td>not planned: Hollows are craters with a dark mouth, like the pits</td></tr>
+    </table>
+    </div>
+    <div class="note"><b>Size:</b> on today's 2x planet (radius 652 m) the equator is about a kilometre from the pole, so each
+      band is a few hundred metres wide. Enough for a first pass; a reason for a bigger planet later.</div>
+  </section>
+
+  <!-- QUESTIONS --------------------------------------------------------------------------------------->
+  <section class="part" id="questions">
+    <div class="part-head"><span class="num">?</span><h2>Environment round 1: pick what you like</h2></div>
+    <p class="takeaway">Pick any number on most questions. "My own idea" opens a note. Your answers stay in this browser.
+      When you're done, copy them and paste them into the chat.</p>
+    <div class="progress"><i id="progress" style="width:0%"></i></div>
+    <div id="qs"></div>
+    <div class="card">
+      <h3>Anything else about the world, its biomes, liquids, plants or weather</h3>
+      <textarea id="extra" placeholder="films or games you like for this, what's missing, what's wrong..."></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn" id="copy" type="button">Copy my answers</button>
+      <button class="btn ghost" id="clear" type="button">Clear</button>
+      <span id="copied" aria-live="polite"></span>
+    </div>
+    <pre class="out" id="out" hidden></pre>
+  </section>
+
+  <section class="part" id="sources">
+    <div class="part-head"><span class="num">·</span><h2>Sources</h2></div>
+    <p class="small muted">Read for this page. The rest comes from the films and games themselves.</p>
+    <ul class="sources">
+      <li><a href="https://unknownworlds.com/news/subnautica-concept-art-coral-reef-3">Unknown Worlds: Subnautica concept art, coral reef</a></li>
+      <li><a href="https://www.inverse.com/input/gaming/interview-how-the-artist-behind-subnautica-creates-aliens-that-could-actually-exist">Inverse: Subnautica's creature artist</a></li>
+      <li><a href="https://vfxblog.com/2018/03/12/mandelbulbs-mutations-and-motion-capture-the-visual-effects-of-annihilation">VFX Blog: the visual effects of Annihilation</a></li>
+      <li><a href="https://astrobiology.nasa.gov/news/the-color-of-alien-plants/">NASA Astrobiology: the colour of alien plants</a></li>
+      <li><a href="https://www.nationalgeographic.com/science/article/110419-alien-trees-black-plants-planets-ras-space-science">National Geographic: alien trees may be black</a></li>
+      <li><a href="https://news.blizzard.com/en-us/starcraft2/5838584/game-guide-zerg-creep">Blizzard: StarCraft II game guide, Zerg creep</a></li>
+      <li><a href="https://liquipedia.net/starcraft2/Creep">Liquipedia: Creep</a></li>
+      <li><a href="https://www.engadget.com/2016-04-22-no-mans-sky-art-video.html">Engadget: the art of No Man's Sky</a></li>
+      <li><a href="https://gdcvault.com/play/1021805/Art-Direction-Bootcamp-How-I">GDC 2015: How I learned to love procedural art (No Man's Sky)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Returnal">Wikipedia: Returnal</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Planetary_Annihilation">Wikipedia: Planetary Annihilation</a></li>
+      <li><a href="https://strategywiki.org/wiki/Metroid_Prime/Locations">StrategyWiki: Metroid Prime locations</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Nausica%C3%A4_of_the_Valley_of_the_Wind_(manga)">Wikipedia: Nausicaä of the Valley of the Wind</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Dallol_(hydrothermal_system)">Wikipedia: Dallol hydrothermal system</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Pandora_(Avatar)">Wikipedia: Pandora (Avatar)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Pitch_Black_(film)">Wikipedia: Pitch Black</a></li>
+      <li><a href="https://gizmodo.com/if-earth-had-a-ring-like-saturn-508750253">Gizmodo: if Earth had a ring like Saturn</a></li>
+    </ul>
+  </section>
+
+</div>
+</main>
+
+<footer><div class="wrap">Orbis environment round 1 · <a href="index.html">Menu</a> · <a href="lore1.html">Lore round 1</a> · <a href="weapons1.html">Weapons round 1</a> · <a href="settle1.html">Settlement round 1</a> · <a href="v1/">Concept v1</a></div></footer>
+
+<script src="environment1.js"></script>
+</body>
+</html>

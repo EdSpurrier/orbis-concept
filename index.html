@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbis Concept</title>
+<meta name="description" content="Orbis concept: the signed-off version and the pages it was worked out on.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%237656c9'/%3E%3Cpath d='M6 19c6-3 14-3 20 0' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<style>
+  .menu-stamp { display: inline-block; border: 2px solid var(--green); color: var(--green); border-radius: 10px; padding: 5px 11px;
+    font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12.5px; transform: rotate(-2deg); }
+  .signed-card { border: 2px solid var(--green); }
+  .linkgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 14px; }
+  .linkgrid a, .work a.card { display: block; text-decoration: none; color: inherit; border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 14px; background: var(--bg); }
+  .linkgrid a:hover, .work a.card:hover { border-color: var(--blue); }
+  .linkgrid b, .work b { display: block; margin-bottom: 3px; }
+  .work { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .work a.card { background: var(--surface); padding: 18px; }
+  .work .step { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .steps a text { cursor: pointer; }
+  .work a.journey-card { grid-column: 1 / -1; border: 2px solid var(--violet, var(--blue)); }
+  .steps a:hover circle { stroke: var(--blue); stroke-width: 4; }
+  @media (max-width: 860px) { .linkgrid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .linkgrid, .work { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="f-violet"/><path d="M6 19c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none"/></svg>
+      <span>Orbis concept</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#signed">Signed off</a>
+      <a href="#workthrough">The workthrough</a>
+      <a href="v1/">Open v1 →</a>
+    </nav>
+    <button class="theme" id="theme" type="button" title="Switch light / dark">Theme</button>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+
+  <section class="hero">
+    <div class="kicker">Orbis · the game concept</div>
+    <h1>The planet fights back</h1>
+    <p class="pitch">A planet-scale RTS for a builder and a turtle. You land on a living planet that treats you as an
+      infection, hold a fortified settlement against its swarms, giants, storms and nights, and choose what to study:
+      the material, the wildlife or the ruins. Each leads to its own ending.</p>
+  </section>
+
+  <section class="part" id="signed">
+    <div class="part-head"><span class="num">✓</span><h2>The signed-off version</h2></div>
+    <p class="takeaway">What we agreed. Read-only: it can't be changed or re-answered. New iterations become v2, v3
+      and so on, next to it.</p>
+    <div class="card signed-card">
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+        <div>
+          <h3 style="margin:0">Concept v1</h3>
+          <p class="small muted" style="margin:4px 0 0">Signed off 7 November 2026, after four rounds of questions. Also in
+            the Orbis repo: <code>docs/CONCEPT.md</code> and <code>docs/concept/v1/</code>.</p>
+        </div>
+        <span class="menu-stamp">✓ Signed off</span>
+      </div>
+      <div class="linkgrid">
+        <a href="v1/index.html"><b>Contents</b><span class="small muted">the concept on one page</span></a>
+        <a href="v1/concept.html"><b>The concept</b><span class="small muted">every section and diagram</span></a>
+        <a href="v1/record.html"><b>The record</b><span class="small muted">every answer, as given</span></a>
+        <a href="v1/taste.html"><b>Your taste</b><span class="small muted">the round 1 readback</span></a>
+        <a href="v1/guide.html"><b>The guide</b><span class="small muted">what makes a good RTS</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="workthrough">
+    <div class="part-head"><span class="num">→</span><h2>The workthrough</h2></div>
+    <p class="takeaway">The working pages, in the order we went through them. These stay editable: the questions and
+      choices on them are where v2 will come from.</p>
+    <figure class="card">
+      <div class="timeline">
+      <svg class="dia steps" viewBox="0 0 760 150" style="min-width:640px" role="img" aria-label="The steps: the guide and round 1, round 2, draft 1 and round 3, draft 2 and round 4, then v1 signed off">
+        <line x1="80" y1="58" x2="680" y2="58" class="s-line" stroke-width="4"/>
+        <a href="guide.html"><circle cx="80" cy="58" r="30" class="f-blue s-line" stroke-width="0"/><text x="80" y="64" text-anchor="middle" font-size="17" font-weight="800" style="fill:#fff">1</text></a>
+        <a href="concept.html"><circle cx="230" cy="58" r="30" class="f-amber"/><text x="230" y="64" text-anchor="middle" font-size="17" font-weight="800" style="fill:#fff">2</text></a>
+        <a href="draft1.html"><circle cx="380" cy="58" r="30" class="f-violet"/><text x="380" y="64" text-anchor="middle" font-size="17" font-weight="800" style="fill:#fff">3</text></a>
+        <a href="draft2.html"><circle cx="530" cy="58" r="30" class="f-red"/><text x="530" y="64" text-anchor="middle" font-size="17" font-weight="800" style="fill:#fff">4</text></a>
+        <a href="v1/"><circle cx="680" cy="58" r="30" class="f-green"/><text x="680" y="65" text-anchor="middle" font-size="20" font-weight="800" style="fill:#fff">✓</text></a>
+        <g text-anchor="middle" font-size="12.5" font-weight="800">
+          <text x="80" y="110">The guide</text><text x="230" y="110">Round 2</text><text x="380" y="110">Draft 1</text>
+          <text x="530" y="110">Draft 2</text><text x="680" y="110">v1 signed off</text>
+        </g>
+        <g text-anchor="middle" font-size="11" class="mut">
+          <text x="80" y="127">+ round 1: your taste</text><text x="230" y="127">the concept builder</text>
+          <text x="380" y="127">+ round 3</text><text x="530" y="127">+ round 4, the slice</text><text x="680" y="127">7 November 2026</text>
+        </g>
+      </svg>
+      </div>
+    </figure>
+    <div class="work" style="margin-top:14px">
+      <a class="card" href="guide.html">
+        <div class="step">Step 1 · working copy</div>
+        <b>What makes a good RTS</b>
+        <span class="small muted">The research: pillars, attention, fights, counters, economy, pacing, scale, history,
+          and the taste form that was round 1.</span>
+      </a>
+      <a class="card" href="concept.html">
+        <div class="step">Step 2 · working copy</div>
+        <b>Round 2: the concept builder</b>
+        <span class="small muted">The readback of your taste (profile, your games, the turtle curve, three directions)
+          and the 15 round 2 questions.</span>
+      </a>
+      <a class="card" href="draft1.html">
+        <div class="step">Step 3 · working copy</div>
+        <b>Draft 1 and round 3</b>
+        <span class="small muted">The first concept: pitch, pillars, loop, cast, regions, base, economy, tech, and the
+          round 3 questions, with the ideas we added in chat.</span>
+      </a>
+      <a class="card" href="draft2.html">
+        <div class="step">Step 4 · working copy</div>
+        <b>Draft 2 and round 4</b>
+        <span class="small muted">The living planet, command, branches and endings, the poles, the Stabilise twist,
+          mixing branches, the first slice, and round 4.</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="part" id="towards-v2">
+    <div class="part-head"><span class="num">→</span><h2>Towards v2</h2></div>
+    <p class="takeaway">New working pages after the sign-off. What you pick here is folded into concept v2, next to v1.</p>
+    <div class="work">
+      <a class="card journey-card" href="journey.html">
+        <div class="step">The whole game · show a friend</div>
+        <b>Orbis in 18 steps</b>
+        <span class="small muted">The story and the game in one animated walkthrough, for someone who has never heard of it:
+          the living planet, landing, building to hold, the ruins, the tithe, the Given, the offer, the three endings and
+          what you fight with. Next, back, arrow keys or swipe.</span>
+      </a>
+      <a class="card" href="concept3d.html">
+        <div class="step">Concept models · 3D</div>
+        <b>Orbis concept models</b>
+        <span class="small muted">Code-made 3D models on turntables: the colonist, the ancients, the Given running and
+          standing, the Eldest, the swarm beast and brute, the guardian, dropship and turret, spore towers, the creeping
+          forest, a crystal seam, a dome and a pit, plus everyone side by side to scale.</span>
+      </a>
+      <a class="card" href="lore1.html">
+        <div class="step">Lore round 1 · open</div>
+        <b>The Given</b>
+        <span class="small muted">The ancients as colonists before you, who fed their own to the planet and were
+          swallowed: the story in five ages, the forks, two lineages (the planet's own life and the Given) for two
+          branches, the pits down to the heart, the look, how it plays, the endings, agitation by region, and the
+          questions.</span>
+      </a>
+      <a class="card" href="weapons1.html">
+        <div class="step">Weapons round 1 · open</div>
+        <b>What you fight with</b>
+        <span class="small muted">Nine weapon families: projectiles, explosives, fire, lightning, lasers, plasma, the
+          substance's own, natural and the ancients' tech. What each beats, what it costs (mass, power, noise), where it
+          sits in the tech tree, how the world affects it, and the questions.</span>
+      </a>
+      <a class="card" href="settle1.html">
+        <div class="step">Settlement round 1 · open</div>
+        <b>Digging in and living there</b>
+        <span class="small muted">The mining ladder (surface extractors to deep drills), machines that reshape the land,
+          where your people live (domes, a growing city, or domes that grow towns), how it changes with your path, and
+          the questions.</span>
+      </a>
+      <a class="card" href="environment1.html">
+        <div class="step">Environment round 1 · open</div>
+        <b>A world that isn't Earth</b>
+        <span class="small muted">What films and games do to make a world feel alien, the biomes from equator to pole
+          with the substance rising toward the poles, swamps, goo seas and glass rivers instead of oceans, plants and
+          storms by biome, the sky (moons, a ring, close planets), the desert giant, what each region is good for, what Orbis can draw today, and the
+          questions.</span>
+      </a>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<footer><div class="wrap">Orbis concept · <a href="v1/">Signed-off v1</a> · runs locally: <code>node serve.mjs</code></div></footer>
+
+<script>
+  (() => {
+    const btn = document.getElementById("theme");
+    const themes = ["auto", "light", "dark"];
+    let theme = "auto";
+    try { theme = JSON.parse(localStorage.getItem("rts.theme") ?? '"auto"') || "auto"; } catch { /* blocked */ }
+    const apply = () => {
+      if (theme === "auto") document.documentElement.removeAttribute("data-theme");
+      else document.documentElement.setAttribute("data-theme", theme);
+      btn.textContent = `Theme: ${theme}`;
+    };
+    btn.addEventListener("click", () => {
+      theme = themes[(themes.indexOf(theme) + 1) % themes.length];
+      try { localStorage.setItem("rts.theme", JSON.stringify(theme)); } catch { /* blocked */ }
+      apply();
+    });
+    apply();
+  })();
+</script>
+</body>
+</html>

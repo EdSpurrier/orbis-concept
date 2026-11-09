@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--ART-START-->
+<title>Orbis in 18 Steps</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Orbis, the story and the game, told step by step for someone who has never heard of it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: a one-screen stepper. The scene stage sits left (on top on phones), the story copy right, the five acts run across the top. One dark look on purpose: the planet at night. */
+:root{
+  --void:#07090b; --deep:#0d1316; --rock:#141c20; --rock2:#1f2a2f; --line:#27353b;
+  --bone:#ebe5d7; --text:#c6c9bf; --dust:#87938e;
+  --core:#62e8d3; --rust:#d65a3c; --ochre:#d09a49; --colony:#9fd66a;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:var(--void);color:var(--text);font-family:var(--serif);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+.app{height:100%;max-width:1440px;margin:0 auto;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* top bar */
+.top{display:flex;align-items:flex-end;gap:20px;padding-block:14px 12px}
+.brand{font:800 26px/1 var(--display);letter-spacing:.32em;color:var(--bone);padding-bottom:1px}
+.progress{flex:1;display:flex;gap:12px;min-width:0}
+.act{display:flex;flex-direction:column;gap:6px;min-width:0}
+.act-name{font:500 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dust);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act.on .act-name{color:var(--core)}
+.segs{display:flex;gap:3px}
+.seg{flex:1;height:16px;padding:6px 0;border:0;background:none;cursor:pointer}
+.seg::before{content:"";display:block;height:4px;border-radius:2px;background:var(--line);transition:background .3s}
+.seg.done::before{background:var(--dust)}
+.seg.cur::before{background:var(--core);box-shadow:0 0 10px var(--core)}
+.seg:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.count{font:500 13px/1 var(--mono);color:var(--dust);font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:3px}
+.count b{color:var(--bone);font-weight:500}
+
+/* main */
+.main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(20px,3vw,44px);align-items:center;min-height:0}
+.stage{margin:0;position:relative;width:100%;aspect-ratio:8/5;max-height:100%;max-width:100%;background:var(--deep);
+  border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.stage>svg,.stage>video,.stage>img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage>video,.stage>img{object-fit:cover;animation:fadeIn 1s both}
+.media-toggle{position:absolute;right:10px;bottom:10px;z-index:2;font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--bone);background:color-mix(in srgb,var(--void) 70%,transparent);border:1px solid var(--line);border-radius:3px;padding:7px 9px;cursor:pointer}
+.copy{max-height:100%;overflow-y:auto;padding-block:6px 10px;min-width:0;scrollbar-width:thin}
+.copy>*{animation:rise .7s cubic-bezier(.2,.7,.2,1) calc(var(--i,0)*85ms + 120ms) both}
+.kicker{font:500 12px/1.4 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--core);margin:0 0 10px}
+.copy h2{font:800 clamp(38px,4.6vw,68px)/.92 var(--display);text-transform:uppercase;letter-spacing:.01em;color:var(--bone);margin:0 0 18px;text-wrap:balance}
+.copy p{font-size:18px;line-height:1.55;margin:0 0 12px;max-width:34em}
+.copy .hit{font-style:italic;font-size:20px;line-height:1.45;color:var(--bone);margin-top:16px}
+.copy .dark{color:var(--rust)}
+.copy .hint{font:500 12px/1.5 var(--mono);color:var(--dust);letter-spacing:.04em;margin-top:20px}
+.copy ul{list-style:none;padding:0;margin:4px 0 12px;display:grid;gap:8px;max-width:34em}
+.copy li{font-size:17px;line-height:1.45;padding-left:16px;position:relative}
+.copy li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;background:var(--rust);transform:rotate(45deg)}
+.copy li b{color:var(--bone);font-weight:600}
+.copy a{color:var(--bone);text-decoration-color:var(--core);text-underline-offset:3px}
+.copy a:hover{color:var(--core)}
+.tx{border:1px solid var(--line);background:var(--deep);padding:14px 16px;margin:6px 0 14px;max-width:34em;border-radius:3px}
+.tx-head{font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--core);margin-bottom:10px}
+.tx p{font-size:17px;margin:0;color:var(--bone)}
+.choices{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 12px}
+.choice{font:800 17px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;padding:12px 18px;border-radius:3px;cursor:pointer;
+  background:transparent;color:var(--bone);border:1px solid var(--rust)}
+.choice:hover,.choice[aria-pressed="true"]{background:var(--rust);color:var(--void)}
+.choice.alt{border-color:var(--line)}
+.choice.alt:hover,.choice.alt[aria-pressed="true"]{background:var(--bone);color:var(--void)}
+.choice:focus-visible,.btn:focus-visible,.media-toggle:focus-visible{outline:2px solid var(--core);outline-offset:3px}
+.reads{display:grid;gap:10px;margin:6px 0 16px;max-width:34em}
+.reads a,.reads div{display:block;border:1px solid var(--line);border-radius:3px;padding:11px 14px;text-decoration:none;background:var(--deep)}
+.reads a:hover{border-color:var(--core)}
+.reads b{display:block;font:800 19px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--bone);margin-bottom:3px}
+.reads span{font-size:15px;color:var(--text)}
+
+/* bottom nav */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px 16px}
+.btn{font:800 18px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;padding:13px 26px;border-radius:3px;cursor:pointer;
+  background:var(--deep);color:var(--bone);border:1px solid var(--line)}
+.btn:hover{border-color:var(--dust)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.next{background:var(--core);color:var(--void);border-color:var(--core)}
+.btn.next:hover{filter:brightness(1.1)}
+.keys{font:500 12px/1 var(--mono);color:var(--dust);letter-spacing:.06em}
+.mid{display:flex;align-items:center;gap:16px}
+
+@media (max-width:860px){
+  .main{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);align-items:start;gap:16px}
+  .stage{max-height:none}
+  .top{flex-wrap:wrap;gap:10px 16px;align-items:center}
+  .progress{order:3;flex-basis:100%;gap:6px}
+  .act-name{display:none}
+  .brand{font-size:22px}
+  .copy h2{font-size:clamp(34px,9vw,52px);margin-bottom:12px}
+  .copy p{font-size:16.5px}
+  .copy .hit{font-size:18px}
+  .keys{display:none}
+  .btn{padding:12px 20px;flex:1}
+}
+
+/* scene palette */
+.f-void{fill:var(--void)} .f-deep{fill:var(--deep)} .f-rock{fill:var(--rock)} .f-rock2{fill:var(--rock2)} .f-line{fill:var(--line)}
+.f-bone{fill:var(--bone)} .f-dust{fill:var(--dust)} .f-core{fill:var(--core)} .f-rust{fill:var(--rust)} .f-ochre{fill:var(--ochre)} .f-colony{fill:var(--colony)}
+.s-bone{stroke:var(--bone)} .s-dust{stroke:var(--dust)} .s-core{stroke:var(--core)} .s-rust{stroke:var(--rust)} .s-ochre{stroke:var(--ochre)} .s-line{stroke:var(--line)} .s-colony{stroke:var(--colony)}
+.k-bone{color:var(--bone)} .k-dust{color:var(--dust)} .k-core{color:var(--core)} .k-rust{color:var(--rust)} .k-ochre{color:var(--ochre)} .k-colony{color:var(--colony)} .k-rock2{color:var(--rock2)} .k-void{color:var(--void)}
+.lbl{font:500 22px var(--mono);letter-spacing:.08em;fill:var(--dust)}
+.lbl-d{font:800 34px var(--display);letter-spacing:.08em;fill:var(--bone)}
+.call{font:italic 400 30px var(--serif);fill:var(--core)}
+.nofill{fill:none}
+
+/* scene motion: every element rests in its final state, the animation only brings it there */
+.scene{animation:fadeIn .6s both}
+.fade{animation:fadeIn var(--du,.9s) ease var(--t,0s) both}
+.rise{animation:rise var(--du,.9s) cubic-bezier(.2,.7,.2,1) var(--t,0s) both}
+.drop{animation:drop var(--du,2.2s) cubic-bezier(.15,.6,.25,1) var(--t,0s) both}
+.grow{transform-box:fill-box;transform-origin:center;animation:grow var(--du,.6s) cubic-bezier(.2,.8,.3,1.25) var(--t,0s) both}
+.growy{transform-box:fill-box;transform-origin:50% 100%;animation:growY var(--du,.7s) ease-out var(--t,0s) both}
+.draw{stroke-dasharray:1;animation:draw var(--du,1.4s) ease-in-out var(--t,0s) both}
+.flow{stroke-dasharray:6 10;animation:flow var(--du,1.1s) linear infinite}
+.pulse{animation:pulse var(--du,2.6s) ease-in-out var(--t,0s) infinite}
+.twinkle{animation:twinkle 3.4s ease-in-out var(--t,0s) infinite}
+.flicker{animation:flicker var(--du,.6s) steps(1) var(--t,0s) infinite}
+.march{animation:march var(--du,4s) linear var(--t,0s) infinite both}
+.march1{animation:march var(--du,4s) ease-out var(--t,0s) 1 both}
+.spin{animation:spin 70s linear infinite}
+.close{transform-box:fill-box;transform-origin:center;opacity:0;animation:close 3s ease-in var(--t,0s) infinite both}
+.ring{transform-box:fill-box;transform-origin:center;opacity:0;animation:ring var(--du,2.4s) ease-out var(--t,0s) infinite both}
+.flameoff{opacity:0;animation:flameOff .7s ease var(--t,0s) both}
+.dust{transform-box:fill-box;transform-origin:center;opacity:0;animation:dust 1.8s ease-out var(--t,0s) both}
+.glimpse{opacity:0;animation:glimpse var(--du,3.2s) ease var(--t,0s) both}
+.drift{opacity:0;animation:drift 4.2s ease-out var(--t,0s) infinite both}
+.sweep{animation:sweep 3.6s ease-in-out infinite alternate}
+.darken{opacity:.15;animation:darken .5s steps(2) var(--t,0s) both}
+.shell{stroke-dasharray:.05 1.2;animation:shell var(--du,1.6s) linear var(--t,0s) infinite both}
+.flash{transform-box:fill-box;transform-origin:center;opacity:0;animation:flash var(--du,1.6s) ease-out var(--t,0s) both}
+.cap{transform-box:fill-box;transform-origin:50% 100%;animation:cap 2.4s cubic-bezier(.2,.7,.2,1) var(--t,0s) both}
+.descend{transform:translateY(-600px);animation:descend 7s cubic-bezier(.55,.05,.35,1) .4s both}
+.depth{transform:translateY(380px);animation:descend 7s cubic-bezier(.55,.05,.35,1) .4s both}
+.dome{animation:domeOpen 1.8s cubic-bezier(.4,0,.2,1) var(--t,0s) both}
+.blink{animation:blink 1.2s steps(2) var(--t,0s) infinite}
+.inout{opacity:0;animation:inout var(--du,4s) ease var(--t,0s) both}
+.lift{animation:lift var(--du,2.6s) cubic-bezier(.2,.7,.2,1) var(--t,0s) both}
+.bob{animation:bob var(--du,5s) ease-in-out var(--t,0s) infinite alternate}
+.g-proc,.g-return,.g-held{display:none}
+.accepted .g-proc,.accepted .g-return{display:inline}
+.refused .g-held{display:inline}
+.accepted .g-waves{animation:fadeOut 1.2s ease .3s both}
+
+@keyframes fadeIn{from{opacity:0}}
+@keyframes fadeOut{to{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes drop{from{transform:translateY(var(--dy,-330px))}}
+@keyframes grow{from{transform:scale(0);opacity:0}}
+@keyframes growY{from{transform:scaleY(0)}}
+@keyframes draw{from{stroke-dashoffset:1}}
+@keyframes flow{to{stroke-dashoffset:-32}}
+@keyframes pulse{50%{opacity:.35}}
+@keyframes twinkle{50%{opacity:.08}}
+@keyframes flicker{0%{opacity:1}20%{opacity:.15}40%{opacity:.9}55%{opacity:0}70%{opacity:.8}}
+@keyframes march{from{transform:translate(var(--dx,0),var(--dy,0));opacity:0}10%{opacity:1}86%{opacity:1}to{transform:translate(0,0);opacity:var(--end,0)}}
+@keyframes spin{to{transform:translateX(var(--w))}}
+@keyframes close{from{transform:scale(1);opacity:0}25%{opacity:.85}to{transform:scale(.04);opacity:0}}
+@keyframes ring{from{transform:scale(.2);opacity:.9}to{transform:scale(1.7);opacity:0}}
+@keyframes flameOff{from{opacity:1}to{opacity:0}}
+@keyframes dust{from{transform:scale(.2);opacity:0}35%{opacity:.5}to{transform:scale(1.5);opacity:0}}
+@keyframes glimpse{0%{opacity:0}18%{opacity:1}70%{opacity:1}74%{opacity:0}100%{opacity:0}}
+@keyframes drift{from{transform:translateY(24px);opacity:0}30%{opacity:.95}to{transform:translateY(-44px);opacity:0}}
+@keyframes sweep{from{transform:rotate(-8deg)}to{transform:rotate(6deg)}}
+@keyframes darken{from{opacity:1}to{opacity:.15}}
+@keyframes shell{from{stroke-dashoffset:1.1}to{stroke-dashoffset:-.05}}
+@keyframes flash{from{transform:scale(.05);opacity:1}30%{opacity:.9}to{transform:scale(1.6);opacity:0}}
+@keyframes cap{from{transform:translateY(110px) scale(.2);opacity:0}}
+@keyframes descend{from{transform:translateY(0)}}
+@keyframes domeOpen{from{transform:rotate(0)}}
+@keyframes blink{50%{opacity:.15}}
+@keyframes inout{0%{opacity:0}18%{opacity:1}80%{opacity:1}100%{opacity:0}}
+@keyframes lift{from{transform:translateY(var(--dy,140px))}}
+@keyframes bob{from{transform:translateY(300px)}}
+
+/* motion follows the system's reduce-motion setting until the viewer flips the switch */
+.still .stage *,.still .stage,.still .copy>*{animation:none!important}
+.motion{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dust);background:none;border:1px solid var(--line);
+  border-radius:3px;padding:7px 9px;cursor:pointer}
+.motion:hover{color:var(--bone)}
+.motion:focus-visible{outline:2px solid var(--core);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<!-- shared drawings: figures are drawn with feet at 0,0 in currentColor -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glow-big" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+    <radialGradient id="g-core"><stop offset="0" style="stop-color:var(--core);stop-opacity:1"/><stop offset=".4" style="stop-color:var(--core);stop-opacity:.42"/><stop offset="1" style="stop-color:var(--core);stop-opacity:0"/></radialGradient>
+    <radialGradient id="g-ochre"><stop offset="0" style="stop-color:var(--ochre);stop-opacity:.9"/><stop offset="1" style="stop-color:var(--ochre);stop-opacity:0"/></radialGradient>
+    <radialGradient id="g-atmo"><stop offset=".8" style="stop-color:var(--core);stop-opacity:0"/><stop offset=".865" style="stop-color:var(--core);stop-opacity:.38"/><stop offset="1" style="stop-color:var(--core);stop-opacity:0"/></radialGradient>
+    <radialGradient id="g-planet" cx=".36" cy=".34" r=".8"><stop offset="0" style="stop-color:var(--rock2)"/><stop offset=".6" style="stop-color:var(--rock)"/><stop offset="1" style="stop-color:var(--void)"/></radialGradient>
+    <linearGradient id="g-term" x1="0" x2="1"><stop offset=".42" style="stop-color:var(--void);stop-opacity:0"/><stop offset="1" style="stop-color:var(--void);stop-opacity:.93"/></linearGradient>
+    <linearGradient id="g-night" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--void)"/><stop offset="1" style="stop-color:var(--deep)"/></linearGradient>
+    <linearGradient id="g-dusk" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--void)"/><stop offset=".62" style="stop-color:var(--rock)"/><stop offset="1" style="stop-color:var(--ochre);stop-opacity:.55"/></linearGradient>
+    <linearGradient id="g-red" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--void)"/><stop offset=".55" style="stop-color:var(--rock)"/><stop offset="1" style="stop-color:var(--rust);stop-opacity:.75"/></linearGradient>
+    <linearGradient id="g-dawn" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--deep)"/><stop offset=".7" style="stop-color:var(--rock2)"/><stop offset="1" style="stop-color:var(--ochre);stop-opacity:.6"/></linearGradient>
+    <linearGradient id="g-light" x1="0" y1="0" x2="1" y2=".4"><stop offset="0" style="stop-color:var(--bone);stop-opacity:.34"/><stop offset="1" style="stop-color:var(--bone);stop-opacity:0"/></linearGradient>
+    <linearGradient id="g-flame" x1="0" x2="1"><stop offset="0" style="stop-color:var(--bone);stop-opacity:.95"/><stop offset=".3" style="stop-color:var(--ochre)"/><stop offset="1" style="stop-color:var(--rust);stop-opacity:0"/></linearGradient>
+    <linearGradient id="g-stem" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--ochre)"/><stop offset="1" style="stop-color:var(--rust);stop-opacity:.4"/></linearGradient>
+    <linearGradient id="g-glowup" x1="0" x2="0" y1="1" y2="0"><stop offset="0" style="stop-color:var(--core);stop-opacity:.55"/><stop offset="1" style="stop-color:var(--core);stop-opacity:0"/></linearGradient>
+
+    <!-- a colonist soldier, 1.8 m = 36 units -->
+    <g id="p-human" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 -27 V-14" stroke-width="5.4"/>
+      <path d="M0 -14 L-3 0 M0 -14 L3 0" stroke-width="3.2"/>
+      <path d="M0 -25 L-4 -15 M0 -25 L4 -17 L9 -20" stroke-width="2.4"/>
+      <circle cx="0" cy="-31.5" r="3.8" fill="currentColor" stroke="none"/>
+    </g>
+    <!-- an ancient: 2.5 m = 50 units, slender, long hands -->
+    <g id="p-ancient" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 -41 V-23" stroke-width="3.2"/>
+      <path d="M0 -23 L-2.6 -11 L-3 0 M0 -23 L2.2 -11 L3 0" stroke-width="2"/>
+      <path d="M-1 -39 L-4.5 -27 L-5.5 -15 M1 -39 L4.5 -27 L5.5 -15" stroke-width="1.6"/>
+      <path d="M-5.5 -15 l-1 4.6 M-5.5 -15 l.4 4.9 M5.5 -15 l1 4.6 M5.5 -15 l-.4 4.9" stroke-width="1"/>
+      <ellipse cx="0" cy="-45.5" rx="2.4" ry="4" fill="currentColor" stroke="none"/>
+    </g>
+    <!-- a Given, standing: hunched, head forward, arms to the knees, crystal along the spine -->
+    <g id="p-given-stand" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-3 -18 Q-3 -33 6 -36" stroke-width="3.4"/>
+      <path d="M-3 -18 L1 -9 L-2 0 M-3 -18 L-6 -9 L-4 0" stroke-width="2"/>
+      <path d="M4 -34 L7 -22 L9 -9 M3 -34 L3 -22 L5 -10" stroke-width="1.5"/>
+      <path d="M9 -9 l0 6 M9 -9 l2 5.5 M5 -10 l-.5 6 M5 -10 l1.8 5.5" stroke-width=".9"/>
+      <ellipse cx="10" cy="-37" rx="3.4" ry="2.6" fill="currentColor" stroke="none" transform="rotate(25 10 -37)"/>
+      <path d="M-2.4 -21 Q-2.6 -30 3 -34" stroke-width="1.1" style="stroke:var(--core)" stroke-dasharray="1.6 2.4" filter="url(#glow)"/>
+    </g>
+    <!-- a Given, running on all fours, facing right -->
+    <g id="p-given-run" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-15 -13 Q-2 -19 12 -14" stroke-width="3.4"/>
+      <path d="M-14 -13 L-20 -6 L-19 0 M-13 -13 L-11 -6 L-14 0" stroke-width="2"/>
+      <path d="M10 -15 L18 -8 L24 0 M8 -15 L12 -7 L15 0" stroke-width="1.6"/>
+      <path d="M24 0 l3 -.5 M24 0 l2.4 1.2 M15 0 l3 -.3" stroke-width=".9"/>
+      <ellipse cx="17" cy="-13" rx="3.6" ry="2.5" fill="currentColor" stroke="none"/>
+      <path d="M-12 -14.6 Q-2 -19 9 -15.6" stroke-width="1.1" style="stroke:var(--core)" stroke-dasharray="1.6 2.4" filter="url(#glow)"/>
+    </g>
+    <!-- the planet's own beast: six legs, carapace, eyes that see -->
+    <g id="p-beast">
+      <path d="M-15 -9 Q-14 -19 0 -19 Q12 -19 15 -10 Q8 -6 -15 -9Z" fill="currentColor"/>
+      <path d="M14 -13 q6 -1 8 3 q-3 3 -8 1z" fill="currentColor"/>
+      <path d="M-11 -9 l-5 9 M-8 -9 l-1 9 M-2 -8 l-3 8 M1 -8 l2 8 M8 -9 l2 9 M10 -9 l6 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M-9 -16 q4 -2 8 -2 M2 -18 q4 0 8 3" stroke="var(--void)" style="stroke:var(--void)" stroke-width="1" fill="none" opacity=".6"/>
+      <circle cx="19.5" cy="-11" r="1" style="fill:var(--bone)"/>
+    </g>
+    <!-- a brute: the armoured native beast that breaks walls -->
+    <g id="p-brute">
+      <path d="M-22 -10 Q-20 -31 0 -31 Q18 -31 24 -14 Q10 -8 -22 -10Z" fill="currentColor"/>
+      <path d="M-12 -28 l-2 -6 M-3 -31 l-1 -6 M7 -30 l1 -6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M21 -19 q10 -2 13 6 q-5 5 -13 0z" fill="currentColor"/>
+      <path d="M-16 -10 l-4 10 M-6 -9 l-1 9 M6 -9 l2 9 M16 -11 l4 11" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+      <circle cx="30" cy="-13" r="1.2" style="fill:var(--bone)"/>
+    </g>
+    <!-- an ancient machine guardian -->
+    <g id="p-guardian">
+      <path d="M-11 -20 L-16 0 M11 -20 L16 0" stroke="currentColor" stroke-width="4.4" stroke-linecap="round"/>
+      <path d="M-14 -46 L14 -46 L18 -30 L10 -18 L-10 -18 L-18 -30Z" fill="currentColor"/>
+      <path d="M-17 -40 L-25 -24 M17 -40 L25 -24" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+      <rect x="-7" y="-59" width="14" height="11" rx="1.5" fill="currentColor"/>
+      <rect x="-5" y="-55" width="10" height="2.6" style="fill:var(--core)" filter="url(#glow)"/>
+    </g>
+    <!-- a turret, side view, barrel to the right -->
+    <g id="p-turret">
+      <path d="M-9 0 L-6 -10 L6 -10 L9 0Z" fill="currentColor"/>
+      <rect x="-6.5" y="-18" width="13" height="9" rx="2" fill="currentColor"/>
+      <path d="M5 -14.5 H21" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <!-- a dropship, side view -->
+    <g id="p-ship">
+      <path d="M-46 -8 L-30 -20 L28 -20 L48 -6 L28 4 L-30 4Z" fill="currentColor"/>
+      <path d="M-20 -20 L-10 -30 L14 -30 L22 -20Z" fill="currentColor"/>
+      <path d="M-26 4 L-32 14 M24 4 L30 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      <rect x="-6" y="-27" width="14" height="3" style="fill:var(--colony)" opacity=".8"/>
+    </g>
+  </defs>
+</svg>
+
+<div class="app" id="app">
+  <header class="top">
+    <div class="brand" aria-label="Orbis">ORBIS</div>
+    <nav class="progress" id="progress" aria-label="Steps"></nav>
+    <div class="count" id="count" aria-live="polite"></div>
+  </header>
+  <main class="main" id="main">
+    <figure class="stage" id="stage"></figure>
+    <section class="copy" id="copy"></section>
+  </main>
+  <footer class="nav">
+    <button class="btn" id="prev" type="button">Back</button>
+    <span class="mid"><span class="keys">← → keys · swipe on a phone</span><button class="motion" id="motion" type="button" aria-pressed="true">Motion on</button></span>
+    <button class="btn next" id="next" type="button">Next</button>
+  </footer>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+// ---------- small helpers for drawing ----------
+const rng = seed => { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; };
+const n1 = v => Math.round(v * 10) / 10;
+const st = o => Object.entries(o).map(([k, v]) => `--${k}:${v}`).join(";");
+
+function stars(count, seed, h = 500) {
+  const r = rng(seed); let s = "";
+  for (let i = 0; i < count; i++) {
+    const tw = r() < .3;
+    s += `<circle cx="${n1(r() * 800)}" cy="${n1(r() * h)}" r="${n1(.5 + r() * 1.1)}" class="f-bone${tw ? " twinkle" : ""}" opacity="${n1(.2 + r() * .6)}" style="--t:${n1(r() * 3)}s"/>`;
+  }
+  return s;
+}
+// a figure from the shared drawings; flip mirrors it to face left
+const fig = (id, x, y, s = 1, cls = "k-bone", flip = false) =>
+  `<use href="#${id}" class="${cls}" transform="translate(${x} ${y}) scale(${flip ? -s : s} ${s})"/>`;
+const lbl = (x, y, t, cls = "", anchor = "middle", style = "") =>
+  `<text x="${x}" y="${y}" class="lbl ${cls}" text-anchor="${anchor}" style="${style}">${t}</text>`;
+const bg = cls => `<rect width="800" height="500" class="${cls}"/>`;
+const bgg = id => `<rect width="800" height="500" fill="url(#${id})"/>`;
+
+// a turning planet: the surface is a strip of land that scrolls under a fixed circle
+function planet(cx, cy, R, key, seed = 7) {
+  const r = rng(seed), W = 2 * R; let tile = "";
+  for (let k = 0; k < 16; k++) {
+    tile += `<ellipse cx="${n1(cx - R + r() * W)}" cy="${n1(cy - R * .85 + r() * R * 1.7)}" rx="${n1(R * (.08 + r() * .22))}" ry="${n1(R * (.04 + r() * .09))}" class="f-rock2" opacity="${n1(.5 + r() * .5)}"/>`;
+  }
+  for (let k = 0; k < 14; k++) {
+    const y = cy - R * .92 + r() * R * 1.84, pol = Math.abs(y - cy) / R;
+    tile += `<path d="M${n1(cx - R + r() * W)} ${n1(y)} l${n1(6 + r() * 14)} ${n1(-4 + r() * 8)} l${n1(5 + r() * 10)} ${n1(-6 + r() * 12)}" class="s-core nofill" stroke-width="1.3" opacity="${n1(.2 + pol * .7)}"/>`;
+  }
+  const id = `tile-${key}`;
+  return `<defs><clipPath id="cp-${key}"><circle cx="${cx}" cy="${cy}" r="${R}"/></clipPath></defs>
+    <circle cx="${cx}" cy="${cy}" r="${n1(R * 1.16)}" fill="url(#g-atmo)"/>
+    <g clip-path="url(#cp-${key})">
+      <circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#g-planet)"/>
+      <g class="spin" style="--w:${-W}px"><g id="${id}">${tile}</g><use href="#${id}" x="${W}"/><use href="#${id}" x="${-W}"/><use href="#${id}" x="${2 * W}"/></g>
+      <ellipse cx="${cx}" cy="${n1(cy - R * .95)}" rx="${n1(R * .55)}" ry="${n1(R * .13)}" fill="url(#g-core)" opacity=".55"/>
+      <ellipse cx="${cx}" cy="${n1(cy + R * .95)}" rx="${n1(R * .55)}" ry="${n1(R * .13)}" fill="url(#g-core)" opacity=".55"/>
+      <circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#g-term)"/>
+    </g>
+    <circle cx="${cx}" cy="${cy}" r="${R}" class="s-core nofill" stroke-width="1" opacity=".3"/>`;
+}
+
+// ---------- the scenes, one per step ----------
+const SCENES = {
+  hook() {
+    const sx = 345, sy = 232;
+    let rings = "";
+    for (let i = 0; i < 4; i++) rings += `<circle cx="${sx}" cy="${sy}" r="150" class="s-rust nofill close" stroke-width="2.2" style="--t:${i * .75}s"/>`;
+    return bg("f-void") + stars(90, 3) + planet(400, 250, 168, "hook") + rings +
+      `<circle cx="${sx}" cy="${sy}" r="16" class="s-colony nofill ring" stroke-width="1.5" style="--du:2s"/>
+       <circle cx="${sx}" cy="${sy}" r="4" class="f-colony" filter="url(#glow)"/>
+       ${lbl(sx - 26, sy - 22, "YOU", "", "end", "fill:var(--colony)")}`;
+  },
+  substance() {
+    const cx = 400, cy = 250, r = rng(11); let lines = "", crys = "";
+    for (let i = 0; i < 18; i++) {
+      const a = i / 18 * Math.PI * 2 + .1, c = Math.cos(a), s = Math.sin(a);
+      lines += `<path d="M${n1(cx + c * 58)} ${n1(cy + s * 58)} L${n1(cx + c * 176)} ${n1(cy + s * 176)}" class="s-core flow nofill" stroke-width="2" opacity=".55" style="--du:${n1(1 + r() * .6)}s"/>`;
+    }
+    let k = 0;
+    for (let i = 0; i < 240 && k < 64; i++) {
+      const a = r() * Math.PI * 2, w = Math.abs(Math.sin(a));
+      if (r() > .12 + .88 * w * w) continue;
+      const rad = 166 + r() * 34, x = cx + Math.cos(a) * rad, y = cy + Math.sin(a) * rad, sc = n1(.7 + r() * .8);
+      crys += `<g transform="translate(${n1(x)} ${n1(y)}) rotate(${n1(a * 57.3 + 90)}) scale(${sc})"><polygon points="0,-8 3.2,0 0,5 -3.2,0" class="f-core grow" filter="url(#glow)" style="--t:${n1(.6 + k * .04)}s"/></g>`;
+      k++;
+    }
+    return bg("f-void") + stars(50, 5) +
+      `<circle cx="${cx}" cy="${cy}" r="206" class="f-rock2"/>
+       <circle cx="${cx}" cy="${cy}" r="186" class="f-rock"/>
+       <circle cx="${cx}" cy="${cy}" r="120" fill="url(#g-core)" class="pulse" opacity=".6"/>
+       <circle cx="${cx}" cy="${cy}" r="40" class="f-core" filter="url(#glow-big)"/>
+       ${lines}${crys}
+       ${lbl(400, 30, "RICHEST AT THE POLES", "", "middle", "fill:var(--core)")}
+       ${lbl(400, 488, "RICHEST AT THE POLES", "", "middle", "fill:var(--core)")}
+       ${lbl(30, 240, "ENERGY RISES", "", "start")}${lbl(30, 268, "FROM THE CORE", "", "start")}
+       ${lbl(770, 240, "HARDENS INTO", "", "end")}${lbl(770, 268, "CRYSTAL", "", "end", "fill:var(--core)")}`;
+  },
+  reasons() {
+    const shipPath = "M190 236 C 320 110, 520 120, 640 196", colPath = "M190 268 C 320 390, 520 384, 640 304";
+    return bg("f-void") + stars(70, 9) +
+      `<circle cx="880" cy="250" r="240" class="f-rock"/>
+       <circle cx="880" cy="250" r="240" class="s-core nofill" stroke-width="1.5" opacity=".45" filter="url(#glow)"/>
+       <circle cx="120" cy="252" r="64" class="f-rust" opacity=".32"/>
+       <circle cx="120" cy="252" r="64" class="s-rust nofill pulse" stroke-width="1.4" opacity=".7"/>
+       <path d="M80 220 l18 14 l-6 18 l22 10 M140 206 l-8 26 l18 18 M100 290 l26 -12 l16 12" class="s-dust nofill" stroke-width="1.4" opacity=".6"/>
+       ${lbl(120, 350, "HOME, FAILING")}
+       <path d="${shipPath}" class="s-dust nofill" stroke-width="1.2" stroke-dasharray="3 7" opacity=".6"/>
+       <path d="${colPath}" class="s-dust nofill" stroke-width="1.2" stroke-dasharray="3 7" opacity=".6"/>
+       <g opacity="0"><set attributeName="opacity" to="1" begin=".3s" fill="freeze"/>
+         <g><g transform="scale(.6)"><use href="#p-ship" class="k-dust"/><rect x="-30" y="-8" width="56" height="4" style="fill:var(--rust)"/></g>
+         <animateMotion dur="4.6s" begin=".3s" fill="freeze" path="${shipPath}" rotate="auto" calcMode="spline" keyTimes="0;1" keySplines=".3 0 .3 1"/></g></g>
+       <g opacity="0"><set attributeName="opacity" to="1" begin=".8s" fill="freeze"/>
+         <g><g transform="scale(.75)"><path d="M-50 -8 L-38 -16 L40 -16 L52 -6 L40 4 L-38 4Z" class="f-dust"/>${[-28, -18, -8, 2, 12, 22, 32].map(x => `<rect x="${x}" y="-9" width="5" height="4" class="f-colony"/>`).join("")}</g>
+         <animateMotion dur="5.4s" begin=".8s" fill="freeze" path="${colPath}" rotate="auto" calcMode="spline" keyTimes="0;1" keySplines=".3 0 .3 1"/></g></g>
+       ${lbl(400, 110, "THE COMPANY: THE PRIZE", "", "middle", "fill:var(--rust)")}
+       ${lbl(400, 432, "THE COLONISTS: A WAY OUT", "", "middle", "fill:var(--colony)")}
+       <g class="grow" style="--t:5.6s;--du:.5s"><g transform="rotate(-7 690 74)">
+         <rect x="570" y="46" width="214" height="58" class="nofill s-bone" stroke-width="2.4"/>
+         <text x="677" y="70" class="lbl" text-anchor="middle" style="fill:var(--bone);font-size:17px">SURVEY</text>
+         <text x="677" y="95" class="lbl-d" text-anchor="middle" style="font-size:27px">QUIET. SAFE.</text></g></g>`;
+  },
+  landing() {
+    const r = rng(21); let beasts = "";
+    for (let i = 0; i < 6; i++) {
+      const y = 386 + n1(r() * 10), x = 210 + n1(r() * 40);
+      beasts += `<g class="march" style="${st({ dx: `-${x - 90}px`, t: `${n1(4.8 + i * .7)}s`, du: "5s" })}">${fig("p-beast", x, y, .9 + r() * .3, "k-ochre")}</g>`;
+    }
+    for (let i = 0; i < 6; i++) {
+      const y = 386 + n1(r() * 10), x = 560 + n1(r() * 40);
+      beasts += `<g class="march" style="${st({ dx: `${720 - x}px`, t: `${n1(5.1 + i * .7)}s`, du: "5s" })}">${fig("p-beast", x, y, .9 + r() * .3, "k-ochre", true)}</g>`;
+    }
+    beasts += `<g class="march" style="${st({ dx: "150px", t: "6.4s", du: "8s" })}">${fig("p-brute", 590, 392, 1.3, "k-ochre", true)}</g>`;
+    const tower = x => `<path d="M${x} 362 L${x - 3} 232 Q${x} 214 ${x + 3} 232 L${x + 4} 362Z" class="f-rock2"/><ellipse cx="${x}" cy="226" rx="9" ry="6" class="f-rock2"/>
+      <ellipse cx="${x + 10}" cy="214" rx="34" ry="12" class="f-dust drift" filter="url(#blur)" opacity=".3" style="--t:${n1(x / 300)}s"/>`;
+    return bgg("g-dusk") + stars(40, 13, 220) +
+      `<path d="M0 352 Q120 318 240 344 T480 336 T800 340 V500 H0Z" class="f-rock2" opacity=".8"/>
+       ${tower(80)}${tower(160)}${tower(660)}${tower(732)}
+       <rect y="380" width="800" height="120" class="f-rock"/>
+       <path d="M18 382 Q70 334 132 382Z" class="f-rock2"/><ellipse cx="76" cy="378" rx="20" ry="7" class="f-void"/>
+       <path d="M668 382 Q722 330 788 382Z" class="f-rock2"/><ellipse cx="728" cy="378" rx="22" ry="7" class="f-void"/>
+       ${lbl(76, 430, "DENS")}${lbl(728, 430, "HIVES")}
+       <rect width="800" height="500" class="f-void fade" opacity=".5" style="--t:3.6s;--du:1.6s"/>
+       <ellipse cx="400" cy="384" rx="130" ry="13" class="f-dust dust" style="--t:1.8s"/>
+       <g class="growy" style="--t:2.7s"><rect x="300" y="348" width="46" height="32" class="f-dust" opacity=".8"/><rect x="306" y="356" width="8" height="5" class="f-colony"/><rect x="322" y="356" width="8" height="5" class="f-colony"/></g>
+       <g class="growy" style="--t:3s"><rect x="456" y="336" width="34" height="44" class="f-dust" opacity=".8"/><rect x="463" y="344" width="7" height="5" class="f-colony"/><rect x="476" y="356" width="7" height="5" class="f-colony"/></g>
+       <g class="growy" style="--t:3.3s"><path d="M352 380 V350 M352 350 l10 -4" class="s-dust" stroke-width="3"/><rect x="498" y="360" width="30" height="20" class="f-dust" opacity=".7"/></g>
+       <polygon points="362,347 250,382 150,382" fill="url(#g-light)" class="fade" style="--t:4.2s" opacity=".7"/>
+       <g class="drop" style="--t:.2s;--du:2.4s">
+         <g class="flameoff" style="--t:2.5s"><ellipse cx="372" cy="388" rx="6" ry="16" class="f-ochre flicker" filter="url(#glow)"/><ellipse cx="428" cy="388" rx="6" ry="16" class="f-ochre flicker" filter="url(#glow)" style="--t:.2s"/></g>
+         ${fig("p-ship", 400, 368, 1, "k-dust")}
+       </g>
+       ${beasts}`;
+  },
+  build() {
+    const cx = 380, cy = 250, R = 150, V = [];
+    for (let k = 0; k < 8; k++) { const a = (22.5 + k * 45) * Math.PI / 180; V.push([n1(cx + R * Math.cos(a)), n1(cy + R * Math.sin(a))]); }
+    // wall: every edge except the east one, which holds the gate
+    let wall = `M${V[0][0]} ${V[0][1]}`; for (let k = 1; k < 8; k++) wall += ` L${V[k][0]} ${V[k][1]}`;
+    const gx = V[0][0];
+    const G = [300, 250], N1 = [380, 172], N2 = [380, 328];
+    const line = (a, b, cls = "") => `<path d="M${a[0]} ${a[1]} L${b[0]} ${b[1]}" class="s-core flow nofill ${cls}" stroke-width="2.2" opacity=".75"/>`;
+    const turret = (p, out = true) => { const ang = Math.atan2(p[1] - cy, p[0] - cx); return `<circle cx="${p[0]}" cy="${p[1]}" r="9" class="f-dust"/><path d="M${p[0]} ${p[1]} l${n1(Math.cos(ang) * 17)} ${n1(Math.sin(ang) * 17)}" class="s-dust" stroke-width="3.4" stroke-linecap="round"/><circle cx="${p[0]}" cy="${p[1]}" r="3" class="f-core"/>`; };
+    const up = [V[5], V[6], V[7], V[4], V[3]], down = [V[0], V[1], V[2]];
+    const gateT = [[gx + 10, 214], [gx + 10, 286]];
+    const r = rng(31); let swarm = "", tr = "";
+    for (let i = 0; i < 26; i++) swarm += `<g class="march" style="${st({ dx: `${n1(250 + r() * 60)}px`, t: `${n1(r() * 4)}s`, du: `${n1(3 + r())}s` })}"><circle cx="${n1(gx + 26 + r() * 20)}" cy="${n1(232 + r() * 36)}" r="3.4" class="f-ochre"/></g>`;
+    for (let i = 0; i < 16; i++) swarm += `<g class="march" style="${st({ dx: `${n1(230 + r() * 50)}px`, dy: "70px", t: `${n1(6.8 + r() * 4)}s`, du: `${n1(3 + r())}s`, end: 1 })}"><circle cx="${n1(V[0][0] + 6 + r() * 26)}" cy="${n1(V[0][1] + 14 + r() * 26)}" r="3.4" class="f-ochre"/></g>`;
+    for (const [i, t] of gateT.entries()) tr += `<path d="M${t[0] + 8} ${t[1]} L${gx + 60} ${250 + (i ? 10 : -10)}" class="s-bone flicker" stroke-width="1.4" style="--t:${i * .2}s;--du:.35s"/>`;
+    let homes = "";
+    for (const [x, y] of [[332, 196], [432, 196], [440, 300], [326, 300], [380, 312], [380, 180]]) homes += `<rect x="${x - 10}" y="${y - 7}" width="20" height="14" class="f-rock2"/><rect x="${x - 3}" y="${y - 2}" width="6" height="4" class="f-colony"/>`;
+    return bg("f-rock") +
+      `<path d="${wall}" class="s-dust nofill draw" stroke-width="8" stroke-linejoin="round" pathLength="1" style="--du:1.6s"/>
+       <path d="M${gx} ${V[7][1]} L${gx} 232 M${gx} 268 L${gx} ${V[0][1]}" class="s-dust" stroke-width="8"/>
+       <rect x="${gx - 4}" y="232" width="8" height="36" class="f-ochre" opacity=".7"/>
+       <rect x="355" y="225" width="50" height="50" class="f-dust"/><rect x="366" y="236" width="28" height="28" class="f-rock2"/>
+       ${homes}
+       <g class="fade" style="--t:1.4s">
+         ${line(G, N1)}${line(N1, V[5])}${line(N1, V[6])}${line(N1, V[7])}${line(G, V[4])}${line(G, V[3])}${line(N1, gateT[0])}
+         <g class="darken" style="--t:6.2s">${line(G, N2)}${line(N2, V[0])}${line(N2, V[1])}${line(N2, V[2])}${line(N2, gateT[1])}</g>
+       </g>
+       <circle cx="${G[0]}" cy="${G[1]}" r="16" class="f-rock2 s-core" stroke-width="2"/><circle cx="${G[0]}" cy="${G[1]}" r="7" class="f-core pulse" filter="url(#glow)"/>
+       <rect x="${N1[0] - 6}" y="${N1[1] - 6}" width="12" height="12" class="f-core"/>
+       <rect x="${N2[0] - 6}" y="${N2[1] - 6}" width="12" height="12" class="f-core"/>
+       ${up.map(p => turret(p)).join("")}${turret(gateT[0])}
+       <g>${down.map(p => turret(p)).join("")}${turret(gateT[1])}</g>
+       <g class="darken" style="--t:6.2s">${down.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="3" class="f-core"/>`).join("")}</g>
+       <g class="fade" style="--t:6s;--du:.3s"><path d="M${N2[0] - 11} ${N2[1] - 11} l22 22 M${N2[0] + 11} ${N2[1] - 11} l-22 22" class="s-rust" stroke-width="4" stroke-linecap="round"/>
+         <path d="M${N2[0]} ${N2[1] + 14} V${N2[1] + 100}" class="s-rust" stroke-width="1.2" stroke-dasharray="3 4"/>
+         ${lbl(N2[0], N2[1] + 124, "ONE NODE CUT: DARK", "", "middle", "fill:var(--rust)")}</g>
+       <g><path d="M640 92 l16 9 v18 l-16 9 l-16 -9 v-18z" class="f-rock2 s-core" stroke-width="1.6"/><polygon points="640,100 645,111 640,120 635,111" class="f-core pulse" filter="url(#glow)"/>
+          <path d="M668 392 l16 9 v18 l-16 9 l-16 -9 v-18z" class="f-rock2 s-core" stroke-width="1.6"/><polygon points="668,400 673,411 668,420 663,411" class="f-core pulse" filter="url(#glow)"/>
+          ${lbl(668, 62, "THE RICH GROUND", "", "middle", "fill:var(--core)")}${lbl(668, 466, "IS OUTSIDE", "", "middle", "fill:var(--core)")}</g>
+       ${tr}${swarm}`;
+  },
+  planet() {
+    const cx = 290, cy = 250, R = 185, s = 20, w = Math.sqrt(3) * s, r = rng(41);
+    const home = [cx - 40, cy + 30]; let hex = "";
+    for (let row = -8; row <= 8; row++) for (let col = -7; col <= 7; col++) {
+      const x = cx + (col + (row & 1 ? .5 : 0)) * w, y = cy + row * 1.5 * s;
+      if (Math.hypot(x - cx, y - cy) > R + 14) continue;
+      const d = Math.hypot(x - home[0], y - home[1]) / w;
+      let cls = "f-rock2", op = .55, extra = "";
+      if (d < 1.1) { cls = "f-core"; op = .5; }
+      else if (d < 2.2) { cls = "f-ochre"; op = .45; }
+      else if (d < 3.3) { if (r() < .22) { cls = "f-dust"; op = .28; } else { cls = "f-rust"; op = .55; extra = " pulse"; } }
+      let pts = ""; for (let k = 0; k < 6; k++) { const a = (60 * k - 30) * Math.PI / 180; pts += `${n1(x + s * .93 * Math.cos(a))},${n1(y + s * .93 * Math.sin(a))} `; }
+      hex += `<polygon points="${pts}" class="${cls} fade${extra}" opacity="${op}" style="--t:${n1(.2 + d * .22)}s;--du:.6s"/>`;
+    }
+    const legend = [["f-rust", "FRONTIER"], ["f-ochre", "HELD"], ["f-core", "FORTIFIED"], ["f-dust", "NEGLECTED"]]
+      .map(([c, t], i) => `<rect x="560" y="${330 + i * 34}" width="18" height="18" class="${c}" opacity=".7"/>${lbl(590, 346 + i * 34, t, "", "start")}`).join("");
+    return bg("f-void") + stars(60, 43) +
+      `<defs><clipPath id="cp-hx"><circle cx="${cx}" cy="${cy}" r="${R}"/></clipPath></defs>
+       <circle cx="${cx}" cy="${cy}" r="${n1(R * 1.16)}" fill="url(#g-atmo)"/>
+       <circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#g-planet)"/>
+       <g clip-path="url(#cp-hx)">${hex}<circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#g-term)"/></g>
+       <circle cx="${cx}" cy="${cy}" r="${R}" class="s-core nofill" stroke-width="1" opacity=".35"/>
+       <path d="M${home[0]} ${home[1]} L560 110" class="s-bone nofill draw" stroke-width="1.4" pathLength="1" style="--t:1.6s;--du:.8s"/>
+       <g class="rise" style="--t:2.2s">
+         <rect x="560" y="110" width="210" height="170" class="f-rock s-line" stroke-width="2"/>
+         <path d="M665 145 l34 14 l14 34 l-14 34 l-34 14 l-34 -14 l-14 -34 l14 -34z" class="nofill s-dust" stroke-width="4"/>
+         <rect x="655" y="183" width="20" height="20" class="f-dust"/><circle cx="645" cy="160" r="3" class="f-colony"/><circle cx="690" cy="225" r="3" class="f-colony"/>
+         ${[0, 1, 2, 3, 4, 5].map(i => `<g class="march" style="${st({ dx: "50px", t: `${i * .6}s`, du: "3s" })}"><circle cx="725" cy="${180 + i * 6}" r="2.6" class="f-ochre"/></g>`).join("")}
+         ${lbl(565, 100, "THE GROUND", "", "start", "fill:var(--bone)")}
+       </g>
+       <g class="fade" style="--t:2.8s">${legend}</g>
+       <path d="M54 74 V420" class="s-line" stroke-width="2"/>
+       ${lbl(54, 58, "ORBIT")}${lbl(54, 446, "GROUND")}
+       <g class="bob" style="--du:3.5s"><polygon points="54,90 63,102 54,114 45,102" class="f-core" filter="url(#glow)"/></g>`;
+  },
+  ruins() {
+    const arch = x => `<path d="M${x} 410 V310 A28 28 0 0 1 ${x + 56} 310 V410Z" class="f-void"/>`;
+    const mural = cls => `${fig("p-ancient", 440, 382, 2, cls)}${fig("p-ancient", 480, 382, 2, cls)}${fig("p-ancient", 520, 382, 2, cls)}${fig("p-beast", 590, 382, 1.7, cls, true)}${fig("p-brute", 600, 382, 1.1, cls, true).replace("translate(600", "translate(612")}`;
+    return bgg("g-night") + stars(70, 51, 240) +
+      `<defs><mask id="m-ruin"><rect width="800" height="500" fill="#000"/><g class="sweep" style="transform-origin:228px 372px"><polygon points="228,372 790,230 790,440" fill="#fff"/></g></mask></defs>
+       <path d="M300 410 V236 L330 230 L352 240 L380 226 L420 234 L470 222 L520 236 L560 226 L610 238 L650 228 L700 236 L740 226 L760 232 V410Z" class="f-rock2"/>
+       ${arch(330)}${arch(660)}
+       <g opacity=".22">${mural("k-core")}</g>
+       <g mask="url(#m-ruin)"><g filter="url(#glow)">${mural("k-core")}</g></g>
+       <g class="fade" style="--t:2s;--du:2.4s" opacity=".18">${fig("p-ancient", 358, 410, 2, "k-bone")}</g>
+       <g class="sweep" style="transform-origin:228px 372px"><polygon points="228,372 790,230 790,440" fill="url(#g-light)" opacity=".6"/></g>
+       <rect y="410" width="800" height="90" class="f-rock"/>
+       ${fig("p-human", 210, 410, 2, "k-dust")}
+       <path d="M176 410 V338 M170 410 h12 M170 338 h12" class="s-bone" stroke-width="1.6"/>
+       ${lbl(170, 330, "YOU · 1.8 M", "", "start", "fill:var(--bone)")}
+       <path d="M396 410 V282 M390 410 h12 M390 282 h12" class="s-core" stroke-width="1.6"/>
+       ${lbl(408, 272, "THEIRS · 2.5 M", "", "start", "fill:var(--core)")}
+       <g class="fade" style="--t:4.2s;--du:1.6s">
+         <path d="M380 470 L420 446 L660 446 L700 460 L660 478 L420 478Z M470 446 l14 -10 h110 l14 10" class="s-core nofill" stroke-width="1.8" stroke-dasharray="6 5" filter="url(#glow)"/>
+         ${lbl(540, 468, "THEIR SHIP", "", "middle", "fill:var(--core);font-size:19px")}
+       </g>`;
+  },
+  pact() {
+    const path = "M335 128 L455 190 L345 255 L455 320 L350 385 L400 452";
+    let walkers = "";
+    for (let i = 0; i < 8; i++) {
+      const lead = i === 0 ? `<path d="M5 -38 V-66 l12 4.5 -12 4.5" class="s-bone nofill" stroke-width="1.6"/>` : "";
+      walkers += `<g opacity="0"><g transform="scale(.95)">${fig("p-ancient", 0, 0, 1, "k-bone")}${lead}</g>
+        <animateMotion dur="13s" begin="${n1(i * 1.5)}s" repeatCount="indefinite" path="${path}"/>
+        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.06;.82;1" dur="13s" begin="${n1(i * 1.5)}s" repeatCount="indefinite"/></g>`;
+    }
+    let towers = ""; const r = rng(61);
+    for (const x of [40, 70, 96, 150, 196, 560, 600, 640, 700, 744]) { const h = 40 + r() * 70; towers += `<rect x="${x}" y="${n1(120 - h)}" width="${n1(8 + r() * 10)}" height="${n1(h)}" class="f-rock2"/>`; }
+    return bgg("g-night") + stars(50, 63, 110) + towers +
+      `<rect y="120" width="800" height="380" class="f-rock"/>
+       <path d="M318 120 L482 120 L540 500 L260 500Z" class="f-void"/>
+       <circle cx="400" cy="512" r="190" fill="url(#g-core)" class="pulse" opacity=".85"/>
+       <path d="${path}" class="s-dust nofill" stroke-width="2" stroke-dasharray="2 5" opacity=".5"/>
+       <path d="M300 120 L330 120 L330 112 L300 112Z M470 112 L500 112 L500 120 L470 120Z" class="f-dust"/>
+       <path d="M292 120 L348 52 M348 52 L392 60 M330 120 L362 74 M508 120 L470 64 M470 64 L436 70" class="s-dust" stroke-width="2.4" opacity=".7"/>
+       ${walkers}
+       <g class="march" style="${st({ dx: "150px", t: "3s", du: "6s" })}">${fig("p-beast", 120, 120, .9, "k-ochre", true)}</g>
+       <g class="march" style="${st({ dx: "-160px", t: "3.6s", du: "6s" })}">${fig("p-beast", 700, 120, .9, "k-ochre")}</g>
+       ${lbl(600, 470, "THE HEART", "", "start", "fill:var(--core)")}<path d="M592 464 H520" class="s-core" stroke-width="1.4"/>
+       ${lbl(640, 210, "THE SHAFTS", "", "start")}<path d="M632 204 H500" class="s-dust" stroke-width="1.4"/>`;
+  },
+  tithe() {
+    const bands = [
+      ["VOLUNTEERS", "led down by their own leaders", .0],
+      ["THE CONDEMNED", "the prisons emptied downward", .07],
+      ["A LOTTERY", "names carved in the halls", .14],
+      ["BRED FOR IT", "cradles by the shafts", .24],
+    ];
+    const icons = [
+      `${fig("p-ancient", 96, 120, 1.6, "k-bone")}${fig("p-ancient", 136, 120, 1.6, "k-bone")}${fig("p-ancient", 176, 120, 1.6, "k-bone")}<path d="M222 120 V36 l26 9 -26 9" class="s-bone nofill" stroke-width="2.4"/>${fig("p-ancient", 216, 120, 1.6, "k-bone")}`,
+      `${[60, 76, 92, 108, 124, 140, 156, 172, 188, 204, 220, 236].map(x => `<path d="M${x} 140 V230" class="s-dust" stroke-width="2" opacity=".45"/>`).join("")}${[110, 150, 190].map(x => `<g transform="translate(${x} 228) rotate(6)">${fig("p-ancient", 0, 0, 1.6, "k-bone")}</g><path d="M${x - 8} ${206} h16" class="s-rust" stroke-width="2.4"/>`).join("")}`,
+      `<rect x="60" y="250" width="116" height="82" class="f-rock s-dust" stroke-width="2"/>${[0, 1, 2, 3, 4, 5].map(i => `<path d="M72 ${264 + i * 11} h${i === 3 ? 84 : 60 + (i * 17) % 34}" class="${i === 3 ? "s-rust" : "s-dust"}" stroke-width="${i === 3 ? 3 : 2}" opacity="${i === 3 ? 1 : .7}"/>`).join("")}<path d="M214 254 L204 284 M214 254 L226 284" class="s-dust" stroke-width="1.4"/><circle cx="215" cy="298" r="16" class="nofill s-ochre" stroke-width="2.6"/><path d="M209 292 l12 12 M221 292 l-12 12" class="s-ochre" stroke-width="2"/>`,
+      `${[0, 1, 2].map(rw => [0, 1, 2, 3, 4, 5].map(c => { const x = 52 + c * 34 + rw * 6, y = 372 + rw * 28; return `<path d="M${x} ${y} q11 12 22 0 M${x + 3} ${y + 6} l-2 6 M${x + 19} ${y + 6} l2 6" class="s-rust nofill" stroke-width="2" opacity="${1 - rw * .2}"/>`; }).join("")).join("")}`,
+    ];
+    let out = bg("f-void");
+    bands.forEach(([t, sub, tint], i) => {
+      const y = 28 + i * 106;
+      out += `<g class="rise" style="--t:${n1(.2 + i * 1.3)}s;--du:1s"><rect x="20" y="${y}" width="770" height="100" class="f-rock2" opacity="${1 - i * .15}"/><rect x="20" y="${y}" width="770" height="100" class="f-rust" opacity="${tint}"/>
+        ${icons[i]}
+        <text x="300" y="${y + 52}" class="lbl-d">${t}</text>
+        <text x="300" y="${y + 82}" class="lbl" style="font-size:20px">${sub}</text></g>`;
+    });
+    return out + `<rect x="690" y="28" width="52" height="472" class="f-void"/><circle cx="716" cy="500" r="110" fill="url(#g-core)" class="pulse"/>
+      <path d="M716 60 V470" class="s-core flow nofill" stroke-width="2" opacity=".5" style="--du:2.4s"/>`;
+  },
+  given() {
+    return bg("f-void") +
+      `<ellipse cx="400" cy="560" rx="460" ry="200" fill="url(#g-core)" opacity=".5" class="pulse" style="--du:4s"/>
+       <rect y="400" width="800" height="100" class="f-rock" opacity=".85"/>
+       <g class="rise" style="--t:.2s">${fig("p-ancient", 150, 400, 3.2, "k-bone")}</g>
+       <path d="M248 300 H300 M290 292 l10 8 -10 8" class="s-dust nofill draw" stroke-width="2.4" pathLength="1" style="--t:1.2s;--du:.5s"/>
+       <g class="rise" style="--t:1.6s">${fig("p-given-stand", 392, 400, 3.3, "k-dust")}</g>
+       <path d="M500 300 H552 M542 292 l10 8 -10 8" class="s-dust nofill draw" stroke-width="2.4" pathLength="1" style="--t:2.6s;--du:.5s"/>
+       <g class="rise" style="--t:3s">${fig("p-given-run", 640, 400, 3.3, "k-dust")}</g>
+       <g class="fade" style="--t:3.8s"><path d="M580 356 q6 30 2 44 M700 360 q-4 22 2 40" class="s-core nofill" stroke-width="1.2" opacity=".5" stroke-dasharray="2 6"/></g>
+       <text x="150" y="452" class="lbl-d" text-anchor="middle" style="font-size:28px">THE ANCIENTS</text>
+       <text x="400" y="452" class="lbl-d" text-anchor="middle" style="font-size:28px">THE FIRST GIVEN</text>
+       <text x="650" y="452" class="lbl-d" text-anchor="middle" style="font-size:28px;fill:var(--core)">THE GIVEN NOW</text>
+       ${lbl(150, 482, "tall, slender")}${lbl(400, 482, "paler, blind")}${lbl(650, 482, "the planet's flesh")}`;
+  },
+  ground() {
+    const r = rng(71); let pour = "", calls = "";
+    for (let i = 0; i < 9; i++) {
+      const ex = n1(250 + r() * 200), y = n1(404 + r() * 14);
+      pour += `<g class="march" style="${st({ dx: `${n1(640 - ex)}px`, t: `${n1(4.4 + i * .42)}s`, du: `${n1(3 + r())}s` })}">${fig("p-given-run", ex, y, 1.5 + r() * .3, "k-dust", true)}</g>`;
+    }
+    pour += `<g class="march1" style="${st({ dx: "260px", t: "6.8s", du: "3.2s", end: 1 })}">${fig("p-given-stand", 380, 412, 2.2, "k-dust", true)}</g>`;
+    [["…aël…", 600, 300, 4.8], ["…orun…", 700, 250, 6], ["…ilsa…", 560, 226, 7.2]].forEach(([w, x, y, t]) =>
+      calls += `<text x="${x}" y="${y}" class="call drift" text-anchor="middle" style="--t:${t}s">${w}</text>`);
+    return bgg("g-night") + stars(70, 73, 300) +
+      `<rect x="26" y="300" width="44" height="100" class="f-rock2"/>${fig("p-turret", 48, 300, 1.4, "k-dust")}
+       <path d="M110 400 V188" class="s-dust" stroke-width="3"/><rect x="100" y="180" width="22" height="10" class="f-bone" filter="url(#glow)"/>
+       <polygon points="114,192 540,400 130,400" fill="url(#g-light)"/>
+       <rect y="400" width="800" height="100" class="f-rock"/>
+       <g class="glimpse" style="--t:.6s;--du:3.4s">${fig("p-ancient", 548, 400, 2.4, "k-dust")}</g>
+       <path d="M500 406 L548 414 L590 408 L640 420 L690 410 L760 418 M590 408 L604 440 M690 410 L700 446" class="s-core nofill draw" stroke-width="2" pathLength="1" filter="url(#glow)" style="--t:3.2s;--du:.8s"/>
+       <g class="grow" style="--t:3.9s;--du:.9s"><ellipse cx="640" cy="432" rx="96" ry="24" class="f-void s-core" stroke-width="2" filter="url(#glow)"/></g>
+       <ellipse cx="640" cy="360" rx="80" ry="110" fill="url(#g-glowup)" class="fade" style="--t:4.1s;--du:1.4s"/>
+       <ellipse cx="640" cy="432" rx="60" ry="16" class="s-core nofill ring" stroke-width="1.5" style="--t:4.3s"/>
+       ${pour}${calls}`;
+  },
+  offer() {
+    const r = rng(81); let waves = "", proc = "", ret = "";
+    for (let i = 0; i < 12; i++) {
+      const ex = n1(170 + r() * 90), y = n1(404 + r() * 14), given = i % 3 !== 0;
+      waves += `<g class="march" style="${st({ dx: `${n1(640 - ex)}px`, t: `${n1(r() * 4)}s`, du: `${n1(3.2 + r())}s` })}">${given ? fig("p-given-run", ex, y, 1.5, "k-dust", true) : fig("p-beast", ex, y, 1.1, "k-ochre", true)}</g>`;
+    }
+    for (let i = 0; i < 6; i++) proc += `<g class="march1" style="${st({ dx: "-430px", t: `${n1(1 + i * .55)}s`, du: "4.2s", end: 0 })}">${fig("p-human", 620, 414, 1.4, "k-colony")}</g>`;
+    for (let i = 0; i < 7; i++) {
+      const ex = n1(180 + r() * 80), y = n1(404 + r() * 12);
+      ret += `<g class="march" style="${st({ dx: `${n1(640 - ex)}px`, t: `${n1(9 + i * .5)}s`, du: "3.6s" })}"><g transform="translate(${ex} ${y}) scale(-1.5 1.5)"><use href="#p-given-run" class="k-dust"/><path d="M-11 -17 L5 -18" class="s-colony" stroke-width="2.6" stroke-linecap="round"/></g></g>`;
+    }
+    return bgg("g-red") + stars(40, 83, 200) +
+      `<rect x="120" y="300" width="40" height="100" class="f-rock2"/>${fig("p-turret", 140, 300, 1.4, "k-dust")}
+       <rect y="400" width="800" height="100" class="f-rock"/>
+       <ellipse cx="660" cy="430" rx="96" ry="24" class="f-void s-core" stroke-width="2" filter="url(#glow)"/>
+       <ellipse cx="660" cy="360" rx="80" ry="110" fill="url(#g-glowup)" opacity=".7"/>
+       <g class="g-waves">${waves}<path d="M162 282 L240 300 M162 282 L250 280" class="s-bone flicker" stroke-width="1.4" style="--du:.3s"/></g>
+       <g class="g-proc">${proc}<text x="400" y="200" class="lbl-d inout" text-anchor="middle" style="--t:5s;--du:3.2s;font-size:46px">QUIET</text>
+         <text x="400" y="150" class="lbl inout" text-anchor="middle" style="--t:8.4s;--du:5s;fill:var(--bone)">MONTHS LATER</text></g>
+       <g class="g-return">${ret}</g>
+       <g class="g-held"><text x="400" y="190" class="lbl-d fade" text-anchor="middle" style="--t:.6s;font-size:40px">THE LINE HOLDS</text>
+         <text x="400" y="228" class="lbl fade" text-anchor="middle" style="--t:1.2s">for now</text></g>`;
+  },
+  paths() {
+    const trunk = "M400 470 L400 330", L = "M400 330 C 400 260, 140 268, 140 178", M = "M400 330 L400 142", Rr = "M400 330 C 400 260, 660 268, 660 178";
+    const em = (x, y, cls, inner, t) => `<g class="grow" style="--t:${t}s"><circle cx="${x}" cy="${y}" r="44" class="f-deep ${cls}" stroke-width="3" filter="url(#glow)"/>${inner}</g>`;
+    return bg("f-void") + stars(40, 91) +
+      `<circle cx="400" cy="500" r="130" fill="url(#g-core)" opacity=".35"/>
+       <path d="${trunk}" class="s-bone nofill draw" stroke-width="4" pathLength="1" style="--du:.8s"/>
+       <path d="${L}" class="s-rust nofill draw" stroke-width="4" pathLength="1" style="--t:.8s"/>
+       <path d="${M}" class="s-ochre nofill draw" stroke-width="4" pathLength="1" style="--t:1.1s"/>
+       <path d="${Rr}" class="s-core nofill draw" stroke-width="4" pathLength="1" style="--t:1.4s"/>
+       <circle cx="400" cy="470" r="7" class="f-colony" filter="url(#glow)"/>${lbl(416, 492, "YOU", "", "start", "fill:var(--colony)")}
+       ${em(140, 130, "s-rust", `<rect x="135" y="128" width="10" height="20" class="f-rust"/><ellipse cx="140" cy="124" rx="22" ry="11" class="f-rust"/><ellipse cx="140" cy="148" rx="16" ry="4" class="f-rust" opacity=".7"/>`, 2.2)}
+       ${em(400, 96, "s-ochre", fig("p-beast", 397, 108, 1.3, "k-ochre"), 2.5)}
+       ${em(660, 130, "s-core", `<path d="M644 156 V124 A16 16 0 0 1 676 124 V156Z" class="f-void s-core" stroke-width="2"/>${fig("p-ancient", 660, 156, .62, "k-core")}`, 2.8)}
+       <text x="140" y="66" class="lbl-d" text-anchor="middle" style="fill:var(--rust)">DOMINATE</text>
+       <text x="400" y="32" class="lbl-d" text-anchor="middle" style="fill:var(--ochre)">STABILISE</text>
+       <text x="660" y="66" class="lbl-d" text-anchor="middle" style="fill:var(--core)">INHERIT</text>
+       <g class="fade" style="--t:3.2s">${lbl(196, 300, "the crystal", "", "middle", "font-size:21px")}${lbl(412, 236, "the planet's life", "", "start", "font-size:21px")}${lbl(604, 300, "the ruins", "", "middle", "font-size:21px")}</g>`;
+  },
+  dominate() {
+    let blocks = "", win = ""; const r = rng(101);
+    const B = [[30, 250, 70, 110], [96, 200, 60, 160], [150, 230, 80, 130], [226, 270, 60, 90], [60, 160, 46, 50], [112, 150, 34, 50]];
+    for (const [x, y, w, h] of B) {
+      blocks += `<path d="M${x} ${y + h} V${y + 8} L${x + 8} ${y} H${x + w - 8} L${x + w} ${y + 8} V${y + h}Z" class="f-rock2"/>`;
+      for (let i = 0; i < 6; i++) win += `<rect x="${n1(x + 6 + r() * (w - 14))}" y="${n1(y + 10 + r() * (h - 20))}" width="5" height="3" class="f-ochre blink" style="--t:${n1(r() * 2)}s" opacity=".8"/>`;
+    }
+    const guns = [[140, 150, 560], [200, 200, 690], [248, 270, 460]];
+    let art = "";
+    guns.forEach(([x, y, tx], i) => {
+      art += `<path d="M${x} ${y} l26 -18" class="s-dust" stroke-width="6" stroke-linecap="round"/>
+        <path d="M${x + 26} ${y - 18} Q ${(x + tx) / 2} ${y - 190}, ${tx} 372" class="s-bone nofill shell" stroke-width="3" pathLength="1" style="--t:${n1(i * .55)}s;--du:1.7s"/>
+        <circle cx="${x + 28}" cy="${y - 20}" r="7" class="f-ochre flicker" filter="url(#glow)" style="--t:${n1(i * .55)}s;--du:1.7s"/>
+        <circle cx="${tx}" cy="372" r="12" class="f-ochre flicker" filter="url(#glow)" style="--t:${n1(i * .55 + .8)}s;--du:1.7s"/>`;
+    });
+    return bgg("g-red") + stars(30, 103, 180) +
+      `<path d="M0 360 L800 360 V500 H0Z" class="f-rock"/>
+       <circle cx="640" cy="330" r="210" class="f-bone flash" style="--t:2.2s;--du:1.6s"/>
+       <g class="growy" style="--t:2.5s;--du:2s"><rect x="626" y="250" width="28" height="112" fill="url(#g-stem)"/></g>
+       <g class="cap" style="--t:2.5s"><ellipse cx="640" cy="246" rx="78" ry="38" class="f-rust" opacity=".9"/><ellipse cx="640" cy="236" rx="52" ry="20" class="f-ochre" opacity=".8"/><ellipse cx="640" cy="276" rx="44" ry="10" class="nofill s-ochre" stroke-width="3" opacity=".7"/></g>
+       <g class="grow" style="--t:2.4s;--du:2.2s"><ellipse cx="640" cy="362" rx="300" ry="8" class="nofill s-bone" stroke-width="2" opacity=".6"/></g>
+       ${blocks}${win}${art}
+       <ellipse cx="420" cy="430" rx="90" ry="18" class="f-void"/><ellipse cx="420" cy="430" rx="90" ry="18" class="nofill s-dust" stroke-width="1.5" opacity=".5"/>
+       <ellipse cx="180" cy="470" rx="70" ry="14" class="f-void"/><ellipse cx="660" cy="455" rx="110" ry="20" class="f-void"/>
+       ${lbl(640, 132, "THE NUKE", "fade", "middle", "fill:var(--bone);--t:3.4s")}`;
+  },
+  stabilise() {
+    const dome = (cx, R, t) => `<g transform="translate(0 0)">
+        ${[0, 1, 2].map(i => `<path d="M${cx - R * .5 + i * R * .5} 400 v-${n1(R * .35 + i % 2 * 8)}" class="s-colony" stroke-width="3" opacity=".9"/><circle cx="${cx - R * .5 + i * R * .5}" cy="${n1(400 - R * .35 - i % 2 * 8 - 6)}" r="${n1(R * .14)}" class="f-colony grow" style="--t:${t + .8}s"/>`).join("")}
+        <path d="M${cx - R} 400 A${R} ${R} 0 0 1 ${cx} ${400 - R} V400Z" class="f-bone s-bone dome" fill-opacity=".1" stroke-width="2" style="transform-origin:${cx - R}px 400px;transform:rotate(-38deg);--t:${t}s"/>
+        <path d="M${cx + R} 400 A${R} ${R} 0 0 0 ${cx} ${400 - R} V400Z" class="f-bone s-bone dome" fill-opacity=".1" stroke-width="2" style="transform-origin:${cx + R}px 400px;transform:rotate(38deg);--t:${t}s"/></g>`;
+    let natives = "";
+    [[530, 1, "p-beast"], [590, 1.1, "p-beast"], [650, 1.5, "p-brute"], [720, 1, "p-beast"], [560, .9, "p-beast"]].forEach(([x, s, id], i) =>
+      natives += `<g class="rise" style="--t:${n1(1.2 + i * .25)}s">${fig(id, x, 402 + (i === 4 ? 14 : 0), s * 1.3, "k-ochre")}</g>`);
+    let ships = "";
+    [[600, 120, .8], [700, 82, .9], [500, 64, .7]].forEach(([x, y, s], i) =>
+      ships += `<g class="drop" style="--t:${n1(2.6 + i * .3)}s;--du:2.4s;--dy:-260px"><g transform="translate(${x} ${y}) scale(${s})"><use href="#p-ship" class="k-dust"/><rect x="-30" y="-8" width="56" height="4" style="fill:var(--rust)"/><circle cx="40" cy="-6" r="3" class="f-rust blink"/></g>
+        <path d="M${x} ${y + 12} V${y + 60}" class="s-rust flicker" stroke-width="2" style="--du:.4s"/></g>`);
+    return bgg("g-dawn") + stars(30, 111, 160) +
+      `<g class="lift" style="--t:3.4s;--du:3s;--dy:160px"><path d="M560 330 Q600 210 690 200 Q740 196 760 150 Q780 130 800 140 V340Z" class="f-rock2"/><circle cx="772" cy="152" r="2.6" class="f-ochre" filter="url(#glow)"/></g>
+       <path d="M0 340 Q160 300 320 330 T640 320 T800 336 V500 H0Z" class="f-rock2" opacity=".9"/>
+       <rect y="400" width="800" height="100" class="f-rock"/>
+       ${dome(190, 62, .5)}${dome(330, 76, .8)}
+       <rect x="440" y="336" width="20" height="64" class="f-rock2 s-dust" stroke-width="1"/>
+       ${natives}${ships}
+       ${lbl(780, 236, "YOUR COMPANY", "fade", "end", "fill:var(--rust);--t:3.4s")}
+       ${lbl(620, 470, "THE PLANET, WITH YOU", "fade", "middle", "fill:var(--ochre);--t:2.4s")}`;
+  },
+  inherit() {
+    let ruins = "";
+    for (let y = 200; y < 1000; y += 110) {
+      const lx = 250 - (y - 80) * .12, rx = 550 + (y - 80) * .12;
+      ruins += `<path d="M${n1(lx - 34)} ${y + 50} V${y + 14} A14 14 0 0 1 ${n1(lx - 6)} ${y + 14} V${y + 50}Z" class="f-void s-dust" stroke-width="1.2"/>
+        <path d="M${n1(rx + 6)} ${y + 50} V${y + 14} A14 14 0 0 1 ${n1(rx + 34)} ${y + 14} V${y + 50}Z" class="f-void s-dust" stroke-width="1.2"/>`;
+    }
+    const inner = `<rect width="800" height="80" fill="url(#g-night)"/>${stars(24, 121, 70)}
+      <rect y="80" width="800" height="1020" class="f-rock"/>
+      <path d="M250 80 L550 80 L680 1100 L120 1100Z" class="f-void"/>
+      ${ruins}
+      <rect x="160" y="470" width="150" height="10" class="f-rock2"/>${fig("p-guardian", 200, 470, 1.3, "k-dust")}${fig("p-given-stand", 262, 470, 1.6, "k-dust")}
+      <rect x="490" y="690" width="160" height="10" class="f-rock2"/>${fig("p-guardian", 600, 690, 1.3, "k-dust")}${fig("p-given-stand", 538, 690, 1.6, "k-dust", true)}
+      <circle cx="400" cy="1080" r="330" fill="url(#g-core)"/>
+      <circle cx="400" cy="960" r="120" fill="url(#g-core)" class="pulse" style="--du:3s"/>
+      ${fig("p-given-stand", 300, 1050, 1.7, "k-void")}${fig("p-given-stand", 500, 1050, 1.7, "k-void", true)}
+      ${fig("p-ancient", 400, 1050, 3.6, "k-bone")}
+      <path d="M400 908 V962" class="s-core" stroke-width="2.4" stroke-dasharray="3 4" filter="url(#glow)"/>`;
+    return bg("f-void") +
+      `<g class="descend">${inner}</g>
+       <path d="M772 40 V460" class="s-line" stroke-width="2"/>${lbl(760, 34, "SURFACE", "", "end", "font-size:16px")}${lbl(760, 478, "THE HEART", "", "end", "font-size:16px;fill:var(--core)")}
+       <g class="depth"><polygon points="772,40 780,50 772,60 764,50" class="f-core" filter="url(#glow)"/></g>
+       <text x="400" y="208" class="lbl-d fade" text-anchor="middle" style="--t:7.4s;font-size:40px">THE ELDEST</text>`;
+  },
+  weapons() {
+    const lanes = [["GUNS", 90], ["FIRE", 175], ["LIGHTNING", 260], ["LASERS", 345], ["ARTILLERY", 430]];
+    let out = bg("f-void") + `<rect x="182" y="40" width="20" height="440" class="f-rock2"/>`;
+    const r = rng(131);
+    lanes.forEach(([name, y], i) => {
+      out += `<text x="24" y="${y + 9}" class="lbl-d" style="font-size:28px">${name}</text>${fig("p-turret", 222, y + 14, 1.6, "k-dust")}`;
+      const mx = 258, my = y - 9;
+      for (let k = 0; k < (i === 4 ? 1 : 4); k++) {
+        out += i === 4 ? fig("p-brute", 660, y + 14, 1.3, "k-ochre", true)
+          : fig(k % 2 ? "p-beast" : "p-given-run", 560 + k * 52 + n1(r() * 10), y + 14, k % 2 ? 1 : 1.3, k % 2 ? "k-ochre" : "k-dust", true);
+      }
+      if (i === 0) out += `<path d="M${mx} ${my} L560 ${my + 8}" class="s-bone nofill" stroke-width="2.2" stroke-dasharray="10 22" style="animation:flow .4s linear infinite"/>`;
+      if (i === 1) out += `<polygon points="${mx},${my} 470,${my - 30} 500,${my + 6} 470,${my + 36}" fill="url(#g-flame)" class="flicker" style="--du:.25s"/><polygon points="${mx},${my} 430,${my - 18} 450,${my + 4} 430,${my + 26}" fill="url(#g-flame)" class="flicker" style="--du:.33s"/>`;
+      if (i === 2) {
+        out += `<path d="M${mx} ${my} l40 -12 l24 22 l40 -18 l30 20 l38 -14 l30 16 l42 -10 l36 12 l40 -6" class="s-core nofill flicker" stroke-width="2.4" filter="url(#glow)" style="--du:.3s"/>`;
+        out += `<path d="M${mx} ${my} l34 10 l28 -20 l44 14 l30 -16 l40 16 l26 -10 l46 8 l34 -12 l44 4" class="s-core nofill flicker" stroke-width="1.6" filter="url(#glow)" style="--du:.3s;--t:.15s"/>`;
+      }
+      if (i === 3) out += `<path d="M${mx} ${my} L700 ${my + 9}" class="s-bone pulse" stroke-width="2" filter="url(#glow)" style="--du:.9s"/>`;
+      if (i === 4) out += `<path d="M${mx} ${my} Q 460 ${my - 150}, 650 ${y}" class="s-bone nofill shell" stroke-width="3.4" pathLength="1" style="--du:1.4s"/><circle cx="650" cy="${y - 8}" r="22" class="f-ochre flicker" filter="url(#glow)" style="--du:1.4s;--t:1.1s"/>`;
+    });
+    return out;
+  },
+  next() {
+    return bg("f-void") + stars(110, 141) +
+      `<g transform="rotate(-14 400 220)"><ellipse cx="400" cy="220" rx="230" ry="46" class="nofill s-rust flow" stroke-width="1.6" opacity=".7" style="--du:2.4s"/></g>
+       <ellipse cx="400" cy="220" rx="250" ry="56" class="nofill s-ochre flow" stroke-width="1.6" opacity=".7" style="--du:3s"/>
+       <g transform="rotate(14 400 220)"><ellipse cx="400" cy="220" rx="270" ry="66" class="nofill s-core flow" stroke-width="1.6" opacity=".7" style="--du:3.6s"/></g>
+       ${planet(400, 220, 118, "end", 9)}
+       <circle cx="372" cy="206" r="4" class="f-colony" filter="url(#glow)"/>
+       <text x="400" y="440" class="lbl-d" text-anchor="middle" style="font-size:84px;letter-spacing:.42em">ORBIS</text>`;
+  },
+};
+
+// ---------- the steps ----------
+// on the concept site (local or GitHub Pages) the other pages exist, so link them; an Artifact copy has none
+const LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$|\.github\.io$/.test(location.hostname);
+const ACTS = ["The world", "The past", "The turn", "The endings", "The game"];
+const P = t => `<p>${t}</p>`, HIT = (t, dark) => `<p class="hit${dark ? " dark" : ""}">${t}</p>`;
+
+const STEPS = [
+  { id: "hook", act: 0, kicker: "A strategy game", title: "The planet fights back",
+    alt: "A planet turns in space. A small green light on its surface is you; red rings close in on it.",
+    body: P("Orbis is a planet that is alive, and it notices when you land.") +
+      P("Everything it throws at you is its immune system: swarms of creatures, giants, a forest that creeps over your walls, storms, and nights that get longer the further you push.") +
+      HIT("You are the infection.") + `<p class="hint">Click Next, use the arrow keys, or swipe.</p>` },
+  { id: "substance", act: 0, kicker: "The prize", title: "Why anyone comes here",
+    alt: "A cut through the planet: energy rises from a glowing core and hardens into crystal near the surface, thickest at the poles.",
+    body: P("Deep inside Orbis, the core gives off energy. It rises through the rock and hardens into crystal seams. The seams run richest at the poles, where the core is closest to the surface.") +
+      P("It can power anything. Nobody has named it yet. Back home it would be worth more than anything you own.") +
+      HIT("Whatever makes the planet worth having is also what makes it fight.") },
+  { id: "reasons", act: 0, kicker: "Who you are", title: "Two reasons to go",
+    alt: "Two ships leave a failing home world for Orbis: the company's warship and the colonists' transport. A survey stamp reads Quiet. Safe.",
+    body: P("The company wants the crystal. It pays for a military landing to dig it out and hold it.") +
+      P("The colonists on board want a way out. Home is failing, and this is the only new home on offer. To them it isn't a mine. It's where their children will grow up.") +
+      P("The company's survey says the planet is quiet and safe.") + HIT("Quiet is true.") },
+  { id: "landing", act: 0, kicker: "The landing", title: "The first night",
+    alt: "A dropship lands and unfolds a small base at dusk. Creatures come out of dens and hives on both sides.",
+    body: P("You come down near the equator, unfold a base and start drilling.") +
+      P("The planet answers. Its own creatures pour out of dens and hives: six-legged swarm beasts by the hundred, and armoured brutes that break walls.") +
+      HIT("The first rule you learn: richer ground, angrier planet.") },
+  { id: "build", act: 0, kicker: "How you play", title: "Build to hold",
+    alt: "A base from above: a wall with one gate, turrets, and a power grid from a generator. The swarm streams at the gate. One power node is cut and its turrets go dark.",
+    body: P("Orbis is a game for builders. You don't rush the enemy. You dig in and hold.") +
+      P("Walls, and a gate to funnel the swarm. Turrets to hold the line. A power grid to feed it all, so if one node is cut, everything past it goes dark.") +
+      HIT("The best crystal is always outside the walls. So you have to reach for it.") },
+  { id: "planet", act: 0, kicker: "The campaign", title: "One planet, region by region",
+    alt: "The globe covered in regions coloured by status: fortified, held, frontier and neglected, with one region zoomed in to show a base.",
+    body: P("The whole campaign happens on one planet, and it remembers what you did.") +
+      P("You take it a region at a time: the frontier where the fighting is, regions you hold, regions so fortified they hold themselves. Leave one alone too long and the planet takes it back.") +
+      P("You can pull the camera from a soldier's shoulder up to orbit, see where the planet is angry, and drop back down where you're needed.") },
+  { id: "ruins", act: 1, kicker: "Out past the frontier", title: "Someone was here first",
+    alt: "A soldier's light sweeps across a ruin with doorways far too tall for him, and a mural of tall slender figures fighting beasts. A ship lies buried under the ground.",
+    body: P("Past the frontier you find ruins: walls, a power grid, homes. It was a colony, like yours.") +
+      P("The doorways are too tall. The people who built them stood about two and a half metres, slender, with long hands. The company's survey calls them the planet's first people.") +
+      P("Dig deeper and you find a buried landing field, their ship, and star charts pointing home.") +
+      HIT("They weren't from here either. They came for the crystal, and the planet fought them too.") },
+  { id: "pact", act: 1, kicker: "What the ruins tell", title: "The pact",
+    alt: "A procession of tall figures, led by one carrying a banner, walks down a stair in a deep shaft toward a glowing light. On the surface the beasts walk away.",
+    body: P("They fought the planet for generations. Their war machines still stand in the ruins, asleep, following orders no one is left to give.") +
+      P("Then someone found a way to end it. The planet didn't want their machines or their mines. It wanted something living.") +
+      P("So a procession walked down the deep shafts to the place where the core's energy pools. They called it the heart. Their own leaders went first.") +
+      HIT("No one came back. The beasts drew off, and the planet went quiet for a generation. The ones who went down were called the Given.") },
+  { id: "tithe", act: 1, kicker: "Layer by layer", title: "The tithe",
+    alt: "Four layers of ruin, one above another: volunteers with a banner; the condemned behind bars; a carved list of names and a token; rows of cradles by a shaft.",
+    body: P("Every time they dug deeper, the planet asked for more. They never stopped digging. The ruins show what happened next, one layer at a time.") +
+      `<ul><li><b>Volunteers.</b> Heroes, honoured, led down by their own leaders.</li>
+        <li><b>The condemned.</b> When the volunteers ran out, the prisons emptied downward. The laws grew to keep them full.</li>
+        <li><b>A lottery.</b> Anyone, every year. Names carved in the halls, a token hung round the neck.</li>
+        <li><b>Bred for it.</b> The leaders' families never went. They bred people to go instead. Rows of cradles stand by the shafts, already promised to the heart.</li></ul>` +
+      HIT("The founders gave themselves. Their children gave everyone else.", true) },
+  { id: "given", act: 1, kicker: "Down in the dark", title: "What the heart made",
+    alt: "Three figures in a row: a tall slender ancient; a paler, hunched, blind figure; and a long-limbed creature on all fours with glowing seams.",
+    body: P("The Given didn't die. Down in the heart, the core's energy remade them into the planet's own flesh, and they bred there in the dark.") +
+      P("The first ones still looked like their people, only paler, thinner and blind. Later ones lost the rest: longer limbs, no eyes, crystal glowing through the seams of their skin.") +
+      P("Then a generation refused to give. Within a season the Given came up the shafts and took everyone. The last few walked down on their own, believing it was a better life.") +
+      HIT("The planet had learned how to turn invaders into its own. And these ones understand walls, gates and people.", true) },
+  { id: "ground", act: 2, kicker: "Mid-campaign", title: "The ground opens",
+    alt: "Night at the edge of your floodlight. A tall still figure appears and is gone. The ground cracks, a glowing pit opens, and pale creatures pour out toward your wall.",
+    body: P("For a long time your war is with the beasts. You don't know any of this yet.") +
+      P("Then the heart stirs. A tall, still figure stands at the edge of your lights at night, and is gone when you look again. Something moves under the ground.") +
+      P("Then the ground opens, and the Given come up. They run on all fours and rise to stand like people when they stop. They hunt by sound. They go for the gate, the generators and the homes.") +
+      HIT("Their calls sound almost like words. Much later you work out what they are: names. The names off the lottery lists.", true) },
+  { id: "offer", act: 2, kicker: "A choice", title: "The offer",
+    alt: "Your wall under attack by waves from a pit. Choose to send volunteers down, or refuse, and the scene shows what follows.",
+    body: P("A region is being crushed by waves. Your archaeologists bring you the first record they've translated.") +
+      `<div class="tx"><div class="tx-head">Archaeology · translated record</div><p>The ancients ended their war by sending volunteers down to the heart, and the planet went quiet. We have volunteers. They say it's an honour.</p></div>` +
+      `<div class="choices"><button type="button" class="choice" id="offer-accept" aria-pressed="false">Send them down</button><button type="button" class="choice alt" id="offer-refuse" aria-pressed="false">Refuse</button></div>` +
+      `<p id="offer-result" hidden></p>` +
+      HIT("You're asked before you know what the Given are. The game never tells you which choice is right.") },
+  { id: "paths", act: 3, kicker: "What you study", title: "Three ways it can end",
+    alt: "A path from you splits three ways: the crystal to Dominate, the planet's life to Stabilise, the ruins to Inherit.",
+    body: P("What you research decides how the story ends. There are three branches, and each one shows you a different part of the truth.") +
+      `<ul><li><b>The crystal,</b> to build a war machine.</li><li><b>The planet's own life,</b> to learn to live with it.</li><li><b>The ruins,</b> to take what the ancients left.</li></ul>` +
+      P("You can mix them, but each costs you something, and once you start an ending the other two close.") },
+  { id: "dominate", act: 3, kicker: "The crystal · the company's way", title: "Dominate",
+    alt: "A fortress city under a red sky fires artillery across a scarred plain. A nuclear blast rises on the horizon.",
+    body: P("Refineries, heavy industry, artillery and, at the top, nukes. You hold every region by force. The planet never stops fighting, and you outlast it.") +
+      P("You never quite know what you were killing.") +
+      HIT("At the end, the company's files tell you. It found the ancients' records before it sent you. It wanted the crystal for what it did to the Given: soldiers who don't need air. Its weapons programme is the tithe again, done on purpose.", true) },
+  { id: "stabilise", act: 3, kicker: "The planet's life · the colonists' way", title: "Stabilise",
+    alt: "The colony's domes open onto gardens. The planet's beasts stand beside your wall, and a giant rises behind the hills, as your company's dropships descend.",
+    body: P("Your scientists study the planet's own creatures, then catch a Given alive. In the lab it says a name. You learn the truth in time: these were people.") +
+      P("So you refuse the tithe and look for the one thing the ancients never tried: a bond with the planet's own life. You mine less. The beasts let you be. The core calms. The domes open.") +
+      HIT("Then your own company lands to take back its crystal. The last battle is you and the planet, side by side, against the people who sent you.") },
+  { id: "inherit", act: 3, kicker: "The ruins · the ancients' way", title: "Inherit",
+    alt: "The view descends a great shaft lined with ruins, past machine guardians standing beside the Given, down to a tall glowing figure at the heart: the Eldest.",
+    body: P("You follow the ancients' road: their machines, their shields, the call that turns the Given. You wake their guardians and take what they left.") +
+      P("It leads down, under the pole, to the heart. The old machines stand guard beside the Given, because to them the Given are still the procession.") +
+      P("At the bottom wait the Eldest: the first Given, the ancients' own leaders, who walked down first. They remember everything. Only now do you learn the whole story, and it's too late. You've walked their road. Maybe you've sent your own people down.") +
+      HIT("Then you choose. Wipe out what's left of the people who came before you. Or hold them back the way the ancients did, with a tithe of your own.", true) },
+  { id: "weapons", act: 4, kicker: "Still being worked out", title: "What you'll fight with",
+    alt: "Five turrets on a wall, each firing a different weapon at the swarm: guns, fire, lightning, lasers and artillery.",
+    body: P("Guns, rockets, flamers, tesla coils, lasers and plasma, and later the crystal itself, fired as a weapon. Each is good against some of what the planet sends and bad against the rest, so a wall needs a mix.") +
+      P("Every weapon costs something: metal, power, noise, or the planet's patience. Loud guns draw the swarm. The crystal wins any fight and brings the next one sooner.") +
+      P("The feel: Command & Conquer energy, heavy metal and aggressive building. Big armies you command rather than micro-manage. Grim survival, and under it the dream of a heroic frontier, and what that dream costs.") },
+  { id: "next", act: 4, kicker: "The end of the tour", title: "What to read next",
+    alt: "The planet Orbis turning, circled by three paths in red, amber and teal.",
+    body: P("That's Orbis: a living planet, a colony that came before you, and the choice to repeat what they did or not.") +
+      `<div class="reads" id="reads"></div>` +
+      `<div class="choices"><button type="button" class="choice alt" id="again">Start again</button></div>` },
+];
+
+const READS = [
+  ["v1/index.html", "Concept v1", "The signed-off game: pillars, base, economy, the three branches and endings."],
+  ["concept3d.html", "The concept models", "The ancients, the Given, the beasts, machines and places in 3D, to scale."],
+  ["lore1.html", "The Given", "The full story in five ages, the two kinds of enemy, the pits, and the choices."],
+  ["weapons1.html", "What you fight with", "Nine weapon families, what each beats and what it costs."],
+  ["settle1.html", "Digging in", "How the crystal comes out of the ground, and the domes your people live in."],
+  ["environment1.html", "A world that isn't Earth", "Biomes from equator to pole, goo seas, storms, the desert giant and the sky."],
+];
+
+// ---------- the stepper ----------
+const $ = id => document.getElementById(id);
+const stage = $("stage"), copy = $("copy"), progress = $("progress"), count = $("count"), prev = $("prev"), next = $("next");
+let reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+try { const m = localStorage.getItem("orbis.journey.motion"); if (m) reduced = m === "off"; } catch { /* blocked */ }
+let cur = -1, mediaOff = false;
+const motionBtn = $("motion");
+const applyMotion = () => {
+  document.documentElement.classList.toggle("still", reduced);
+  motionBtn.textContent = reduced ? "Motion off" : "Motion on";
+  motionBtn.setAttribute("aria-pressed", String(!reduced));
+};
+motionBtn.addEventListener("click", () => {
+  reduced = !reduced;
+  try { localStorage.setItem("orbis.journey.motion", reduced ? "off" : "on"); } catch { /* blocked */ }
+  applyMotion();
+  const i = cur; cur = -1; go(i);
+});
+applyMotion();
+
+ACTS.forEach((name, a) => {
+  const steps = STEPS.map((s, i) => [s, i]).filter(([s]) => s.act === a);
+  const el = document.createElement("div");
+  el.className = "act"; el.style.flex = String(steps.length); el.dataset.act = a;
+  el.innerHTML = `<span class="act-name">${name}</span><div class="segs">${steps.map(([s, i]) => `<button type="button" class="seg" data-i="${i}" aria-label="Step ${i + 1}: ${s.title}"></button>`).join("")}</div>`;
+  progress.appendChild(el);
+});
+progress.addEventListener("click", e => { const b = e.target.closest(".seg"); if (b) go(+b.dataset.i); });
+
+// optional art (Midjourney stills or clips): list a file here, by step id, and it replaces the drawing
+// with a toggle back to it. Files live in media/ next to this page. Example: hook: "media/hook.mp4"
+const MEDIA = {
+};
+async function findMedia(id) { return MEDIA[id] || null; }
+
+function drawScene(s) {
+  stage.innerHTML = `<svg class="scene" viewBox="0 0 800 500" role="img" aria-label="${s.alt}">${SCENES[s.id]()}</svg>`;
+  const svg = stage.querySelector("svg");
+  try { svg.setCurrentTime(0); if (reduced) { svg.setCurrentTime(7); svg.pauseAnimations(); } } catch { /* no SMIL */ }
+  return svg;
+}
+
+async function showMedia(s) {
+  const src = await findMedia(s.id);
+  if (!src || STEPS[cur] !== s) return;
+  const btn = document.createElement("button");
+  btn.type = "button"; btn.className = "media-toggle";
+  const paint = () => {
+    stage.querySelectorAll("video,img").forEach(n => n.remove());
+    stage.querySelector("svg").style.visibility = mediaOff ? "visible" : "hidden";
+    btn.textContent = mediaOff ? "Show art" : "Show diagram";
+    if (mediaOff) return;
+    const isVid = /\.(mp4|webm)$/.test(src);
+    const m = document.createElement(isVid ? "video" : "img");
+    m.src = src; m.alt = s.alt;
+    if (isVid) { m.muted = true; m.loop = true; m.playsInline = true; m.autoplay = !reduced; m.setAttribute("aria-label", s.alt); }
+    stage.prepend(m);
+  };
+  btn.addEventListener("click", () => { mediaOff = !mediaOff; paint(); });
+  stage.appendChild(btn); paint();
+}
+
+function go(i) {
+  i = Math.max(0, Math.min(STEPS.length - 1, i));
+  if (i === cur) return;
+  cur = i;
+  const s = STEPS[i];
+  drawScene(s);
+  copy.innerHTML = `<p class="kicker">${ACTS[s.act]} · ${s.kicker}</p><h2>${s.title}</h2>${s.body}`;
+  [...copy.children].forEach((el, k) => el.style.setProperty("--i", k));
+  copy.scrollTop = 0;
+  progress.querySelectorAll(".seg").forEach(b => { const j = +b.dataset.i; b.classList.toggle("done", j < i); b.classList.toggle("cur", j === i); b.toggleAttribute("aria-current", j === i); });
+  progress.querySelectorAll(".act").forEach(a => a.classList.toggle("on", +a.dataset.act === s.act));
+  count.innerHTML = `<b>${String(i + 1).padStart(2, "0")}</b> / ${STEPS.length}`;
+  prev.disabled = i === 0;
+  next.textContent = i === STEPS.length - 1 ? "Start again" : "Next";
+  try { history.replaceState(null, "", `#${s.id}`); } catch { /* sandboxed */ }
+  if (s.id === "offer") wireOffer();
+  if (s.id === "next") wireEnd();
+  showMedia(s);
+}
+
+function wireOffer() {
+  const acc = $("offer-accept"), ref = $("offer-refuse"), res = $("offer-result");
+  const pick = yes => {
+    const svg = stage.querySelector("svg");
+    svg.classList.remove("accepted", "refused"); void svg.getBoundingClientRect();
+    svg.classList.add(yes ? "accepted" : "refused");
+    acc.setAttribute("aria-pressed", String(yes)); ref.setAttribute("aria-pressed", String(!yes));
+    res.hidden = false;
+    res.className = yes ? "hit dark" : "hit";
+    res.textContent = yes
+      ? "It works. They walk down singing, the waves stop, and the region goes quiet for a long time. Then the planet asks for more. And one night a wave comes over your wall, and some of them are wearing your colony's suits."
+      : "The waves keep coming. You hold the line the hard way, and people die on the wall instead. Later you find out what you spared them.";
+  };
+  acc.addEventListener("click", () => pick(true));
+  ref.addEventListener("click", () => pick(false));
+}
+
+function wireEnd() {
+  $("reads").innerHTML = READS.map(([href, t, d]) => LOCAL
+    ? `<a href="${href}"><b>${t}</b><span>${d}</span></a>`
+    : `<div><b>${t}</b><span>${d}</span></div>`).join("") +
+    (LOCAL ? "" : `<p class="hint">These pages live on Ed's Orbis concept site. Ask him for the tour.</p>`);
+  $("again").addEventListener("click", () => go(0));
+}
+
+prev.addEventListener("click", () => go(cur - 1));
+next.addEventListener("click", () => go(cur === STEPS.length - 1 ? 0 : cur + 1));
+addEventListener("keydown", e => {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); go(cur + 1); }
+  else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(cur - 1); }
+  else if (e.key === "Home") go(0);
+  else if (e.key === "End") go(STEPS.length - 1);
+});
+let tx = 0, ty = 0;
+$("main").addEventListener("touchstart", e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+$("main").addEventListener("touchend", e => {
+  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+  if (Math.abs(dx) > 50 && Math.abs(dx) > 1.5 * Math.abs(dy)) go(cur + (dx < 0 ? 1 : -1));
+}, { passive: true });
+const fromHash = () => { const k = STEPS.findIndex(s => s.id === location.hash.slice(1)); return k < 0 ? 0 : k; };
+addEventListener("hashchange", () => go(fromHash()));
+go(fromHash());
+})();
+</script>
+</body>
+</html>

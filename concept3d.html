@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--ART-START-->
+<title>Orbis Concept Models</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Code-made 3D concept models for Orbis: the ancients, the Given, the planet's beasts, machines, flora and places, on turntables.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:wght@500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: a model viewer. The turntable fills the left, the model list and its notes sit on the right (below on phones). Same dark look as the journey. */
+:root{
+  --void:#07090b; --deep:#0d1316; --rock:#141c20; --rock2:#1f2a2f; --line:#27353b;
+  --bone:#ebe5d7; --text:#c6c9bf; --dust:#87938e;
+  --core:#62e8d3; --rust:#d65a3c; --ochre:#d09a49; --colony:#9fd66a;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:var(--void);color:var(--text);font-family:var(--serif);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+.app{height:100%;max-width:1500px;margin:0 auto;display:grid;grid-template-rows:auto minmax(0,1fr);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 16px}
+.top{display:flex;align-items:baseline;gap:16px;padding-block:14px 12px;flex-wrap:wrap}
+.brand{font:800 26px/1 var(--display);letter-spacing:.32em;color:var(--bone);text-decoration:none}
+.sub{font:500 12px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--core)}
+.jump{margin-left:auto;display:flex;gap:16px}
+.jump a{font:500 12px/1 var(--mono);letter-spacing:.08em;color:var(--dust);text-decoration:none}
+.jump a:hover{color:var(--bone)}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;min-height:0}
+.view{position:relative;min-height:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--void)}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#cv:active{cursor:grabbing}
+.hud{position:absolute;left:12px;top:10px;font:500 11px/1.4 var(--mono);letter-spacing:.08em;color:var(--dust);pointer-events:none}
+.ctrl{position:absolute;left:10px;bottom:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px}
+.ctrl button{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--bone);cursor:pointer;
+  background:color-mix(in srgb,var(--void) 72%,transparent);border:1px solid var(--line);border-radius:3px;padding:8px 10px}
+.ctrl button[aria-pressed="true"]{border-color:var(--core);color:var(--core)}
+.ctrl button:focus-visible,.pick:focus-visible{outline:2px solid var(--core);outline-offset:2px}
+.nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--dust);font:500 13px/1.6 var(--mono)}
+.panel{min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding-right:4px;scrollbar-width:thin}
+.groups{display:grid;gap:12px}
+.group h3{font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dust);margin:0 0 7px}
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.pick{font:800 15px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--text);background:var(--deep);
+  border:1px solid var(--line);border-radius:3px;padding:8px 10px;cursor:pointer}
+.pick:hover{color:var(--bone);border-color:var(--dust)}
+.pick[aria-current="true"]{color:var(--void);background:var(--core);border-color:var(--core)}
+.info{border-top:1px solid var(--line);padding-top:16px}
+.info .k{font:500 12px/1.4 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--core);margin:0 0 8px}
+.info h2{font:800 clamp(34px,3.4vw,50px)/.92 var(--display);text-transform:uppercase;color:var(--bone);margin:0 0 12px;text-wrap:balance}
+.info p{font-size:16.5px;line-height:1.55;margin:0 0 10px}
+.info ul{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+.info li{font-size:15px;line-height:1.45;padding-left:16px;position:relative}
+.info li::before{content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;background:var(--core);transform:rotate(45deg)}
+.size{display:inline-block;font:500 12px/1 var(--mono);letter-spacing:.06em;color:var(--bone);border:1px solid var(--line);border-radius:3px;padding:6px 8px;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.foot{font:500 11.5px/1.6 var(--mono);color:var(--dust);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:900px){
+  .app{height:auto;min-height:100%}
+  .main{grid-template-columns:1fr;gap:16px}
+  .view{aspect-ratio:4/3.4;max-height:70vh}
+  .panel{overflow:visible}
+  .info h2{font-size:clamp(32px,9vw,46px)}
+  .jump{margin-left:0}
+  .hud{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="index.html">ORBIS</a>
+    <span class="sub">Concept models</span>
+    <nav class="jump" id="jump"><a href="journey.html">The journey</a><a href="lore1.html">The Given</a></nav>
+  </header>
+  <main class="main">
+    <div class="view" id="view">
+      <canvas id="cv" aria-label="3D model viewer"></canvas>
+      <div class="hud">drag to turn · scroll or pinch to zoom · ← → next model</div>
+      <div class="ctrl">
+        <button type="button" id="b-turn" aria-pressed="true">Turntable</button>
+        <button type="button" id="b-life" aria-pressed="true">Idle motion</button>
+        <button type="button" id="b-scale" aria-pressed="true">Person for scale</button>
+        <button type="button" id="b-light">Light: dusk</button>
+      </div>
+    </div>
+    <aside class="panel">
+      <div class="groups" id="groups"></div>
+      <article class="info" id="info"></article>
+      <p class="foot">Made in code from simple shapes, to settle proportions, colour and silhouette before real models. The rules: the
+        crystal's teal is the only glow; the planet's own life is ochre, rust and bone, never green; the colony is the only green.</p>
+    </aside>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+// on the concept site (local or GitHub Pages) the other pages exist, so link them; an Artifact copy has none
+const LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$|\.github\.io$/.test(location.hostname);
+if (!LOCAL) $("jump").hidden = true;
+if (typeof THREE === "undefined") { $("view").insertAdjacentHTML("beforeend", `<div class="nogl">The 3D library didn't load. Check the connection and reload.</div>`); return; }
+
+// ---------- materials and helpers ----------
+const C = { void: 0x07090b, core: 0x62e8d3, rust: 0xd65a3c, ochre: 0xd09a49, colony: 0x9fd66a };
+// colours are written as sRGB hex; the renderer works in linear space, so convert them once here
+const lin = hex => new THREE.Color(hex).convertSRGBToLinear();
+const mat = (color, o = {}) => {
+  const m = new THREE.MeshStandardMaterial(Object.assign({ roughness: .7, metalness: 0 }, o));
+  m.color = lin(color); if (o.emissive !== undefined) m.emissive = lin(o.emissive);
+  return m;
+};
+const MAT = {
+  suit: mat(0x5d6662, { roughness: .6, metalness: .2 }), suitDark: mat(0x323937, { roughness: .7 }),
+  visor: mat(0x0b1a10, { emissive: C.colony, emissiveIntensity: .35, roughness: .12, metalness: .4 }),
+  greenLight: mat(0x0a120a, { emissive: C.colony, emissiveIntensity: 1.8 }),
+  ancientSkin: mat(0xb4a68e, { roughness: .6 }), robe: mat(0x24333a, { roughness: .95, side: THREE.DoubleSide }),
+  bronze: mat(0x7d6a48, { metalness: .75, roughness: .4 }),
+  given: mat(0xa29f95, { roughness: .26, metalness: .05 }),
+  seam: mat(0x0b302b, { emissive: C.core, emissiveIntensity: 2.4, roughness: .2 }),
+  glyph: mat(0x0b1c1a, { emissive: C.core, emissiveIntensity: .7, roughness: .4 }),
+  crystal: mat(0x26c9b3, { emissive: C.core, emissiveIntensity: 1.1, roughness: .08, metalness: .1, transparent: true, opacity: .9, flatShading: true }),
+  carapace: mat(0x7a4a1a, { roughness: .45, flatShading: true }), hide: mat(0x3a2a19, { roughness: .85 }),
+  plate: mat(0x6a5032, { roughness: .6, flatShading: true }), horn: mat(0xd8cdb4, { roughness: .45 }),
+  eye: mat(0x040404, { roughness: .04, metalness: .3 }),
+  metal: mat(0x4c5558, { metalness: .65, roughness: .5, flatShading: true }), metalDark: mat(0x272d30, { metalness: .6, roughness: .6, flatShading: true }),
+  lichen: mat(0x8f7a3c, { roughness: 1 }), rustPaint: mat(0xa3452c, { roughness: .6, metalness: .3 }),
+  hull: mat(0x6c7470, { roughness: .55, metalness: .45, flatShading: true }),
+  glass: mat(0xbfe8e0, { transparent: true, opacity: .13, roughness: .05, metalness: .2, side: THREE.DoubleSide, depthWrite: false }),
+  cockpit: mat(0x0c1a14, { emissive: C.colony, emissiveIntensity: .15, roughness: .05, metalness: .6 }),
+  rock: mat(0x2a3236, { roughness: .95, flatShading: true }), rock2: mat(0x1b2427, { roughness: .95, flatShading: true, side: THREE.DoubleSide }),
+  plant: mat(0x7d4e33, { roughness: .8, flatShading: true }), plantPale: mat(0xc8b48a, { roughness: .7, flatShading: true }),
+  green: mat(0x5d8f39, { roughness: .8, flatShading: true }), house: mat(0x8d918a, { roughness: .7 }), roof: mat(0x5a5f5c, { roughness: .8, flatShading: true }),
+  exhaust: mat(0x140b02, { emissive: C.ochre, emissiveIntensity: 2.2 }), black: mat(0x020303, { roughness: 1 }),
+  wall: mat(0x5c6360, { roughness: .8, flatShading: true }),
+};
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const UP = V(0, 1, 0);
+const add = (p, o) => (p.add(o), o);
+function limb(p, a, b, r1, r2, m, seg = 10) {
+  const d = b.clone().sub(a), L = d.length();
+  const me = new THREE.Mesh(new THREE.CylinderGeometry(r2, r1, L, seg, 1), m);
+  me.position.copy(a).addScaledVector(d, .5);
+  me.quaternion.setFromUnitVectors(UP, d.normalize());
+  return add(p, me);
+}
+function ball(p, pos, r, m, s) {
+  const me = new THREE.Mesh(new THREE.SphereGeometry(r, 20, 14), m);
+  me.position.copy(pos); if (s) me.scale.set(s[0], s[1], s[2]);
+  return add(p, me);
+}
+function box(p, pos, size, m, rot) {
+  const me = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), m);
+  me.position.copy(pos); if (rot) me.rotation.set(rot[0] || 0, rot[1] || 0, rot[2] || 0);
+  return add(p, me);
+}
+function chain(p, pts, radii, m) {
+  for (let i = 0; i < pts.length - 1; i++) limb(p, pts[i], pts[i + 1], radii[i], radii[i + 1], m);
+  pts.forEach((q, i) => ball(p, q, radii[i] * 1.04, m));
+}
+function hand(p, w, f, side, n, len, r, m, curl = V(0, -1, 0)) {
+  ball(p, w, r * 1.9, m);
+  for (let k = 0; k < n; k++) {
+    const o = (k - (n - 1) / 2) * r * 2.4;
+    const base = w.clone().addScaledVector(side, o);
+    const mid = base.clone().addScaledVector(f, len * .55).addScaledVector(side, o * .4);
+    const tip = base.clone().addScaledVector(f, len).addScaledVector(side, o * .9).addScaledVector(curl, len * .12);
+    chain(p, [base, mid, tip], [r, r * .85, r * .55], m);
+  }
+}
+function band(p, a, b, t, r, m) {
+  const d = b.clone().sub(a), pos = a.clone().addScaledVector(d, t);
+  const me = new THREE.Mesh(new THREE.TorusGeometry(r, r * .28, 6, 18), m);
+  me.position.copy(pos); me.quaternion.setFromUnitVectors(V(0, 0, 1), d.normalize());
+  return add(p, me);
+}
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+function canvasTex(draw, w = 128, h = 128) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h);
+  const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; return t;
+}
+const GLOW = canvasTex((g, w) => { const r = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); r.addColorStop(0, "rgba(255,255,255,1)"); r.addColorStop(.25, "rgba(255,255,255,.45)"); r.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = r; g.fillRect(0, 0, w, w); });
+const PUFF = canvasTex((g, w) => { const r = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); r.addColorStop(0, "rgba(255,255,255,.55)"); r.addColorStop(.6, "rgba(255,255,255,.18)"); r.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = r; g.fillRect(0, 0, w, w); });
+function glow(p, pos, size, color = C.core, op = .8) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false }));
+  s.position.copy(pos); s.scale.set(size, size, 1); s.userData.glow = true; return add(p, s);
+}
+function label(text, sub) {
+  const t = canvasTex((g, w, h) => {
+    g.textAlign = "center"; g.fillStyle = "#ebe5d7"; g.font = "800 58px 'Big Shoulders Display', Impact, sans-serif"; g.fillText(text.toUpperCase(), w / 2, 66);
+    if (sub) { g.fillStyle = "#87938e"; g.font = "500 34px 'IBM Plex Mono', monospace"; g.fillText(sub, w / 2, 112); }
+  }, 512, 128);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false }));
+  s.scale.set(2, .5, 1); s.userData.glow = true; return s;
+}
+// crystal seams along a run of points: small glowing shards on the upper surface
+function seams(p, pts, radii, every = .07, lift = .9) {
+  const out = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1], L = a.distanceTo(b);
+    for (let s = 0; s < L; s += every) {
+      const t = s / L, q = a.clone().lerp(b, t), r = radii[i] + (radii[i + 1] - radii[i]) * t;
+      q.y += r * lift;
+      const m = new THREE.Mesh(new THREE.OctahedronGeometry(r * .32 + .008, 0), MAT.seam);
+      m.position.copy(q); m.scale.set(1, .55, 1); m.rotation.y = s * 7; p.add(m); out.push(q);
+    }
+  }
+  out.forEach((q, i) => { if (i % 3 === 0) glow(p, q, .18, C.core, .5); });
+}
+const facing = () => { const root = new THREE.Group(), body = new THREE.Group(); body.rotation.y = -Math.PI / 2; root.add(body); return [root, body]; };
+
+// ---------- models (metres; feet on y = 0; facing +z, or authored along +x and turned) ----------
+function colonist() {
+  const g = new THREE.Group();
+  for (const s of [-1, 1]) {
+    chain(g, [V(s * .11, .95, 0), V(s * .12, .52, .04), V(s * .12, .1, 0)], [.085, .075, .065], MAT.suit);
+    box(g, V(s * .12, .05, .05), [.14, .1, .3], MAT.suitDark);
+    chain(g, [V(s * .26, 1.45, 0), V(s * .3, 1.17, .07), V(s * .15, 1.08, .3)], [.072, .062, .05], MAT.suit);
+  }
+  box(g, V(0, 1.0, 0), [.34, .16, .22], MAT.suitDark);
+  box(g, V(0, 1.27, 0), [.44, .42, .27], MAT.suit);
+  box(g, V(0, 1.31, .14), [.34, .3, .05], MAT.suitDark);
+  box(g, V(0, 1.31, -.21), [.32, .42, .16], MAT.suitDark);
+  box(g, V(.2, 1.475, 0), [.13, .03, .22], MAT.greenLight);
+  ball(g, V(0, 1.53, 0), .065, MAT.suitDark);
+  ball(g, V(0, 1.645, 0), .15, MAT.suit, [1, 1.02, 1.06]);
+  const vis = new THREE.Mesh(new THREE.SphereGeometry(.155, 20, 10, Math.PI / 2 - .85, 1.7, .95, .75), MAT.visor);
+  vis.position.set(0, 1.645, 0); g.add(vis);
+  box(g, V(.06, 1.11, .38), [.07, .1, .74], MAT.metalDark);
+  return { g };
+}
+
+function ancient(eldest = false) {
+  const g = new THREE.Group(), skin = eldest ? MAT.given : MAT.ancientSkin;
+  const H = eldest ? 1.08 : 1, hunch = eldest ? .1 : 0;
+  const P = (x, y, z) => V(x, y * H, z + (y > 1.4 ? (y - 1.4) * hunch : 0));
+  for (const s of [-1, 1]) {
+    chain(g, [P(s * .09, 1.25, 0), P(s * .1, .66, .04), P(s * .1, .07, 0)], [.06, .045, .035], skin);
+    box(g, P(s * .1, .03, .09), [.07, .05, .27], skin);
+  }
+  ball(g, P(0, 1.25, 0), 1, skin, [.16, .1, .1]);
+  limb(g, P(0, 1.25, 0), P(0, 1.95, 0), .1, .13, skin);
+  ball(g, P(0, 1.82, 0), 1, skin, [.17, .24, .12]);
+  const arms = [];
+  for (const s of [-1, 1]) {
+    const sh = P(s * .19, 2.03, 0), el = P(s * .25, 1.55, -.02), wr = P(s * .27, 1.08, .04);
+    chain(g, [sh, el, wr], [.045, .035, .03], skin);
+    hand(g, wr.clone().add(V(0, -.03, 0)), V(0, -1, .12).normalize(), V(0, 0, 1), 4, .21, .011, skin, V(0, 0, 1));
+    arms.push([el, wr]);
+  }
+  limb(g, P(0, 2.03, 0), P(0, 2.24, 0), .04, .035, skin);
+  const head = new THREE.Group(); head.position.copy(P(0, 2.24, 0)); g.add(head);
+  ball(head, V(0, .13, .01), 1, skin, [.085, .15, .105]);
+  if (!eldest) {
+    for (const s of [-1, 1]) ball(head, V(s * .036, .15, .088), .013, MAT.eye);
+    limb(head, V(0, .2, -.06), V(0, .42, -.16), .03, .004, MAT.bronze);
+    const pts = [[.13, 2.0], [.2, 1.92], [.21, 1.6], [.2, 1.3], [.26, .9], [.32, .45]].map(([r, y]) => new THREE.Vector2(r, y));
+    add(g, new THREE.Mesh(new THREE.LatheGeometry(pts, 28, .55, Math.PI * 2 - 1.1), MAT.robe));
+    const mantle = new THREE.Mesh(new THREE.TorusGeometry(.19, .055, 8, 22), MAT.robe); mantle.rotation.x = Math.PI / 2; mantle.position.set(0, 2.0, 0); g.add(mantle);
+    limb(g, V(.33, 0, .14), V(.34, 2.75, .14), .018, .015, MAT.bronze);
+    const cr = new THREE.Mesh(new THREE.OctahedronGeometry(.07, 0), MAT.crystal); cr.scale.set(1, 2, 1); cr.position.set(.34, 2.86, .14); g.add(cr);
+    glow(g, V(.34, 2.86, .14), .5, C.core, .7);
+  } else {
+    // rags of the old robe, crystal grown through the shoulders, a relic band and a crown of ancient metal
+    for (const [a, l] of [[.3, .9], [1.4, .55], [2.6, .8], [3.6, .6], [4.9, .7]]) {
+      const pts = [[.16, 2.0], [.21, 1.85], [.2, 1.85 - l]].map(([r, y]) => new THREE.Vector2(r, y * H));
+      add(g, new THREE.Mesh(new THREE.LatheGeometry(pts, 6, a, .55), MAT.robe));
+    }
+    const crown = new THREE.Mesh(new THREE.TorusGeometry(.095, .014, 6, 20), MAT.bronze); crown.rotation.x = Math.PI / 2 - .2; crown.position.set(0, .2, .0); head.add(crown);
+    band(g, arms[1][0], arms[1][1], .78, .04, MAT.bronze);
+    const r = rng(5);
+    for (const s of [-1, 1]) for (let k = 0; k < 5; k++) {
+      const c = new THREE.Mesh(new THREE.OctahedronGeometry(.035 + r() * .03, 0), MAT.crystal);
+      c.scale.set(1, 2.4 + r() * 2, 1); c.position.copy(P(s * (.13 + r() * .1), 2.02 + r() * .08, -.06 + r() * .06));
+      c.rotation.set(-.5 + r() * .5, 0, s * (.3 + r() * .6)); g.add(c);
+    }
+    seams(g, [P(0, 1.2, -.1), P(0, 1.6, -.12), P(0, 2.0, -.08)], [.06, .07, .06], .06, .4);
+    for (const s of [-1, 1]) seams(g, [P(s * .19, 2.03, 0), ...arms[s < 0 ? 0 : 1]], [.03, .025, .02], .07, .5);
+    const pl = new THREE.PointLight(C.core, 1.4, 4, 2); pl.position.copy(P(0, 1.8, .4)); g.add(pl);
+  }
+  const chest = g.children.find(c => c.geometry && c.geometry.type === "SphereGeometry" && c.scale.y > .2);
+  return { g, tick(t) { head.rotation.y = Math.sin(t * .4) * .25; if (eldest) head.rotation.x = .12 + Math.sin(t * .23) * .05; if (chest) chest.scale.z = .12 * (1 + Math.sin(t * 1.3) * .04); } };
+}
+
+function givenRun() {
+  const [root, g] = facing(), sk = MAT.given;
+  const sp = [V(-.52, .72, 0), V(-.25, .82, 0), V(.05, .88, 0), V(.32, .9, 0), V(.5, .86, 0), V(.64, .8, 0)], sr = [.1, .11, .12, .12, .07, .045];
+  chain(g, sp, sr, sk);
+  const cage = ball(g, V(.12, .8, 0), 1, sk, [.3, .16, .15]);
+  for (const x of [-.04, .04, .12, .2, .28]) { const t = new THREE.Mesh(new THREE.TorusGeometry(.152, .012, 5, 20), sk); t.position.set(x, .8, 0); t.rotation.y = Math.PI / 2; g.add(t); }
+  const head = new THREE.Group(); head.position.copy(sp[5]); g.add(head);
+  ball(head, V(.16, -.04, 0), 1, sk, [.17, .075, .07]);
+  ball(head, V(.19, -.1, 0), 1, sk, [.13, .03, .085]);
+  box(head, V(.24, -.075, 0), [.12, .012, .11], MAT.black);
+  let arm;
+  for (const s of [-1, 1]) {
+    const sh = V(.47, .84, s * .11), el = V(.62, .5, s * .25), wr = V(.95, .08, s * .22);
+    chain(g, [sh, el, wr], [.045, .035, .026], sk);
+    hand(g, V(.96, .05, s * .22), V(1, -.18, 0).normalize(), V(0, 0, 1), 4, .27, .012, sk);
+    chain(g, [V(-.52, .7, s * .1), V(-.24, .42, s * .18), V(-.62, .15, s * .17), V(-.47, .015, s * .17)], [.06, .045, .03, .022], sk);
+    if (s > 0) arm = [el, wr];
+  }
+  band(g, arm[0], arm[1], .72, .036, MAT.bronze);
+  seams(g, sp.slice(0, 5), sr, .065, .92);
+  return { g: root, tick(t) { head.rotation.x = Math.sin(t * .9) * .35; head.rotation.z = Math.sin(t * .37) * .08; cage.scale.y = .16 * (1 + Math.sin(t * 2.2) * .05); } };
+}
+
+function givenStand() {
+  const [root, g] = facing(), sk = MAT.given;
+  for (const s of [-1, 1]) chain(g, [V(0, 1.0, s * .1), V(.13, .55, s * .13), V(-.06, .12, s * .12), V(.1, .015, s * .12)], [.06, .045, .03, .022], sk);
+  const sp = [V(0, 1.0, 0), V(.04, 1.32, 0), V(.15, 1.58, 0), V(.29, 1.71, 0), V(.43, 1.72, 0)], sr = [.1, .11, .12, .1, .045];
+  chain(g, sp, sr, sk);
+  const cage = ball(g, V(.13, 1.45, 0), 1, sk, [.15, .22, .15]); cage.rotation.z = -.4;
+  for (const y of [1.36, 1.44, 1.52, 1.6]) { const t = new THREE.Mesh(new THREE.TorusGeometry(.15, .011, 5, 20), sk); t.position.set(.1 + (y - 1.36) * .4, y, 0); t.rotation.set(Math.PI / 2, 0, -.4); g.add(t); }
+  const head = new THREE.Group(); head.position.copy(sp[4]); g.add(head);
+  ball(head, V(.13, -.05, 0), 1, sk, [.16, .08, .07]).rotation.z = -.5;
+  ball(head, V(.15, -.12, 0), 1, sk, [.12, .03, .085]).rotation.z = -.5;
+  for (const s of [-1, 1]) {
+    const sh = V(.3, 1.66, s * .17), el = V(.36, 1.15, s * .25), wr = V(.4, .63, s * .23);
+    chain(g, [sh, el, wr], [.045, .035, .026], sk);
+    hand(g, V(.41, .6, s * .23), V(.12, -1, 0).normalize(), V(1, 0, 0), 4, .3, .012, sk, V(1, 0, 0));
+  }
+  seams(g, sp.slice(0, 4), sr, .06, .9);
+  return { g: root, tick(t) { head.rotation.x = Math.sin(t * .8) * .4; head.rotation.y = Math.sin(t * .3) * .2; cage.scale.x = .15 * (1 + Math.sin(t * 2) * .05); } };
+}
+
+function beast() {
+  const [root, g] = facing();
+  ball(g, V(-.36, .62, 0), 1, MAT.carapace, [.42, .3, .36]);
+  ball(g, V(0, .67, 0), 1, MAT.carapace, [.38, .33, .39]);
+  ball(g, V(.32, .61, 0), 1, MAT.carapace, [.3, .26, .31]);
+  ball(g, V(0, .47, 0), 1, MAT.hide, [.62, .16, .26]);
+  for (const [x, y] of [[-.5, .86], [-.3, .92], [-.08, .99], [.14, .97], [.34, .86]]) { const c = new THREE.Mesh(new THREE.ConeGeometry(.04, .16, 6), MAT.horn); c.position.set(x, y, 0); c.rotation.z = -.25; g.add(c); }
+  const head = new THREE.Group(); head.position.set(.6, .56, 0); g.add(head);
+  ball(head, V(.06, 0, 0), 1, MAT.hide, [.17, .12, .14]);
+  for (const s of [-1, 1]) {
+    limb(head, V(.12, .06, s * .06), V(.32, .22, s * .13), .036, .008, MAT.horn);
+    ball(head, V(.17, .045, s * .085), .024, MAT.eye);
+    limb(head, V(.18, -.06, s * .04), V(.28, -.13, s * .02), .02, .006, MAT.horn);
+  }
+  for (const x of [.3, 0, -.3]) for (const s of [-1, 1]) {
+    chain(g, [V(x, .5, s * .2), V(x + .06, .76, s * .5), V(x + .12, .02, s * .66)], [.045, .035, .016], MAT.hide);
+    ball(g, V(x + .06, .76, s * .5), .05, MAT.carapace);
+  }
+  return { g: root, tick(t) { head.rotation.y = Math.sin(t * 1.3) * .18; g.position.y = Math.sin(t * 2.4) * .012; } };
+}
+
+function brute() {
+  const [root, g] = facing();
+  const body = ball(g, V(0, 1.05, 0), 1, MAT.hide, [1.2, .62, .7]);
+  for (let i = 0; i < 7; i++) {
+    const x = -1.0 + i * .33, y = 1.05 + .62 * Math.sqrt(Math.max(0, 1 - (x / 1.2) ** 2));
+    box(g, V(x, y - .03, 0), [.42, .12, 1.12], MAT.plate, [0, 0, -x / 1.2 * .9]);
+    const c = new THREE.Mesh(new THREE.ConeGeometry(.07, .26, 6), MAT.horn); c.position.set(x, y + .14, 0); c.rotation.z = -x / 1.2 * .9; g.add(c);
+  }
+  for (const s of [-1, 1]) for (const x of [-.6, -.15, .3]) box(g, V(x, .9, s * .64), [.4, .44, .08], MAT.plate, [s * .25, 0, 0]);
+  const head = new THREE.Group(); head.position.set(1.12, .92, 0); g.add(head);
+  ball(head, V(.25, 0, 0), 1, MAT.plate, [.32, .42, .5]);
+  for (const s of [-1, 1]) {
+    limb(head, V(.42, .26, s * .28), V(.75, .38, s * .4), .08, .014, MAT.horn);
+    ball(head, V(.4, -.08, s * .3), .03, MAT.eye);
+  }
+  ball(head, V(.3, -.3, 0), 1, MAT.hide, [.22, .1, .3]);
+  for (const x of [.75, -.7]) for (const s of [-1, 1]) {
+    chain(g, [V(x, .9, s * .42), V(x + .08, .45, s * .56), V(x, .07, s * .56)], [.18, .14, .14], MAT.hide);
+    ball(g, V(x + .05, .07, s * .56), .17, MAT.plate, [1.25, .45, 1.1]);
+  }
+  limb(g, V(-1.15, 1, 0), V(-1.7, .62, 0), .16, .04, MAT.hide);
+  return { g: root, tick(t) { head.rotation.z = -.06 + Math.sin(t * .8) * .07; body.scale.y = .62 * (1 + Math.sin(t * 1.4) * .025); } };
+}
+
+function guardian() {
+  const g = new THREE.Group();
+  for (const s of [-1, 1]) {
+    chain(g, [V(s * .45, 2.2, 0), V(s * .5, 1.3, .4), V(s * .5, .45, -.22)], [.2, .16, .13], MAT.metal);
+    box(g, V(s * .5, .14, .05), [.5, .26, .95], MAT.metalDark);
+    box(g, V(s * .5, 1.32, .55), [.32, .42, .16], MAT.metalDark, [-.2, 0, 0]);
+  }
+  box(g, V(0, 2.25, 0), [1.1, .35, .62], MAT.metalDark);
+  const torso = new THREE.Mesh(new THREE.CylinderGeometry(.8, .56, 1.15, 6), MAT.metal); torso.position.set(0, 2.95, 0); torso.rotation.y = Math.PI / 6; g.add(torso);
+  box(g, V(0, 3.0, .56), [.78, .62, .12], MAT.bronze);
+  for (const [x, y, w] of [[0, 3.12, .5], [-.12, 2.96, .06], [.12, 2.96, .06], [0, 2.84, .32]]) box(g, V(x, y, .625), [w, w > .1 ? .03 : .2, .02], MAT.glyph);
+  for (const s of [-1, 1]) box(g, V(s * .98, 3.38, 0), [.52, .3, .72], MAT.metalDark, [0, 0, s * .32]);
+  const head = new THREE.Group(); head.position.set(0, 3.55, 0); g.add(head);
+  box(head, V(0, .22, 0), [.56, .42, .52], MAT.metal);
+  const visorMat = MAT.seam.clone();
+  box(head, V(0, .24, .265), [.42, .06, .02], visorMat);
+  glow(head, V(0, .24, .3), .7, C.core, .6);
+  box(head, V(0, .48, -.05), [.08, .16, .42], MAT.bronze);
+  chain(g, [V(1.0, 3.2, 0), V(1.08, 2.55, .12), V(1.0, 2.02, .45)], [.13, .11, .1], MAT.metal);
+  box(g, V(1.0, 1.72, .9), [.07, .95, .24], MAT.bronze, [1.0, 0, 0]);
+  chain(g, [V(-1.0, 3.2, 0), V(-1.08, 2.55, .12), V(-1.0, 2.05, .4)], [.13, .11, .1], MAT.metal);
+  limb(g, V(-1.0, 2.05, .4), V(-1.0, 1.95, 1.45), .17, .13, MAT.metalDark);
+  const mz = new THREE.Mesh(new THREE.TorusGeometry(.11, .025, 6, 16), MAT.seam); mz.position.set(-1.0, 1.95, 1.46); g.add(mz);
+  for (const [x, y, z, s] of [[.4, 3.3, .3, .14], [-.5, 2.6, .45, .1], [.5, 1.0, .3, .09], [-.48, .7, .1, .12], [.2, 2.3, .32, .08]]) ball(g, V(x, y, z), s, MAT.lichen, [1, .35, 1]);
+  return { g, tick(t) { visorMat.emissiveIntensity = 1.6 + Math.sin(t * 2.2) * 1; head.rotation.y = Math.sin(t * .3) * .45; } };
+}
+
+function dropship() {
+  const g = new THREE.Group(), lift = 1.3;
+  const sh = new THREE.Shape(); [[-6, .6], [-4.6, 2.2], [3.4, 2.2], [6.6, 1.0], [5.6, .2], [-5, .2]].forEach(([x, y], i) => i ? sh.lineTo(x, y) : sh.moveTo(x, y));
+  const geo = new THREE.ExtrudeGeometry(sh, { depth: 3, bevelEnabled: true, bevelThickness: .15, bevelSize: .15, bevelSegments: 1 }); geo.translate(0, 0, -1.5);
+  const hullM = new THREE.Mesh(geo, MAT.hull); hullM.position.y = lift; g.add(hullM);
+  box(g, V(-.6, 2.4 + lift, 0), [5.2, .8, 2.2], MAT.hull);
+  const ck = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 12), MAT.cockpit); ck.scale.set(1.5, .55, 1.1); ck.position.set(4.3, 2.15 + lift, 0); g.add(ck);
+  for (const s of [-1, 1]) {
+    box(g, V(-.3, 1.0 + lift, s * 1.66), [9.5, .3, .04], MAT.rustPaint);
+    for (let k = 0; k < 7; k++) box(g, V(-3 + k * .95, 1.55 + lift, s * 1.66), [.4, .22, .04], MAT.greenLight);
+    for (const x of [-3.4, 2.6]) {
+      const e = new THREE.Mesh(new THREE.CylinderGeometry(.75, .85, 1.1, 12), MAT.metalDark); e.position.set(x, 1.0 + lift, s * 2.25); g.add(e);
+      const ex = new THREE.Mesh(new THREE.CircleGeometry(.6, 16), MAT.exhaust); ex.rotation.x = Math.PI / 2; ex.position.set(x, .44 + lift, s * 2.25); g.add(ex);
+      glow(g, V(x, .3 + lift, s * 2.25), 1.8, C.ochre, .55);
+      limb(g, V(x, .6 + lift, s * 1.4), V(x + (x < 0 ? -.4 : .4), .08, s * 1.9), .08, .07, MAT.metalDark);
+      box(g, V(x + (x < 0 ? -.4 : .4), .05, s * 1.9), [.6, .1, .5], MAT.metalDark);
+    }
+  }
+  box(g, V(-6.3, .9, 0), [.2, 2.2, 2.4], MAT.metalDark, [0, 0, -.9]);
+  return { g, tick(t) { MAT.exhaust.emissiveIntensity = 1.6 + Math.sin(t * 6) * .6; } };
+}
+
+function turret() {
+  const g = new THREE.Group();
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.2, .7, 8), MAT.metalDark); base.position.y = .35; g.add(base);
+  const ring = new THREE.Mesh(new THREE.CylinderGeometry(.8, .8, .12, 16), MAT.metal); ring.position.y = .76; g.add(ring);
+  const head = new THREE.Group(); head.position.y = .82; g.add(head);
+  box(head, V(0, .42, -.05), [1.15, .7, 1.1], MAT.hull);
+  box(head, V(0, .82, -.2), [.7, .12, .6], MAT.metalDark);
+  box(head, V(.6, .42, -.05), [.04, .5, .8], MAT.rustPaint);
+  for (const s of [-1, 1]) { limb(head, V(s * .23, .45, .4), V(s * .23, .45, 2.0), .09, .08, MAT.metalDark); box(head, V(s * .23, .45, 2.02), [.16, .16, .22], MAT.metal); }
+  box(head, V(-.7, .35, -.1), [.3, .4, .6], MAT.metalDark);
+  box(head, V(.2, .78, .3), [.08, .05, .05], MAT.greenLight);
+  return { g, tick(t) { head.rotation.y = Math.sin(t * .5) * .9; } };
+}
+
+function dome() {
+  const g = new THREE.Group(), R = 5, r = rng(9);
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(R, 48), MAT.rock2); floor.rotation.x = -Math.PI / 2; floor.position.y = .02; g.add(floor);
+  for (let k = 0; k < 7; k++) {
+    const a = k / 7 * Math.PI * 2 + .3, d = 1.4 + r() * 2.3, x = Math.cos(a) * d, z = Math.sin(a) * d, w = .9 + r() * .5;
+    box(g, V(x, .45, z), [w, .9, w * 1.2], MAT.house, [0, -a, 0]);
+    const roof = new THREE.Mesh(new THREE.ConeGeometry(w * .82, .5, 4), MAT.roof); roof.position.set(x, 1.15, z); roof.rotation.y = -a + Math.PI / 4; g.add(roof);
+    box(g, V(x + Math.cos(a) * w * .51, .5, z + Math.sin(a) * w * .51), [.22, .2, .22], MAT.greenLight, [0, -a, 0]);
+  }
+  for (let k = 0; k < 12; k++) {
+    const a = r() * Math.PI * 2, d = .6 + r() * 3.8, x = Math.cos(a) * d, z = Math.sin(a) * d, h = .7 + r() * .8;
+    limb(g, V(x, 0, z), V(x, h * .5, z), .05, .04, MAT.plant);
+    const c = new THREE.Mesh(new THREE.ConeGeometry(.3 + r() * .15, h, 6), MAT.green); c.position.set(x, h * .5 + h * .45, z); g.add(c);
+  }
+  const lamp = new THREE.PointLight(0xfff0d0, 1.4, 12, 2); lamp.position.set(0, 3.2, 0); g.add(lamp);
+  const gl = new THREE.Mesh(new THREE.SphereGeometry(R, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), MAT.glass); g.add(gl);
+  for (let k = 0; k < 8; k++) { const t = new THREE.Mesh(new THREE.TorusGeometry(R, .06, 6, 48, Math.PI), MAT.metal); t.rotation.y = k * Math.PI / 8; g.add(t); }
+  for (const y of [1.6, 3.1, 4.3]) { const t = new THREE.Mesh(new THREE.TorusGeometry(Math.sqrt(R * R - y * y), .05, 6, 48), MAT.metal); t.rotation.x = Math.PI / 2; t.position.y = y; g.add(t); }
+  const rim = new THREE.Mesh(new THREE.CylinderGeometry(R + .25, R + .35, .6, 48, 1, true), MAT.wall); rim.position.y = .3; g.add(rim);
+  const tube = new THREE.Mesh(new THREE.CylinderGeometry(.9, .9, 3.4, 20, 1, true, 0, Math.PI), MAT.glass); tube.rotation.z = Math.PI / 2; tube.rotation.y = Math.PI / 2; tube.position.set(0, 0, R + 1.4); g.add(tube);
+  for (const z of [R + .1, R + 1.4, R + 2.8]) { const t = new THREE.Mesh(new THREE.TorusGeometry(.92, .05, 6, 24, Math.PI), MAT.metal); t.position.set(0, 0, z); g.add(t); }
+  return { g };
+}
+
+function sporeTower() {
+  const g = new THREE.Group(), pts = [];
+  for (let i = 0; i <= 24; i++) { const y = i / 24 * 10; pts.push(new THREE.Vector2(1.1 * (1 - y / 11) ** 1.4 + .18 + .06 * Math.sin(i * 1.7), y)); }
+  for (let i = 1; i <= 12; i++) { const a = i / 12 * Math.PI; pts.push(new THREE.Vector2(Math.max(.03, Math.sin(a) * 1.0 + .12 * (1 - i / 12)), 10 + (1 - Math.cos(a)) * 1.05)); }
+  add(g, new THREE.Mesh(new THREE.LatheGeometry(pts, 14), MAT.plantPale));
+  for (let k = 0; k < 14; k++) { const a = k / 14 * Math.PI * 2; ball(g, V(Math.cos(a) * .98, 11.05, Math.sin(a) * .98), .1, MAT.black); }
+  for (let k = 0; k < 7; k++) {
+    const a = k / 7 * Math.PI * 2 + .2, d = V(Math.cos(a), 0, Math.sin(a));
+    const cv = new THREE.CatmullRomCurve3([d.clone().multiplyScalar(.7).add(V(0, .9, 0)), d.clone().multiplyScalar(1.7).add(V(0, .45, 0)), d.clone().multiplyScalar(3.1).add(V(0, .05, 0))]);
+    add(g, new THREE.Mesh(new THREE.TubeGeometry(cv, 16, .17 - k * .008, 7), MAT.plant));
+  }
+  for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; limb(g, V(Math.cos(a) * .9, .3, Math.sin(a) * .9), V(Math.cos(a) * .25, 9.6, Math.sin(a) * .25), .09, .03, MAT.plant); }
+  const mist = [];
+  const r = rng(13);
+  for (let k = 0; k < 22; k++) {
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: PUFF, color: 0xb6c2bd, transparent: true, depthWrite: false, opacity: .4 }));
+    s.userData = { glow: true, ph: r(), a: r() * Math.PI * 2, sp: .12 + r() * .1 }; g.add(s); mist.push(s);
+  }
+  const place = t => mist.forEach(s => {
+    const u = (s.userData.ph + t * s.userData.sp) % 1, rad = 1 + u * 2.5;
+    s.position.set(Math.cos(s.userData.a + u) * rad, 11.3 + u * 5, Math.sin(s.userData.a + u) * rad);
+    const sc = 1.4 + u * 3.5; s.scale.set(sc, sc, 1); s.material.opacity = .42 * Math.sin(u * Math.PI);
+  });
+  place(4);
+  return { g, tick: place };
+}
+
+function forest() {
+  const g = new THREE.Group(), r = rng(21), sway = [];
+  box(g, V(-.9, .9, 0), [2.6, 1.8, .5], MAT.wall);
+  box(g, V(1.55, .55, .1), [1.9, 1.1, .5], MAT.wall, [0, .08, -.12]);
+  box(g, V(-.9, 1.25, .26), [2.6, .14, .02], MAT.rustPaint);
+  const sample = (cv, n) => cv.getPoints(n);
+  for (let k = 0; k < 5; k++) {
+    const x = -2.6 + k * 1.3 + r() * .4, z = -1.4 - r() * 1.4, h = 3.4 + r() * 2.4;
+    const cv = new THREE.CatmullRomCurve3([V(x, 0, z), V(x + .3 - r() * .6, h * .3, z + .2), V(x - .4 + r() * .8, h * .65, z - .2), V(x + .2, h, z + .3)]);
+    const pts = sample(cv, 8), radii = pts.map((_, i) => .2 * (1 - i / 9) + .03);
+    const tr = new THREE.Group(); g.add(tr); chain(tr, pts, radii, MAT.plant); sway.push([tr, r() * 6]);
+    for (let b = 0; b < 3; b++) {
+      const a = pts[4 + b], d = V(r() - .5, .2 + r() * .4, r() - .5).normalize();
+      const end = a.clone().addScaledVector(d, 1 + r());
+      chain(tr, [a, end], [.07, .02], MAT.plant);
+      for (let hng = 0; hng < 3; hng++) { const top = a.clone().lerp(end, .4 + hng * .25); limb(tr, top, top.clone().add(V(r() * .2 - .1, -1 - r() * 1.4, r() * .2 - .1)), .018, .006, MAT.plantPale); }
+    }
+    ball(tr, pts[8], .22, MAT.plantPale, [1, 1.4, 1]);
+  }
+  for (let k = 0; k < 7; k++) {
+    const x = -2.1 + k * .5 + r() * .2;
+    const cv = new THREE.CatmullRomCurve3([V(x, 0, -1.2 - r()), V(x + .1, 1.9, -.3), V(x - .1, 1.95, .2), V(x + .2, 1.2, .5), V(x + .3, 0, .9 + r())]);
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(cv, 40, .05 + r() * .04, 6), MAT.plant); g.add(tube);
+    cv.getPoints(10).forEach((q, i) => { if (i % 2) { const c = new THREE.Mesh(new THREE.ConeGeometry(.025, .14, 5), MAT.horn); c.position.copy(q); c.rotation.set(r() * 3, r() * 3, r() * 3); g.add(c); } });
+  }
+  const bloom = new THREE.Group(); bloom.position.set(2.4, 0, 1.2); g.add(bloom);
+  limb(bloom, V(0, 0, 0), V(0, .9, 0), .05, .04, MAT.plant);
+  for (let k = 0; k < 7; k++) { const p = ball(bloom, V(Math.cos(k) * .25, 1.0, Math.sin(k) * .25), 1, MAT.plantPale, [.26, .05, .1]); p.rotation.y = -k; p.rotation.z = .5; }
+  ball(bloom, V(0, 1.02, 0), .1, MAT.carapace);
+  return { g, tick(t) { sway.forEach(([tr, ph]) => { tr.rotation.z = Math.sin(t * .6 + ph) * .015; tr.rotation.x = Math.sin(t * .45 + ph) * .012; }); bloom.rotation.y = t * .2; } };
+}
+
+function crystalSeam() {
+  const g = new THREE.Group(), r = rng(31);
+  const geo = new THREE.IcosahedronGeometry(1.4, 1), pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) { const f = .8 + r() * .35; pos.setXYZ(i, pos.getX(i) * f, pos.getY(i) * f, pos.getZ(i) * f); }
+  geo.computeVertexNormals();
+  const rock = new THREE.Mesh(geo, MAT.rock); rock.scale.set(1.5, .6, 1.25); rock.position.y = .35; g.add(rock);
+  for (let k = 0; k < 15; k++) {
+    const a = r() * Math.PI * 2, d = r() * .9, c = new THREE.Mesh(new THREE.OctahedronGeometry(.16 + r() * .14, 0), MAT.crystal);
+    c.scale.set(1, 3 + r() * 3.5, 1); c.position.set(Math.cos(a) * d, .7 + r() * .2, Math.sin(a) * d * .8);
+    c.rotation.set((r() - .5) * .9, r() * 3, (r() - .5) * .9 + Math.cos(a) * d * .5); g.add(c);
+  }
+  const pl = new THREE.PointLight(C.core, 2.2, 7, 2); pl.position.set(0, 1.4, 0); g.add(pl);
+  glow(g, V(0, 1.2, 0), 3.4, C.core, .35);
+  return { g, tick(t) { MAT.crystal.emissiveIntensity = 1.0 + Math.sin(t * 1.4) * .35; pl.intensity = 2 + Math.sin(t * 1.4) * .6; } };
+}
+
+function pit() {
+  const g = new THREE.Group(), r = rng(41);
+  const prof = [[30, 0], [7, 0], [5.4, .35], [4.6, .5], [4.1, .25], [3.7, -.6], [3.45, -3], [3.25, -9]].map(([a, b]) => new THREE.Vector2(a, b));
+  const lathe = new THREE.Mesh(new THREE.LatheGeometry(prof, 56), mat(0x0f1517, { roughness: .95 })); lathe.userData.noFrame = true; g.add(lathe);
+  const deep = new THREE.Mesh(new THREE.CircleGeometry(3.3, 32), MAT.seam); deep.rotation.x = -Math.PI / 2; deep.position.y = -8.6; g.add(deep);
+  const pl = new THREE.PointLight(C.core, 3.5, 12, 1.6); pl.position.y = -4.5; g.add(pl);
+  glow(g, V(0, -2, 0), 6, C.core, .3);
+  for (let k = 0; k < 18; k++) {
+    const a = k / 18 * Math.PI * 2, rr = 4.35;
+    const st = box(g, V(Math.cos(a) * rr, .55, Math.sin(a) * rr), [.95, .55 + r() * .3, .6], MAT.metalDark, [0, -a, (r() - .5) * .2]);
+    if (k % 3 === 0) box(g, V(Math.cos(a) * (rr - .31), .6, Math.sin(a) * (rr - .31)), [.4, .06, .02], MAT.glyph, [0, -a + Math.PI / 2, 0]);
+    st.castShadow = true;
+  }
+  limb(g, V(4.6, .5, 1.0), V(1.6, 4.3, .6), .1, .09, MAT.bronze);
+  limb(g, V(4.4, .5, -1.6), V(1.6, 4.3, .6), .1, .09, MAT.bronze);
+  limb(g, V(3.4, 1.9, .9), V(3.2, 1.9, -1.1), .06, .06, MAT.bronze);
+  limb(g, V(1.6, 4.3, .6), V(1.6, 2.4, .6), .02, .02, MAT.metalDark);
+  limb(g, V(-4.7, .5, -.6), V(-2.6, 2.7, -2.4), .1, .09, MAT.bronze);
+  limb(g, V(-2.6, 2.7, -2.4), V(-4.3, .4, -3.4), .09, .1, MAT.bronze);
+  const mist = [];
+  for (let k = 0; k < 18; k++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: PUFF, color: 0x9fbdb6, transparent: true, depthWrite: false })); s.userData = { glow: true, ph: r(), a: r() * 6.28 }; g.add(s); mist.push(s); }
+  const place = t => mist.forEach(s => {
+    const u = (s.userData.ph + t * .08) % 1, rad = .5 + u * 3;
+    s.position.set(Math.cos(s.userData.a + u * 2) * rad, -2 + u * 9, Math.sin(s.userData.a + u * 2) * rad);
+    const sc = 2 + u * 5; s.scale.set(sc, sc, 1); s.material.opacity = .32 * Math.sin(u * Math.PI);
+  });
+  place(5);
+  return { g, tick: place, noGround: true };
+}
+
+function lineup() {
+  const g = new THREE.Group(), parts = [];
+  const items = [[colonist, "Colonist", "1.8 m"], [() => givenStand(), "Given, standing", "1.9 m hunched"], [() => givenRun(), "Given, running", ""], [() => ancient(), "Ancient", "2.5 m"], [() => ancient(true), "The Eldest", "2.7 m"], [beast, "Swarm beast", ""], [brute, "Brute", ""], [guardian, "Guardian", "4.2 m"]];
+  const gaps = [0, 1.3, 2.9, 4.6, 6.1, 7.9, 10.4, 13.6];
+  items.forEach(([f, name, h], i) => {
+    const m = f(); m.g.position.x = gaps[i]; g.add(m.g); parts.push(m);
+    const l = label(name, h); l.position.set(gaps[i], .22, 1.6); l.scale.set(1.9, .48, 1); g.add(l);
+  });
+  limb(g, V(-1.2, 0, 0), V(-1.2, 4.2, 0), .02, .02, MAT.glyph);
+  for (let m = 1; m <= 4; m++) { box(g, V(-1.2, m, 0), [.3, .02, .02], MAT.glyph); const l = label(`${m} m`); l.position.set(-1.75, m, 0); l.scale.set(1.2, .3, 1); g.add(l); }
+  g.position.x = -6.2;
+  return { g, tick(t) { parts.forEach(p => p.tick && p.tick(t)); }, noTurn: true, noPerson: true };
+}
+
+// ---------- the catalogue ----------
+const GROUPS = ["People", "The Given", "The planet's own", "Machines", "Places"];
+const MODELS = [
+  { id: "lineup", group: 0, name: "Side by side", build: lineup, size: "everything to scale",
+    text: "Everyone at the same scale, against a 1-metre ruler. The ancients' frame is the thing to read: tall, slender and long-handed. The Given keep it and stretch it further.",
+    notes: ["A runner standing hunched is about as tall as a soldier. Upright it would tower over him.", "The guardian is a war machine, built to fight beasts like the brute."] },
+  { id: "colonist", group: 0, name: "Colonist soldier", build: colonist, size: "1.8 m", noPerson: true,
+    text: "The colony's marines: sealed suits against the spores and the mist, a pack, a rifle. Heavy and square next to everything on the planet.",
+    notes: ["The colony's colour is green: the visor, the shoulder stripe, the lights. It is the only green on Orbis.", "Squat and readable from the RTS camera, the opposite of the Given's long lines."] },
+  { id: "ancient", group: 0, name: "Ancient", build: () => ancient(), size: "2.5 m",
+    text: "The colonists who came before you. Human-ish, but taller, slender, with long limbs, long hands and narrow faces. Their doorways, stairs and statues are built to this size.",
+    notes: ["Robes over a thin frame, with bronze-coloured metal for their tools and crests.", "A staff tipped with the crystal: everything they built ran on it.", "They had eyes. The Given don't."] },
+  { id: "runner", group: 1, name: "Given, running", build: givenRun, size: "about 1.5 m long",
+    text: "The most-bred Given and the cheapest thing the heart makes. Fast, on all fours, long arms reaching forward, fingers like tools. They hunt by sound.",
+    notes: ["No eyes: lived generations in the dark. The head tilts to listen.", "Crystal seams along the spine glow faintly: dim on runners, brighter on spitters, brightest on the Eldest.", "A rare relic: a band of the ancients' metal sunk into a wrist.", "Wet skin, ribs showing: fresh from below."] },
+  { id: "standing", group: 1, name: "Given, standing", build: givenStand, size: "1.9 m hunched",
+    text: "When they stop they rise into a hunched, gaunt, human stance: head forward, arms hanging past the knees. The last trace of the person.",
+    notes: ["Standing still at the edge of your lights means listening. Rising at your wall means about to strike or climb.", "One skeleton for runners and spitters, with a run, a hunched idle, rise and drop, and a strike."] },
+  { id: "eldest", group: 1, name: "The Eldest", build: () => ancient(true), size: "2.7 m",
+    text: "The first Given: the ancients' own leaders, who walked down first. Almost upright, at the ancients' full height. The planet's voice at the heart, and the Inherit path's last enemy.",
+    notes: ["The brightest glow of any Given, with crystal grown through the shoulders.", "What's left of a robe, a crown and a band of the ancients' metal.", "They remember."] },
+  { id: "beast", group: 2, name: "Swarm beast", build: beast, size: "1.6 m long",
+    text: "The planet's own fodder: six legs, a carapace, a horned head. The first thing that comes at your walls, from dens and hives, by the hundred.",
+    notes: ["Animals, not people: nothing human about them, so the two kinds read apart at a glance.", "They have eyes, they're patterned like living things, and they come by day as well as night.", "No glow. The glow belongs to the Given."] },
+  { id: "brute", group: 2, name: "Brute", build: brute, size: "3.4 m long",
+    text: "The armoured native beast the ancients fought for generations. Slow and tough, with a battering head that breaks walls.",
+    notes: ["Plates over a hide body, horns forward, small eyes under the brow.", "Ochre, rust and bone, like all the planet's own life."] },
+  { id: "guardian", group: 3, name: "Machine guardian", build: guardian, size: "4.2 m",
+    text: "The ancients' war machines, still following orders. They sleep in the ruins' walls and gates, and wake when anything comes in.",
+    notes: ["A slit visor lit with the crystal's teal, a blade arm and a cannon arm.", "Glyphs on the chest; lichen and age on the plates.", "They won't fire on the Given: to them the Given are still their people."] },
+  { id: "dropship", group: 3, name: "Dropship", build: dropship, size: "13 m long",
+    text: "How the colony comes down. Four lift engines, a long hull, rows of green-lit windows, and the company's rust stripe down the side.",
+    notes: ["The company's colour is rust red; the colonists' is green. Both ride the same ship.", "Grey, worn and functional: realistic and gritty, not shiny."] },
+  { id: "turret", group: 3, name: "Turret", build: turret, size: "2.2 m",
+    text: "The first thing you build on the wall. Twin guns on a turning head, fed by the power grid.",
+    notes: ["Cut the power node behind it and it goes dark.", "Later turrets swap the guns for flamers, tesla coils, lasers or the crystal itself."] },
+  { id: "spore", group: 2, name: "Spore tower", build: sporeTower, size: "12 m",
+    text: "Megaflora that breathes out the mist that blocks orbit. Take them down to bring your uplink up: scans, supply drops, strikes.",
+    notes: ["Pale bone and rust, ribbed, with pores round the bulb.", "The mist is what hides each region from orbit until you clear it."] },
+  { id: "forest", group: 2, name: "Creeping forest", build: forest, size: "about 6 m",
+    text: "The forest that swallows walls. Twisted trunks, thorned tendrils that climb over your defences, and a bloom that heals the swarm.",
+    notes: ["Never green: rust-brown wood, pale tendrils, an ochre heart in the bloom.", "Fire is the answer to it, and it burns toward you as easily as away."] },
+  { id: "crystal", group: 4, name: "Crystal seam", build: crystalSeam, size: "about 3 m across",
+    text: "The prize. The core's energy rises through the rock and hardens into this. It powers everything, and it is what makes the planet fight.",
+    notes: ["The only glowing colour on Orbis, so a seam reads from orbit.", "The Given glow with the same light, because they were made in the heart."] },
+  { id: "dome", group: 4, name: "Colony dome", build: dome, size: "10 m across",
+    text: "Where your people live: a sealed dome you place, with a town that grows inside it as people arrive. The heart of each settlement and the thing the walls protect.",
+    notes: ["Inside are homes, lights and the only green gardens on the planet.", "Tubes link the domes. A breach loses the air, and the Given take the people they reach."] },
+  { id: "pit", group: 4, name: "Pit", build: pit, size: "about 9 m across",
+    text: "A tithe shaft: the hole the ancients walked their people down. A carved rim, fallen scaffolding, warm mist rising, and the heart's light far below. The Given pour out of these.",
+    notes: ["A column of mist marks a pit from orbit.", "Seal it, tap it, descend it or calm it, depending on your path.", "Shaft keepers once escorted the processions here."] },
+];
+
+// ---------- renderer, scene, lights ----------
+const view = $("view"), cv = $("cv");
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true }); }
+catch { view.insertAdjacentHTML("beforeend", `<div class="nogl">This browser can't draw 3D (WebGL is off).</div>`); return; }
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.background = lin(C.void);
+scene.fog = new THREE.Fog(lin(C.void), 20, 60);
+const camera = new THREE.PerspectiveCamera(34, 1, .05, 400);
+const hemi = new THREE.HemisphereLight(0xa9bbb6, 0x1a1410, .6); scene.add(hemi);
+const key = new THREE.DirectionalLight(0xffdcb8, 1.7); key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -.0004; scene.add(key, key.target);
+const rim = new THREE.DirectionalLight(C.core, .9); scene.add(rim);
+const LIGHTS = {
+  dusk: () => { hemi.intensity = .42; key.color.set(0xffd2a8); key.intensity = 1.5; rim.intensity = 1.0; renderer.toneMappingExposure = 1.05; },
+  day: () => { hemi.intensity = 1.0; key.color.set(0xfff4e6); key.intensity = 2.3; rim.intensity = .4; renderer.toneMappingExposure = 1.05; },
+  night: () => { hemi.intensity = .16; key.color.set(0x8fa8ff); key.intensity = .5; rim.intensity = 1.3; renderer.toneMappingExposure = 1.3; },
+};
+const groundTex = canvasTex((g, w) => { const r = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2); r.addColorStop(0, "#1b2428"); r.addColorStop(.55, "#11181b"); r.addColorStop(1, "#07090b"); g.fillStyle = r; g.fillRect(0, 0, w, w); }, 256, 256);
+const ground = new THREE.Mesh(new THREE.CircleGeometry(1, 64), new THREE.MeshStandardMaterial({ map: groundTex, color: lin(0x6a7476), roughness: 1 }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+const ring = new THREE.Mesh(new THREE.RingGeometry(1, 1.012, 96), new THREE.MeshBasicMaterial({ color: lin(0x33454c) }));
+ring.rotation.x = -Math.PI / 2; ring.position.y = .005; scene.add(ring);
+
+const person = colonist().g;
+person.traverse(o => { if (o.isMesh) { o.material = o.material.clone(); o.material.transparent = true; o.material.opacity = .55; o.castShadow = true; } });
+const personTag = label("1.8 m"); personTag.scale.set(1.1, .28, 1); personTag.position.set(0, 2.05, 0); person.add(personTag);
+scene.add(person);
+
+// ---------- state, camera control ----------
+let reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+try { const m = localStorage.getItem("orbis.models.motion"); if (m) reduced = m === "off"; } catch { /* blocked */ }
+const state = { turn: !reduced, life: !reduced, person: true, light: "dusk" };
+let cur = null, model = null, yaw = .5, pitch = .22, dist = 6, distMul = 1, target = V(0, 1, 0), t0 = performance.now(), dragging = false;
+const cache = {};
+
+function frame() {
+  const box3 = new THREE.Box3();
+  model.g.updateMatrixWorld(true);
+  model.g.traverse(o => { if (o.isMesh && o.geometry && !o.userData.noFrame) { o.geometry.computeBoundingBox(); const b = o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld); box3.union(b); } });
+  const size = box3.getSize(V(0, 0, 0)), center = box3.getCenter(V(0, 0, 0));
+  const foot = Math.max(size.x, size.z) / 2;
+  person.visible = state.person && !model.noPerson && !cur.noPerson;
+  if (person.visible) { person.position.set(center.x + foot + .7, 0, center.z + Math.min(foot * .3, 1)); }
+  const R = Math.max(size.y * .62, size.x * .62, size.z * .62, 1.1) + (person.visible ? .5 : 0);
+  target.set(center.x + (person.visible ? .35 : 0), model.noGround ? Math.max(center.y, 1) : Math.max(size.y * .46, .5), center.z);
+  const tanH = Math.tan(camera.fov * Math.PI / 360), wide = Math.max(size.x, size.z) / 2 + (person.visible ? .9 : 0);
+  dist = Math.max(size.y * (camera.aspect < 1 ? .78 : .62) / tanH, wide * 1.12 / (tanH * camera.aspect), 2.4) + Math.min(Math.max(size.x, size.z) * .25, 3);
+  ground.visible = ring.visible = !model.noGround;
+  ground.scale.setScalar(Math.max(dist * 8, 40));
+  ring.scale.setScalar(foot + .5);
+  scene.fog.near = dist * 1.1; scene.fog.far = dist * 3.2;
+  const sc = key.shadow.camera, s = Math.max(R * 1.4, 3);
+  sc.left = sc.bottom = -s; sc.right = sc.top = s; sc.near = .1; sc.far = s * 8; sc.updateProjectionMatrix();
+  key.position.copy(center).add(V(s * .9, s * 1.8, s * 1.1)); key.target.position.copy(center);
+  rim.position.copy(center).add(V(-s, s * .6, -s * 1.2));
+}
+
+function show(id) {
+  const entry = MODELS.find(m => m.id === id) || MODELS[0];
+  if (model) scene.remove(model.g);
+  cur = entry;
+  model = cache[entry.id] || (cache[entry.id] = entry.build());
+  model.g.traverse(o => { if (o.isMesh) { o.castShadow = !o.material.transparent; o.receiveShadow = true; } });
+  scene.add(model.g);
+  model.g.rotation.y = 0; distMul = 1; yaw = model.noTurn ? 0 : .5; pitch = model.noGround ? .5 : .2;
+  frame();
+  document.querySelectorAll(".pick").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === entry.id)));
+  $("info").innerHTML = `<p class="k">${GROUPS[entry.group]}</p><h2>${entry.name}</h2><span class="size">${entry.size}</span><p>${entry.text}</p><ul>${entry.notes.map(n => `<li>${n}</li>`).join("")}</ul>`;
+  try { history.replaceState(null, "", `#${entry.id}`); } catch { /* sandboxed */ }
+}
+
+$("groups").innerHTML = GROUPS.map((gname, gi) => `<div class="group"><h3>${gname}</h3><div class="picks">${MODELS.filter(m => m.group === gi).map(m => `<button type="button" class="pick" data-id="${m.id}">${m.name}</button>`).join("")}</div></div>`).join("");
+$("groups").addEventListener("click", e => { const b = e.target.closest(".pick"); if (b) show(b.dataset.id); });
+
+const setBtn = (id, on, text) => { const b = $(id); b.setAttribute("aria-pressed", String(on)); if (text) b.textContent = text; };
+const saveMotion = () => { try { localStorage.setItem("orbis.models.motion", state.turn || state.life ? "on" : "off"); } catch { /* blocked */ } };
+$("b-turn").addEventListener("click", () => { state.turn = !state.turn; setBtn("b-turn", state.turn); saveMotion(); });
+$("b-life").addEventListener("click", () => { state.life = !state.life; setBtn("b-life", state.life); saveMotion(); });
+$("b-scale").addEventListener("click", () => { state.person = !state.person; setBtn("b-scale", state.person); frame(); });
+$("b-light").addEventListener("click", () => {
+  const order = ["dusk", "night", "day"]; state.light = order[(order.indexOf(state.light) + 1) % 3];
+  LIGHTS[state.light](); $("b-light").textContent = `Light: ${state.light}`;
+});
+setBtn("b-turn", state.turn); setBtn("b-life", state.life);
+
+let px = 0, py = 0; const pointers = new Map(); let pinch0 = 0, mul0 = 1;
+cv.addEventListener("pointerdown", e => { cv.setPointerCapture(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]); dragging = true; px = e.clientX; py = e.clientY;
+  if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); mul0 = distMul; } });
+cv.addEventListener("pointermove", e => {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, [e.clientX, e.clientY]);
+  if (pointers.size === 2) { const [a, b] = [...pointers.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch0) distMul = Math.min(2.2, Math.max(.35, mul0 * pinch0 / d)); return; }
+  yaw -= (e.clientX - px) * .008; pitch = Math.min(1.3, Math.max(-.05, pitch + (e.clientY - py) * .006)); px = e.clientX; py = e.clientY;
+});
+const up = e => { pointers.delete(e.pointerId); if (!pointers.size) dragging = false; pinch0 = 0; };
+cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+cv.addEventListener("wheel", e => { e.preventDefault(); distMul = Math.min(2.2, Math.max(.35, distMul * Math.exp(e.deltaY * .001))); }, { passive: false });
+addEventListener("keydown", e => {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  const i = MODELS.indexOf(cur);
+  if (e.key === "ArrowRight") show(MODELS[(i + 1) % MODELS.length].id);
+  else if (e.key === "ArrowLeft") show(MODELS[(i - 1 + MODELS.length) % MODELS.length].id);
+});
+
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  if (model) frame();
+}
+new ResizeObserver(resize).observe(view);
+
+let last = performance.now(), lifeT = 4;
+function loop(now) {
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (state.turn && !dragging) yaw += model.noTurn ? 0 : dt * .32;
+  if (state.life) lifeT += dt;
+  if (model.tick) model.tick(lifeT);
+  const d = dist * distMul;
+  camera.position.set(target.x + Math.sin(yaw) * Math.cos(pitch) * d, target.y + Math.sin(pitch) * d, target.z + Math.cos(yaw) * Math.cos(pitch) * d);
+  camera.lookAt(target);
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+LIGHTS.dusk();
+const start = MODELS.find(m => m.id === location.hash.slice(1)) ? location.hash.slice(1) : "lineup";
+resize(); show(start); requestAnimationFrame(loop);
+addEventListener("hashchange", () => { const id = location.hash.slice(1); if (cur && id !== cur.id && MODELS.some(m => m.id === id)) show(id); });
+})();
+</script>
+</body>
+</html>

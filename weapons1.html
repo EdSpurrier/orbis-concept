@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbis Weapons Round 1</title>
+<meta name="description" content="Orbis weapons, round 1: the weapon families, what each is good against, what it costs, and where it sits in the tech tree.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%237656c9'/%3E%3Cpath d='M6 19c6-3 14-3 20 0' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<style>
+  table.plain { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.plain th, table.plain td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.plain th { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  table.matrix td, table.matrix th { text-align: center; }
+  table.matrix td:first-child, table.matrix th:first-child { text-align: left; }
+  .r2 { color: var(--green); font-weight: 800; } .r1 { color: var(--green); } .r0 { color: var(--muted); }
+  .rm { color: var(--red); font-weight: 700; }
+  .fam { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--surface); }
+  .fam h3 { margin: 6px 0 4px; }
+  .fam .feel { font-size: 13.5px; color: var(--muted); margin: 0 0 8px; }
+  .fam dl { display: grid; grid-template-columns: 92px 1fr; gap: 4px 10px; margin: 0; font-size: 13.5px; }
+  .fam dt { font-weight: 800; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; padding-top: 2px; }
+  .fam dd { margin: 0; }
+  .wrap-scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="f-violet"/><path d="M6 19c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none"/></svg>
+      <span>Orbis weapons 1</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="index.html">☰ Menu</a>
+      <a href="#shape">The shape</a>
+      <a href="#targets">Targets</a>
+      <a href="#families">Families</a>
+      <a href="#matrix">Who beats what</a>
+      <a href="#costs">Costs</a>
+      <a href="#tree">Tech tree</a>
+      <a href="#world">The world</a>
+      <a href="#questions">Weapons round 1</a>
+      <a href="lore1.html">Lore 1 →</a>
+    </nav>
+    <button class="theme" id="theme" type="button" title="Switch light / dark">Theme</button>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+
+  <section class="hero">
+    <div class="kicker">Orbis · weapons round 1 · towards concept v2</div>
+    <h1>What you fight with</h1>
+    <p class="pitch">Nine weapon families, from your list. Each is good against some of what the planet sends and bad
+      against the rest. Each costs something different: mass, power, noise, or the planet's patience. Each comes
+      from a different part of the tech tree. The point is that no single weapon holds a wall, so a base is a mix,
+      and the mix you choose says which path you're on.</p>
+  </section>
+
+  <!-- SHAPE ------------------------------------------------------------------------------------------>
+  <section class="part" id="shape">
+    <div class="part-head"><span class="num">00</span><h2>The shape of it</h2></div>
+    <p class="takeaway">Three ideas carry the whole page. Together they turn weapons into choices rather than upgrades.</p>
+    <div class="grid3">
+      <div class="card">
+        <h3>1 · Soft counters</h3>
+        <p class="small">Every family does extra or reduced damage against each kind of target (section 01).
+          Nothing is useless, but the right weapon does two or three times the work. A wall of flamers melts a runner
+          swarm and barely scratches a brute. That's the Total Annihilation and They Are Billions feel: you read the
+          wave and build the answer.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Different costs</h3>
+        <p class="small">Guns and explosives cost <b>mass</b>. Energy weapons draw <b>power</b> from the grid
+          every shot, so a big fight can brown out your base. Loud weapons raise the region's <b>irritation</b>, the
+          lore page's agitation by region. Material weapons cost the planet's <b>patience</b>: the substance itself
+          draws the Given.</p>
+      </div>
+      <div class="card">
+        <h3>3 · Paths have signatures</h3>
+        <p class="small">The trunk gives everyone guns, explosives and fire. Then each branch adds its own families:
+          material gets plasma, the substance's own weapons and the big explosives; wildlife gets natural weapons;
+          ancients gets the ancients' tech. A late base shows its path in its turret line.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TARGETS ---------------------------------------------------------------------------------------->
+  <section class="part" id="targets">
+    <div class="part-head"><span class="num">01</span><h2>What you're shooting at</h2></div>
+    <p class="takeaway">Six target classes, from the lore page's two lineages plus the machines and the rival. Each
+      weapon family is rated against each one (section 03).</p>
+    <table class="plain">
+      <tr><th>Class</th><th>Who</th><th>What hurts it</th></tr>
+      <tr><td><span class="tag violet">Swarm</span></td><td>the Given: runners, spitters. Many, fast, soft, packed close.</td>
+        <td>anything that hits an area or chains: fire, lightning, explosives</td></tr>
+      <tr><td><span class="tag green">Beast</span></td><td>the planet's own: hide and carapace, in packs</td>
+        <td>steady damage: guns, lasers, plasma</td></tr>
+      <tr><td><span class="tag green">Armoured</span></td><td>brutes, giants: few, huge, heavy plate</td>
+        <td>armour-piercing: plasma, cannon, acid, the substance's weapons</td></tr>
+      <tr><td><span class="tag green">Plant</span></td><td>megaflora: the creeping forest, spore towers, the bloom</td>
+        <td>fire above all; explosives</td></tr>
+      <tr><td><span class="tag blue">Machine</span></td><td>the ancients' guardians, and the rival's vehicles</td>
+        <td>lightning (it fries them), plasma, guns; ancients' tech can switch guardians off</td></tr>
+      <tr><td><span class="tag blue">Structure</span></td><td>the rival's base, nests and seals, ruins in the way</td>
+        <td>explosives, plasma, artillery</td></tr>
+    </table>
+  </section>
+
+  <!-- FAMILIES --------------------------------------------------------------------------------------->
+  <section class="part" id="families">
+    <div class="part-head"><span class="num">02</span><h2>The nine families</h2></div>
+    <p class="takeaway">Your list, each with its feel, what it's for, what it costs and where it comes from. Plasma is
+      different from lasers: a laser is light, instant and precise; plasma is matter, slow and heavy. Explosives are
+      kept apart from bullets as you asked: rockets, mortars and grenades count as explosives.</p>
+    <div class="grid3">
+
+      <div class="fam"><span class="tag amber">trunk</span>
+        <h3>Projectiles</h3>
+        <p class="feel">bullets, cannon shells, flak, later railguns</p>
+        <dl>
+          <dt>For</dt><dd>everything a little; the reliable backbone. Cannon and rail for armour.</dd>
+          <dt>Weak</dt><dd>swarms (one target at a time); plants</dd>
+          <dt>Costs</dt><dd>mass to build; no power per shot; medium noise</dd>
+          <dt>Examples</dt><dd>machine-gun turret (today's), tank cannon, flak, the railgun at T3</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag amber">trunk</span>
+        <h3>Explosives</h3>
+        <p class="feel">grenades, rockets, mortars, artillery, missiles; nukes at the top</p>
+        <dl>
+          <dt>For</dt><dd>swarms (splash), structures, nests; artillery reaches the pits</dd>
+          <dt>Weak</dt><dd>fast single targets; close range (it hits your walls too)</dd>
+          <dt>Costs</dt><dd>mass; the loudest family: big irritation</dd>
+          <dt>Examples</dt><dd>grenadiers, mortar pits, rocket batteries, long-range artillery, the nuke (material T4)</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag amber">trunk</span>
+        <h3>Fire</h3>
+        <p class="feel">flamethrowers, napalm, fire bombs, burning ground</p>
+        <dl>
+          <dt>For</dt><dd>swarms at the wall; megaflora above all; burning ground denies a gap</dd>
+          <dt>Weak</dt><dd>armour, machines; short range; rain puts it out</dd>
+          <dt>Costs</dt><dd>mass (fuel); medium noise; spreads into forest, sometimes toward you</dd>
+          <dt>Examples</dt><dd>flamer turret, napalm mortar, a burning moat (fire in a trench)</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag blue">trunk T2</span>
+        <h3>Lightning</h3>
+        <p class="feel">tesla coils, arc guns, chain lightning, stun fields, EMP</p>
+        <dl>
+          <dt>For</dt><dd>swarms (chains through packed bodies); machines (fries them); wet ground and rain make it
+            jump further</dd>
+          <dt>Weak</dt><dd>plants; lone armoured targets</dd>
+          <dt>Costs</dt><dd>power every shot (the turtle's weapon: a strong grid holds the line); low noise</dd>
+          <dt>Examples</dt><dd>tesla tower, arc-gun infantry, stun fence, EMP shell against the rival</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag blue">trunk T2</span>
+        <h3>Lasers</h3>
+        <p class="feel">beams: instant, precise, silent</p>
+        <dl>
+          <dt>For</dt><dd>single tough targets, flyers, beasts; the quietest weapon there is</dd>
+          <dt>Weak</dt><dd>swarms (one at a time); mist, rain and dust cut its range</dd>
+          <dt>Costs</dt><dd>power; almost no noise: the way to fight without raising irritation</dd>
+          <dt>Examples</dt><dd>point-defence laser, beam tank, orbital laser (uplink, T3)</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag amber">material</span>
+        <h3>Plasma</h3>
+        <p class="feel">super-heated matter: slow glowing bolts that melt what they hit</p>
+        <dl>
+          <dt>For</dt><dd>armour (melts plate), machines, structures; splash on impact</dd>
+          <dt>Weak</dt><dd>fast swarms (slow bolts miss); expensive</dd>
+          <dt>Costs</dt><dd>power and mass both; medium noise; runs hot (fires in bursts)</dd>
+          <dt>Examples</dt><dd>plasma cannon tank, plasma mortar, the siege projector</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag amber">material</span>
+        <h3>The substance's own</h3>
+        <p class="feel">the core's energy, refined and fired: crystal shards, core lances, the resonance charge</p>
+        <dl>
+          <dt>For</dt><dd>everything, hard. The strongest damage in the game.</dd>
+          <dt>Weak</dt><dd>nothing on the battlefield; the cost is elsewhere</dd>
+          <dt>Costs</dt><dd>refined substance; every shot raises irritation a lot, and the Given are drawn to it
+            (they glow with the same thing)</dd>
+          <dt>Examples</dt><dd>shard cannon, core lance, the core bomb (material T4)</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag green">wildlife</span>
+        <h3>Natural</h3>
+        <p class="feel">acid, venom, spores, lures, tamed beasts: the planet's weapons, borrowed</p>
+        <dl>
+          <dt>For</dt><dd>acid for armour; spores to slow and blind; lures to pull a wave away; tamed beasts as
+            troops</dd>
+          <dt>Weak</dt><dd>machines; slow to set up; things that are grown, not built</dd>
+          <dt>Costs</dt><dd>specimens; silent, and they <i>lower</i> irritation (the planet doesn't mind its own)</dd>
+          <dt>Examples</dt><dd>acid sprayer, spore pod field, a lure that draws a wave to a killing ground, tamed brutes</dd>
+        </dl>
+      </div>
+
+      <div class="fam"><span class="tag violet">ancients</span>
+        <h3>The ancients' tech</h3>
+        <p class="feel">what they built to fight the beasts, then to manage the Given: resonance, shields, gravity</p>
+        <dl>
+          <dt>For</dt><dd>the Given above all: resonance stuns them or turns them for a while (it's the tithe's
+            call). Shields for your walls. Guardians switched to your side.</dd>
+          <dt>Weak</dt><dd>beasts (they never answered the call); scarce, from artefacts</dd>
+          <dt>Costs</dt><dd>artefacts; low noise; every use teaches you more of the story</dd>
+          <dt>Examples</dt><dd>resonance pylon, shield emitter, gravity well, a woken guardian</dd>
+        </dl>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MATRIX ----------------------------------------------------------------------------------------->
+  <section class="part" id="matrix">
+    <div class="part-head"><span class="num">03</span><h2>Who beats what</h2></div>
+    <p class="takeaway">A first pass at the damage table. <span class="r2">++</span> double damage or more,
+      <span class="r1">+</span> extra, <span class="r0">·</span> normal, <span class="rm">−</span> reduced. Tuned in
+      play; this only sets the intent.</p>
+    <div class="card wrap-scroll">
+      <table class="plain matrix">
+        <tr><th>Family</th><th>Swarm</th><th>Beast</th><th>Armoured</th><th>Plant</th><th>Machine</th><th>Structure</th></tr>
+        <tr><td><b>Projectiles</b></td><td class="r0">·</td><td class="r1">+</td><td class="r0">·</td><td class="rm">−</td><td class="r0">·</td><td class="r0">·</td></tr>
+        <tr><td><b>Explosives</b></td><td class="r2">++</td><td class="r0">·</td><td class="r0">·</td><td class="r1">+</td><td class="r0">·</td><td class="r2">++</td></tr>
+        <tr><td><b>Fire</b></td><td class="r2">++</td><td class="r1">+</td><td class="rm">−</td><td class="r2">++</td><td class="rm">−</td><td class="r0">·</td></tr>
+        <tr><td><b>Lightning</b></td><td class="r2">++</td><td class="r0">·</td><td class="r0">·</td><td class="rm">−</td><td class="r2">++</td><td class="r0">·</td></tr>
+        <tr><td><b>Lasers</b></td><td class="rm">−</td><td class="r1">+</td><td class="r1">+</td><td class="r0">·</td><td class="r1">+</td><td class="r0">·</td></tr>
+        <tr><td><b>Plasma</b></td><td class="r0">·</td><td class="r1">+</td><td class="r2">++</td><td class="r1">+</td><td class="r1">+</td><td class="r2">++</td></tr>
+        <tr><td><b>The substance's own</b></td><td class="r1">+</td><td class="r1">+</td><td class="r2">++</td><td class="r1">+</td><td class="r1">+</td><td class="r1">+</td></tr>
+        <tr><td><b>Natural</b></td><td class="r1">+</td><td class="rm">−</td><td class="r2">++</td><td class="rm">−</td><td class="rm">−</td><td class="r0">·</td></tr>
+        <tr><td><b>Ancients' tech</b></td><td class="r2">++</td><td class="rm">−</td><td class="r0">·</td><td class="r0">·</td><td class="r2">++</td><td class="r0">·</td></tr>
+      </table>
+      <p class="small muted" style="margin-top:8px">The pattern: the swarm falls to area weapons; armour to plasma, acid and
+        the substance; plants to fire; machines to lightning and the ancients' tech. Every target has two or three
+        good answers, from different paths.</p>
+    </div>
+  </section>
+
+  <!-- COSTS ------------------------------------------------------------------------------------------>
+  <section class="part" id="costs">
+    <div class="part-head"><span class="num">04</span><h2>What each one costs you</h2></div>
+    <p class="takeaway">The flow economy (mass and energy, Total Annihilation style) plus the two meters from the lore
+      page. Weapons spend different things, so the economy shapes what you field.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 300" style="min-width:640px" role="img" aria-label="Chart: each weapon family placed by how loud it is (left quiet, right loud) and what it spends (mass at the top, power at the bottom). Lasers and lightning are quiet and use power; projectiles use mass at medium noise; explosives are loud and use mass; the substance's weapons are the loudest of all; natural weapons are silent and calm the planet; ancients' tech is quiet.">
+        <rect x="60" y="20" width="680" height="240" rx="10" class="f-muted" opacity="0.08"/>
+        <path d="M60 140 H740" class="s-line" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <text x="66" y="38" font-size="11" font-weight="800" class="mut">spends mass</text>
+        <text x="66" y="252" font-size="11" font-weight="800" class="mut">spends power</text>
+        <text x="60" y="282" font-size="11" class="mut">quiet: irritation barely moves</text>
+        <text x="740" y="282" text-anchor="end" font-size="11" class="mut">loud: the region boils</text>
+        <path d="M250 278 H560" class="s-muted" stroke-width="2"/><path d="M558 273 L568 278 L558 283 Z" class="f-muted"/>
+        <g font-size="12" font-weight="800">
+          <circle cx="110" cy="152" r="9" class="f-green"/><text x="126" y="156" class="f-green-t">Natural (calms it)</text>
+          <circle cx="190" cy="214" r="9" class="f-blue"/><text x="206" y="218" class="f-blue-t">Lasers</text>
+          <circle cx="250" cy="188" r="9" class="f-violet"/><text x="266" y="192" class="f-violet-t">Ancients' tech</text>
+          <circle cx="300" cy="232" r="9" class="f-blue"/><text x="316" y="236" class="f-blue-t">Lightning</text>
+          <circle cx="400" cy="74" r="9" class="f-amber"/><text x="416" y="78" class="f-amber-t">Projectiles</text>
+          <circle cx="430" cy="110" r="9" class="f-red"/><text x="446" y="114" class="f-red-t">Fire</text>
+          <circle cx="490" cy="150" r="9" class="f-amber"/><text x="506" y="154" class="f-amber-t">Plasma (both)</text>
+          <circle cx="600" cy="56" r="9" class="f-red"/><text x="616" y="60" class="f-red-t">Explosives</text>
+          <circle cx="670" cy="120" r="9" class="f-red"/><text x="560" y="100" class="f-red-t">The substance's own</text>
+        </g>
+      </svg>
+      </div>
+      <p class="cap">A turtle with a strong grid holds a quiet line: lightning and lasers. A war economy fields guns and
+        explosives and lives with the noise. The substance's weapons win any fight, and bring the next one sooner.</p>
+    </figure>
+  </section>
+
+  <!-- TREE ------------------------------------------------------------------------------------------->
+  <section class="part" id="tree">
+    <div class="part-head"><span class="num">05</span><h2>Where they sit in the tech tree</h2></div>
+    <p class="takeaway">The trunk gives everyone the basics; each branch adds its own families and its own top weapon.</p>
+    <table class="plain">
+      <tr><th>Tier</th><th><span class="tag amber">Trunk</span> (everyone)</th><th><span class="tag amber">Material</span></th><th><span class="tag green">Wildlife</span></th><th><span class="tag violet">Ancients</span></th></tr>
+      <tr><td><b>T1</b> landing</td><td>machine guns, cannon, grenades, mortars, flamers</td><td>·</td><td>·</td><td>·</td></tr>
+      <tr><td><b>T2</b></td><td>tesla and arc guns, lasers, rockets, napalm</td><td>plasma, heavy cannon</td><td>acid, spores, lures</td><td>resonance, shields</td></tr>
+      <tr><td><b>T3</b></td><td>railguns, artillery, the orbital laser (uplink)</td><td>the substance's own: shard cannon, core lance; missiles</td><td>tamed beasts as troops, spore fields</td><td>gravity wells, woken guardians</td></tr>
+      <tr><td><b>T4</b> ending</td><td>·</td><td>the nuke and the core bomb (Dominate)</td><td>calling the megafauna (Stabilise)</td><td>the tithe's call: command the Given (Inherit)</td></tr>
+    </table>
+    <p class="small muted" style="margin-top:10px">Hybrids from v1's mixing rules: ancient-alloy war machines
+      (material + ancients: plasma behind shields), the ancients' living tech (wildlife + ancients: resonance through
+      tamed beasts), bio-weapons (material + wildlife: acid shells, if you can hold the bond).</p>
+  </section>
+
+  <!-- WORLD ------------------------------------------------------------------------------------------>
+  <section class="part" id="world">
+    <div class="part-head"><span class="num">06</span><h2>Weapons and the world</h2></div>
+    <p class="takeaway">Orbis already has weather, day and night, forest, mist and a living planet. Weapons should feel
+      it.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Weather and terrain</h3>
+        <ul class="points small">
+          <li><b>Rain</b> puts out fire and shortens it; it makes lightning jump further (wet ground, wet bodies).</li>
+          <li><b>Mist and dust</b> cut laser range (the light scatters); guns and explosives don't care.</li>
+          <li><b>Forest burns.</b> Fire spreads into megaflora: a weapon against the creeping forest, and a danger to
+            your own outposts in the trees.</li>
+          <li><b>Explosives scar the land:</b> craters slow units. The biggest blasts reshape a ridge (material's
+            terraforming, by force).</li>
+          <li><b>Night:</b> muzzle flashes and fire light the dark and draw the Given (they hunt by sound, and light
+            draws the night swarm, as in v1).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>The look and sound (what Orbis has already)</h3>
+        <ul class="points small">
+          <li>The effects library Orbis plays from (978 converted effects in Atlas) already has fire, explosions,
+            lightning impacts, sparks and blood. Fire, explosives and lightning can look right early.</li>
+          <li>Tracers and muzzle flashes are in today; beams (lasers) need a beam effect, and the player supports
+            them.</li>
+          <li>Each family gets its own sound: the dull thud of mortars, the crack of lightning, the hiss of plasma, the
+            silence of a laser.</li>
+          <li>Effects are budgeted per kind, so a battle of thousands stays fast (the combat fix earlier today).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUESTIONS --------------------------------------------------------------------------------------->
+  <section class="part" id="questions">
+    <div class="part-head"><span class="num">?</span><h2>Weapons round 1: pick what you like</h2></div>
+    <p class="takeaway">Pick any number on most questions. "My own idea" opens a note. Your answers stay in this browser.
+      When you're done, copy them and paste them into the chat.</p>
+    <div class="progress"><i id="progress" style="width:0%"></i></div>
+    <div id="qs"></div>
+    <div class="card">
+      <h3>Anything else about weapons</h3>
+      <textarea id="extra" placeholder="weapons you love from other games, what's missing, what's wrong..."></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn" id="copy" type="button">Copy my answers</button>
+      <button class="btn ghost" id="clear" type="button">Clear</button>
+      <span id="copied" aria-live="polite"></span>
+    </div>
+    <pre class="out" id="out" hidden></pre>
+  </section>
+
+</div>
+</main>
+
+<footer><div class="wrap">Orbis weapons round 1 · <a href="index.html">Menu</a> · <a href="lore1.html">Lore round 1</a> · <a href="v1/">Concept v1</a></div></footer>
+
+<script src="weapons1.js"></script>
+</body>
+</html>

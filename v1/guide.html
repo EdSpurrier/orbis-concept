@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbis v1 Guide</title>
+<meta name="description" content="Design lessons from thirty years of real-time strategy games, with diagrams, and where Orbis fits.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%232f6bd6'/%3E%3Cpath d='M6 19c6-3 14-3 20 0' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="f-blue"></circle><path d="M6 19c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none"></path></svg>
+      <span>What makes a good RTS</span>
+    </a>
+    <nav class="nav" id="nav"><a href="index.html">← v1</a>
+      <a href="#pillars">Pillars</a>
+      <a href="#attention">Attention</a>
+      <a href="#fights">Fights</a>
+      <a href="#counters">Counters</a>
+      <a href="#economy">Economy</a>
+      <a href="#information">Information</a>
+      <a href="#pacing">Pacing</a>
+      <a href="#content">Content</a>
+      <a href="#scale">Scale</a>
+      <a href="#history">History</a>
+      <a href="#orbis">Orbis</a>
+      <a href="#taste">Your taste</a>
+      <a href="#sources">Sources</a>
+      
+            
+    <a href="taste.html">Your taste →</a></nav>
+    <button class="theme" id="theme" type="button" title="Switch light / dark">Theme: auto</button>
+  </div>
+</header><div class="signed"><div class="wrap"><b>Signed off</b> · Orbis concept v1 · 7 November 2026 · read-only · <a href="index.html">all v1 pages</a></div></div>
+
+<main id="top">
+<div class="wrap">
+
+  <!-- HERO ------------------------------------------------------------------------------------------>
+  <section class="hero" id="pillars">
+    <div class="kicker">Design notes for Orbis · November 2026</div>
+    <h1>What makes a good RTS</h1>
+    <p class="lede">Thirty years of real-time strategy, boiled down to eight ideas that designers, critics and players
+      keep coming back to. Each one has a diagram, then the last part asks where Orbis fits and what you like.</p>
+
+    <div class="pillars">
+      <a class="pillar" href="#attention">
+        <div class="ico f-bluesoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" class="s-blue" stroke-width="2"></circle><circle cx="12" cy="12" r="3" class="f-blue"></circle></svg></div>
+        <div class="n">01</div><h3>Attention</h3><p>Many jobs, one pair of hands.</p>
+      </a>
+      <a class="pillar" href="#attention">
+        <div class="ico f-violetsoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 20 L10 12 L14 15 L21 5" fill="none" class="s-violet" stroke-width="2.4"></path></svg></div>
+        <div class="n">02</div><h3>Thinking over clicking</h3><p>Depth without a 300 APM floor.</p>
+      </a>
+      <a class="pillar" href="#fights">
+        <div class="ico f-redsoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 19 L19 5 M5 5 L19 19" class="s-red" stroke-width="2.4"></path></svg></div>
+        <div class="n">03</div><h3>Graded fights</h3><p>Win or lose by degrees, and retreat.</p>
+      </a>
+      <a class="pillar" href="#counters">
+        <div class="ico f-ambersoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3 L21 19 L3 19 Z" fill="none" class="s-amber" stroke-width="2.2"></path></svg></div>
+        <div class="n">04</div><h3>Soft counters</h3><p>Mixed armies, terrain matters.</p>
+      </a>
+      <a class="pillar" href="#economy">
+        <div class="ico f-greensoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 17 C8 17 8 7 13 7 S18 13 21 13" fill="none" class="s-green" stroke-width="2.4"></path></svg></div>
+        <div class="n">05</div><h3>Economy sets the pace</h3><p>Two to four resources, contested ground.</p>
+      </a>
+      <a class="pillar" href="#information">
+        <div class="ico f-bluesoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M2 12 C6 5 18 5 22 12 C18 19 6 19 2 12 Z" fill="none" class="s-blue" stroke-width="2"></path><circle cx="12" cy="12" r="3" class="f-blue"></circle></svg></div>
+        <div class="n">06</div><h3>Information</h3><p>Fog, scouting, answers to stealth.</p>
+      </a>
+      <a class="pillar" href="#pacing">
+        <div class="ico f-violetsoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3 12 C6 4 9 20 12 12 S18 6 21 12" fill="none" class="s-violet" stroke-width="2.2"></path></svg></div>
+        <div class="n">07</div><h3>Pacing &amp; comebacks</h3><p>No game decided in minute five.</p>
+      </a>
+      <a class="pillar" href="#content">
+        <div class="ico f-greensoft-bg"><svg width="22" height="22" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" class="s-green" stroke-width="2"></rect><path d="M8 12 L11 15 L16 9" fill="none" class="s-green" stroke-width="2.2"></path></svg></div>
+        <div class="n">08</div><h3>Content &amp; access</h3><p>Campaigns, AI, mods, a readable UI.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- 1 + 2 ATTENTION ------------------------------------------------------------------------------>
+  <section class="part" id="attention">
+    <div class="part-head"><span class="num">01 · 02</span><h2>Attention is the real resource</h2></div>
+    <p class="takeaway">An RTS hands you more jobs than you can do at once. The good ones make choosing what to look at
+      the skill, not how fast you can click.</p>
+    <div class="grid2">
+      <figure class="card">
+        <h3>The loop you juggle</h3>
+        <svg class="dia" viewBox="0 0 520 360" role="img" aria-label="The RTS loop: gather, build, research, produce, fight, expand, around your attention">
+          <circle cx="260" cy="180" r="130" fill="none" class="s-line" stroke-width="10"></circle>
+          <g class="f-muted">
+            <path d="M -7 -7 L 7 0 L -7 7 Z" transform="translate(325 67.4) rotate(30)"></path>
+            <path d="M -7 -7 L 7 0 L -7 7 Z" transform="translate(390 180) rotate(90)"></path>
+            <path d="M -7 -7 L 7 0 L -7 7 Z" transform="translate(325 292.6) rotate(150)"></path>
+            <path d="M -7 -7 L 7 0 L -7 7 Z" transform="translate(195 292.6) rotate(210)"></path>
+            <path d="M -7 -7 L 7 0 L -7 7 Z" transform="translate(130 180) rotate(270)"></path>
+            <path d="M -7 -7 L 7 0 L -7 7 Z" transform="translate(195 67.4) rotate(330)"></path>
+          </g>
+          <circle cx="260" cy="180" r="62" class="f-bluesoft"></circle>
+          <text x="260" y="176" text-anchor="middle" font-size="16" font-weight="700">Your attention</text>
+          <text x="260" y="196" text-anchor="middle" font-size="13" class="mut">one pair of hands</text>
+          <g font-size="14" font-weight="600" text-anchor="middle">
+            <circle cx="260" cy="50" r="38" class="f-green"></circle><text x="260" y="55" fill="#fff" style="fill:#fff">Gather</text>
+            <circle cx="372.6" cy="115" r="38" class="f-amber"></circle><text x="372.6" y="120" style="fill:#fff">Build</text>
+            <circle cx="372.6" cy="245" r="38" class="f-violet"></circle><text x="372.6" y="250" style="fill:#fff">Research</text>
+            <circle cx="260" cy="310" r="38" class="f-blue"></circle><text x="260" y="315" style="fill:#fff">Produce</text>
+            <circle cx="147.4" cy="245" r="38" class="f-red"></circle><text x="147.4" y="250" style="fill:#fff">Fight</text>
+            <circle cx="147.4" cy="115" r="38" class="f-ink"></circle><text x="147.4" y="120" class="f-bg-text">Expand</text>
+          </g>
+        </svg>
+        <p class="cap">Everything takes time to finish, so you act now on what you think the enemy will do next.</p>
+      </figure>
+      <div class="card">
+        <h3>What the sources agree on</h3>
+        <ul class="points">
+          <li><b>Competing jobs are the core.</b> Economy, production, research, attack and defence all want you at once
+            (Brazie calls it spinning plates).</li>
+          <li><b>Busywork is not depth.</b> Needing hundreds of actions a minute for basic tasks is the most common
+            reason given for casual players leaving the genre.</li>
+          <li><b>Depth can come from elsewhere.</b> Company of Heroes (squads) and Supreme Commander (scale) lean far less on
+            clicking speed and are still deep (Casteel).</li>
+          <li><b>New games say it outright.</b> Battle Aces aims to reward strategy (counters, timing) as much as
+            execution; IMMORTAL: Gates of Pyre lets the AI handle pathing and fine control.</li>
+          <li><b>Help the player look in the right place:</b> idle-worker alerts, objectives that pull attention, queues.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:16px">
+    <figure class="card">
+      <h3>Clicking demand against strategic room</h3>
+      <svg class="dia" viewBox="0 0 520 340" role="img" aria-label="Scatter of RTS games by clicking demand and strategic room">
+        <rect x="60" y="20" width="200" height="120" rx="10" class="f-greensoft"></rect>
+        <text x="72" y="132" font-size="12" font-weight="700" class="f-green-t">Big decisions, light hands</text>
+        <rect x="300" y="190" width="200" height="110" rx="10" class="f-redsoft"></rect>
+        <text x="488" y="292" font-size="12" font-weight="700" text-anchor="end" class="f-red-t">Busywork</text>
+        <line x1="60" y1="300" x2="500" y2="300" class="s-muted" stroke-width="1.5"></line>
+        <line x1="60" y1="20" x2="60" y2="300" class="s-muted" stroke-width="1.5"></line>
+        <text x="280" y="330" text-anchor="middle" font-size="13" class="mut">Clicking demand (APM) →</text>
+        <text x="22" y="160" text-anchor="middle" font-size="13" class="mut" transform="rotate(-90 22 160)">Room for strategy →</text>
+        <g font-size="12.5" font-weight="600">
+          <circle cx="464.8" cy="81.6" r="7" class="f-red"></circle><text x="470" y="62" text-anchor="middle">StarCraft II</text>
+          <circle cx="359.2" cy="98.4" r="7" class="f-amber"></circle><text x="368" y="118">Age of Empires II</text>
+          <circle cx="280" cy="76" r="7" class="f-violet"></circle><text x="290" y="72">Company of Heroes</text>
+          <circle cx="200.8" cy="53.6" r="7" class="f-blue"></circle><text x="210" y="50">Supreme Commander</text>
+          <circle cx="126" cy="104" r="7" class="f-green"></circle><text x="136" y="108">Offworld Trading Co.</text>
+          <circle cx="183.2" cy="150" r="7" class="f-muted"></circle><text x="193" y="155">Battle Aces</text>
+          <circle cx="258" cy="190" r="7" class="f-muted"></circle><text x="268" y="195">Command &amp; Conquer</text>
+        </g>
+      </svg>
+      <p class="cap">Rough placements for discussion, from how the sources describe these games; not measured.</p>
+    </figure>
+    <div class="card">
+      <h3>Reading the chart</h3>
+      <ul class="points small">
+        <li><b>Top left</b> is where big-scale and economic games live: lots to decide, little to click.
+          Supreme Commander and Offworld sit there.</li>
+        <li><b>Top right</b> is the esports corner: deep, but you need the hands as well as the head.
+          StarCraft II is the reference.</li>
+        <li><b>The middle</b> is where squad games like Company of Heroes sit: micro matters, but in fewer, bigger
+          decisions per fight.</li>
+        <li><b>Bottom right</b> is the trap: clicking that doesn't buy any decisions. Automation, queues and
+          smart defaults keep a design out of it.</li>
+      </ul>
+      <p class="note">With 100 000 units Orbis can't ask for per-unit micro, so it starts on the left of this chart
+        whatever else we choose.</p>
+    </div>
+    </div>
+  </section>
+
+  <!-- 3 FIGHTS --------------------------------------------------------------------------------------->
+  <section class="part" id="fights">
+    <div class="part-head"><span class="num">03</span><h2>Fights you can win or lose by degrees</h2></div>
+    <p class="takeaway">The player should steer how a fight goes through three levers, and be able to back out of a bad
+      one. All-or-nothing fights make one mistake decide the game.</p>
+    <div class="grid2 even">
+      <figure class="card">
+        <h3>Three levers, one escape hatch</h3>
+        <svg class="dia" viewBox="0 0 520 300" role="img" aria-label="Position, composition and micro feed a fight; disengage is the escape">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" class="f-muted"></path></marker>
+          </defs>
+          <g font-size="15" font-weight="700">
+            <rect x="16" y="20" width="170" height="64" rx="12" class="f-bluesoft"></rect><text x="32" y="47">Position</text>
+            <text x="32" y="69" font-size="12.5" font-weight="400" class="mut">fight on good ground</text>
+            <rect x="16" y="118" width="170" height="64" rx="12" class="f-ambersoft"></rect><text x="32" y="145">Composition</text>
+            <text x="32" y="167" font-size="12.5" font-weight="400" class="mut">bring the right units</text>
+            <rect x="16" y="216" width="170" height="64" rx="12" class="f-violetsoft"></rect><text x="32" y="243">Micro</text>
+            <text x="32" y="265" font-size="12.5" font-weight="400" class="mut">control them well</text>
+          </g>
+          <g class="s-muted" stroke-width="2" fill="none">
+            <path d="M188 52 C 230 52 230 140 270 145" marker-end="url(#arr)"></path>
+            <path d="M188 150 L 266 150" marker-end="url(#arr)"></path>
+            <path d="M188 248 C 230 248 230 160 270 155" marker-end="url(#arr)"></path>
+          </g>
+          <circle cx="328" cy="150" r="56" class="f-red"></circle>
+          <text x="328" y="156" text-anchor="middle" font-size="18" font-weight="700" style="fill:#fff">Fight</text>
+          <path d="M384 150 L 428 150" class="s-muted" stroke-width="2" marker-end="url(#arr)"></path>
+          <text x="434" y="146" font-size="13" font-weight="700">Outcome</text>
+          <text x="434" y="162" font-size="11.5" class="mut">by degrees</text>
+          <path d="M328 208 C 328 270 450 270 450 180" class="s-green" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#arr)"></path>
+          <text x="388" y="290" text-anchor="middle" font-size="13" font-weight="700" class="f-green-t">Disengage / retreat</text>
+        </svg>
+      </figure>
+      <div class="card">
+        <h3>Binary or graded?</h3>
+        <svg class="dia" viewBox="0 0 520 170" role="img" aria-label="Spectrum from binary to graded fight outcomes">
+          <defs>
+            <linearGradient id="spec" x1="0" x2="1"><stop offset="0" class="stop-red"></stop><stop offset="1" class="stop-green"></stop></linearGradient>
+          </defs>
+          <rect x="20" y="72" width="480" height="18" rx="9" fill="url(#spec)"></rect>
+          <text x="20" y="116" font-size="12.5" font-weight="700" class="f-red-t">One bad fight ends it</text>
+          <text x="500" y="116" font-size="12.5" font-weight="700" text-anchor="end" class="f-green-t">Losses are partial</text>
+          <g font-size="12.5" font-weight="600">
+            <circle cx="68" cy="81" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="68" y="60" text-anchor="middle">Grey Goo</text>
+            <circle cx="116" cy="81" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="116" y="146" text-anchor="middle">Deserts of Kharak</text>
+            <circle cx="164" cy="81" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="170" y="40" text-anchor="middle">StarCraft</text>
+            <circle cx="332" cy="81" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="332" y="60" text-anchor="middle">Supreme Commander</text>
+            <circle cx="414" cy="81" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="414" y="146" text-anchor="middle">Dawn of War</text>
+            <circle cx="452" cy="81" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="458" y="40" text-anchor="middle">Company of Heroes</text>
+          </g>
+        </svg>
+        <ul class="points small" style="margin-top:8px">
+          <li><b>Graded losses:</b> squads that lose one model at a time, morale, damaged vehicles, a retreat button
+            (Company of Heroes, Dawn of War).</li>
+          <li><b>Hard to back out:</b> slow units and little payoff for micro mean falling behind is often the end (Grey Goo).</li>
+          <li><b>Scale is its own nuance:</b> in Supreme Commander each choice matters less, but there are many of them.</li>
+        </ul>
+        <p class="note">From Brandon Casteel's essay on control of tactical outcomes (Wayward Strategy, 2016).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 COUNTERS ------------------------------------------------------------------------------------->
+  <section class="part" id="counters">
+    <div class="part-head"><span class="num">04</span><h2>Soft counters and mixed armies</h2></div>
+    <p class="takeaway">Rock-paper-scissors is where balance starts, not where it ends. If a counter is total, skill,
+      terrain and upgrades stop mattering and the game is about blobbing the right unit.</p>
+    <div class="grid2 even">
+      <figure class="card">
+        <h3>A soft counter triangle</h3>
+        <svg class="dia" viewBox="0 0 440 330" role="img" aria-label="Cavalry beats ranged, ranged beats pikemen, pikemen beat cavalry, softly">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" class="f-amber"></path></marker>
+          </defs>
+          <g class="s-amber" stroke-width="3" fill="none">
+            <path d="M246 78 L 352 230" marker-end="url(#arr2)"></path>
+            <path d="M330 272 L 116 272" marker-end="url(#arr2)"></path>
+            <path d="M90 232 L 196 78" marker-end="url(#arr2)"></path>
+          </g>
+          <g font-size="12" class="mut" font-weight="600">
+            <text x="318" y="140">runs them down</text>
+            <text x="222" y="296" text-anchor="middle">out-ranges them</text>
+            <text x="22" y="140">braces for the charge</text>
+          </g>
+          <g font-weight="700" font-size="15" text-anchor="middle">
+            <circle cx="220" cy="48" r="36" class="f-blue"></circle><text x="220" y="53" style="fill:#fff">Cavalry</text>
+            <circle cx="370" cy="272" r="36" class="f-red"></circle><text x="370" y="277" style="fill:#fff">Ranged</text>
+            <circle cx="70" cy="272" r="36" class="f-green"></circle><text x="70" y="277" style="fill:#fff">Pikemen</text>
+          </g>
+          <rect x="140" y="160" width="160" height="56" rx="12" class="f-ambersoft"></rect>
+          <text x="220" y="183" text-anchor="middle" font-size="13" font-weight="700">×1.5, not ×10</text>
+          <text x="220" y="202" text-anchor="middle" font-size="12" class="mut">terrain and skill still count</text>
+        </svg>
+        <p class="cap">Terrain bends counters: ranged units holding a chokepoint beat melee they would lose to in the open.</p>
+      </figure>
+      <div class="card">
+        <h3>Give units identities beyond damage and health</h3>
+        <div class="ident" id="ident">
+          <span></span><span class="h">Raider</span><span class="h">Siege gun</span>
+        <span>Range</span><div class="meter"><i style="width: 25%; background: var(--blue);"></i></div><div class="meter"><i style="width: 95%; background: var(--red);"></i></div><span>Speed</span><div class="meter"><i style="width: 90%; background: var(--blue);"></i></div><div class="meter"><i style="width: 15%; background: var(--red);"></i></div><span>Size</span><div class="meter"><i style="width: 30%; background: var(--blue);"></i></div><div class="meter"><i style="width: 80%; background: var(--red);"></i></div><span>Armour</span><div class="meter"><i style="width: 25%; background: var(--blue);"></i></div><div class="meter"><i style="width: 60%; background: var(--red);"></i></div><span>Damage</span><div class="meter"><i style="width: 35%; background: var(--blue);"></i></div><div class="meter"><i style="width: 90%; background: var(--red);"></i></div><span>Cost &amp; time</span><div class="meter"><i style="width: 30%; background: var(--blue);"></i></div><div class="meter"><i style="width: 85%; background: var(--red);"></i></div></div>
+        <ul class="points small" style="margin-top:14px">
+          <li><b>Differ on many axes:</b> range, speed, size, how they move, armour and damage types, abilities.</li>
+          <li><b>Cost is more than price:</b> count build time and what you had to build first.</li>
+          <li><b>Kill speed is not linear:</b> a unit losing members also loses damage, so double damage can mean
+            losing one unit instead of five.</li>
+          <li><b>Mixed armies win:</b> Total Annihilation is the example given, where a good attack used several unit types
+            (Wardell).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 ECONOMY -------------------------------------------------------------------------------------->
+  <section class="part" id="economy">
+    <div class="part-head"><span class="num">05</span><h2>The economy sets the pace</h2></div>
+    <p class="takeaway">Resources cap how fast armies grow, act as speed bumps against early knockouts, and, placed in
+      no-man's-land, drag players into each other.</p>
+    <div class="grid3">
+      <figure class="card">
+        <h3>Stockpile</h3>
+        <svg class="dia" viewBox="0 0 260 170" role="img" aria-label="Stockpile economy: bank fills then drops when you buy">
+          <line x1="20" y1="140" x2="250" y2="140" class="s-line" stroke-width="1.5"></line>
+          <path d="M20 140 L 80 70 L 80 128 L 140 58 L 140 120 L 200 40 L 200 112 L 250 60" fill="none" class="s-amber" stroke-width="3"></path>
+          <text x="20" y="162" font-size="12" class="mut">bank fills, then you buy in lumps</text>
+          <text x="84" y="64" font-size="11" class="mut">buy</text>
+          <text x="144" y="52" font-size="11" class="mut">buy</text>
+        </svg>
+        <p class="cap">StarCraft, Age of Empires, Command &amp; Conquer.</p>
+      </figure>
+      <figure class="card">
+        <h3>Flow</h3>
+        <svg class="dia" viewBox="0 0 260 170" role="img" aria-label="Flow economy: income rate against spending rate, a stall where spending is higher">
+          <line x1="20" y1="140" x2="250" y2="140" class="s-line" stroke-width="1.5"></line>
+          <path d="M150 74 L 205 46 L 205 66 L 150 66 Z" class="f-redsoft"></path>
+          <path d="M20 120 C 80 110 130 80 250 60" fill="none" class="s-green" stroke-width="3"></path>
+          <path d="M20 128 C 80 118 120 96 150 74 S 190 36 205 46 S 230 90 250 82" fill="none" class="s-blue" stroke-width="3"></path>
+          <text x="22" y="106" font-size="11.5" class="f-green-t" font-weight="700">income</text>
+          <text x="22" y="146" font-size="11.5" class="f-blue-t" font-weight="700">spending</text>
+          <text x="178" y="30" font-size="11.5" text-anchor="middle" class="f-red-t" font-weight="700">stall</text>
+        </svg>
+        <p class="cap">Total Annihilation, Supreme Commander: spend as you earn; overspend and all production slows.</p>
+      </figure>
+      <figure class="card">
+        <h3>Contested resources</h3>
+        <svg class="dia" viewBox="0 0 260 170" role="img" aria-label="Two bases with a rich resource field between them">
+          <rect x="6" y="6" width="248" height="150" rx="12" class="f-surface2"></rect>
+          <circle cx="40" cy="128" r="22" class="f-blue"></circle><text x="40" y="133" text-anchor="middle" font-size="12" font-weight="700" style="fill:#fff">You</text>
+          <circle cx="220" cy="34" r="22" class="f-red"></circle><text x="220" y="39" text-anchor="middle" font-size="12" font-weight="700" style="fill:#fff">Them</text>
+          <g class="f-amber"><circle cx="122" cy="76" r="9"></circle><circle cx="140" cy="86" r="7"></circle><circle cx="136" cy="66" r="6"></circle><circle cx="118" cy="94" r="5"></circle></g>
+          <path d="M62 116 L 108 88" class="s-blue" stroke-width="2" stroke-dasharray="4 4"></path>
+          <path d="M200 46 L 150 72" class="s-red" stroke-width="2" stroke-dasharray="4 4"></path>
+          <text x="130" y="122" text-anchor="middle" font-size="11.5" class="mut">rich, finite, in the middle</text>
+        </svg>
+        <p class="cap">Non-renewable riches between bases pull players into conflict.</p>
+      </figure>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <h3>How many resources?</h3>
+        <div class="scale" id="resScale"><div class="col"><div style="font-weight: 800; font-size: 22px;">1</div><div class="barv" style="height: 52px; background: var(--muted);"></div><div style="font-weight: 600;">Command &amp; Conquer</div><div class="muted" style="font-size: 12px;">Tiberium</div></div><div class="col"><div style="font-weight: 800; font-size: 22px;">2</div><div class="barv" style="height: 67.209px; background: var(--green);"></div><div style="font-weight: 600;">StarCraft</div><div class="muted" style="font-size: 12px;">minerals, gas</div></div><div class="col"><div style="font-weight: 800; font-size: 22px;">4</div><div class="barv" style="height: 86.3701px; background: var(--green);"></div><div style="font-weight: 600;">Age of Empires</div><div class="muted" style="font-size: 12px;">food, wood, gold, stone</div></div><div class="col"><div style="font-weight: 800; font-size: 22px;">13</div><div class="barv" style="height: 124.991px; background: var(--amber);"></div><div style="font-weight: 600;">Offworld Trading Co.</div><div class="muted" style="font-size: 12px;">a whole market</div></div></div>
+        <p class="note">Brad Wardell's rule of thumb: at least two kinds, no more than four. Offworld Trading Company is the
+          exception that proves you can build a whole game out of a market.</p>
+      </div>
+      <div class="card">
+        <h3>Speed bumps</h3>
+        <ul class="points small">
+          <li><b>Upkeep:</b> Warcraft III cuts gold income as your army grows, a brake on snowballing.</li>
+          <li><b>Gated tech:</b> Age of Empires holds siege weapons back until later ages so nobody can turtle forever.</li>
+          <li><b>Rushes on purpose:</b> StarCraft II allows dramatic early rushes, and pays for them with defence options.</li>
+          <li><b>Two jobs for two resources:</b> one caps unit count (food, supply), one pays for buildings and defences.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 INFORMATION ---------------------------------------------------------------------------------->
+  <section class="part" id="information">
+    <div class="part-head"><span class="num">06</span><h2>Information is a weapon</h2></div>
+    <p class="takeaway">Fog of war turns the map into a guessing game you can win by scouting. Every hidden threat needs a
+      way to find it.</p>
+    <div class="grid2">
+      <figure class="card">
+        <h3>Three states of the map</h3>
+        <svg class="dia" viewBox="0 0 520 220" role="img" aria-label="Fog of war: unexplored, explored but stale, in sight">
+          <defs>
+            <pattern id="tiles" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0 L0 0 L0 20" fill="none" class="s-line" stroke-width="1"></path></pattern>
+            <radialGradient id="sight"><stop offset="0.75" stop-color="#fff" stop-opacity="1"></stop><stop offset="1" stop-color="#fff" stop-opacity="0"></stop></radialGradient>
+            <mask id="seen"><rect width="520" height="220" fill="#000"></rect><circle cx="330" cy="110" r="80" fill="url(#sight)"></circle></mask>
+          </defs>
+          <rect x="0" y="0" width="520" height="190" rx="12" class="f-fog-dark"></rect>
+          <rect x="150" y="0" width="370" height="190" class="f-fog-dim"></rect>
+          <rect x="0" y="0" width="520" height="190" fill="url(#tiles)" opacity="0.5"></rect>
+          <g mask="url(#seen)"><rect x="150" y="0" width="370" height="190" class="f-fog-lit"></rect><rect x="150" y="0" width="370" height="190" fill="url(#tiles)"></rect></g>
+          <path d="M240 150 C 280 120 300 150 360 120 S 440 90 480 110" fill="none" class="s-amber" stroke-width="3" opacity="0.6"></path>
+          <circle cx="330" cy="110" r="9" class="f-blue"></circle>
+          <rect x="434" y="34" width="22" height="22" rx="4" class="f-red" opacity="0.45"></rect>
+          <text x="445" y="72" text-anchor="middle" font-size="11" class="mut">last seen</text>
+          <g font-size="13" font-weight="700">
+            <text x="75" y="210" text-anchor="middle">Unexplored</text>
+            <text x="210" y="210" text-anchor="middle">Explored, stale</text>
+            <text x="330" y="210" text-anchor="middle">In sight</text>
+            <text x="455" y="210" text-anchor="middle">Explored, stale</text>
+          </g>
+        </svg>
+        <p class="cap">Orbis already draws exactly these three levels (25, 110 and 255 brightness) through the terrain overlay.</p>
+      </figure>
+      <div class="card">
+        <h3>Tools for knowing</h3>
+        <p><span class="tag blue">scouts</span><span class="tag blue">wards</span><span class="tag blue">watch towers</span>
+          <span class="tag violet">base modules</span><span class="tag green">detection</span><span class="tag red">cloak</span></p>
+        <ul class="points small">
+          <li><b>Pair every stealth with detection.</b> StarCraft's cloak is a threat only until you build the answer, and the
+            first time it appears teaches you to.</li>
+          <li><b>Stale information is still information.</b> Explored ground shows the land and what was there, not what is
+            there now.</li>
+          <li><b>Scouting is a decision.</b> Units spent looking are units not fighting.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 PACING --------------------------------------------------------------------------------------->
+  <section class="part" id="pacing">
+    <div class="part-head"><span class="num">07</span><h2>Pacing and comebacks</h2></div>
+    <p class="takeaway">The two classic failures are games decided early and snowballs, where every win makes the next
+      one easier. Tension needs swings.</p>
+    <div class="grid2">
+      <figure class="card">
+        <h3>Advantage over a match</h3>
+        <svg class="dia" viewBox="0 0 520 270" role="img" aria-label="A snowball match decided by minute 12 against a back and forth match">
+          <line x1="40" y1="130" x2="500" y2="130" class="s-line" stroke-width="1.5"></line>
+          <line x1="40" y1="20" x2="40" y2="240" class="s-line" stroke-width="1.5"></line>
+          <line x1="385" y1="20" x2="385" y2="240" class="s-muted" stroke-width="1.5" stroke-dasharray="5 5"></line>
+          <text x="379" y="232" font-size="12" class="mut" text-anchor="end">30 min: a common target</text>
+          <text x="46" y="30" font-size="12" class="mut">player A ahead</text>
+          <text x="46" y="236" font-size="12" class="mut">player B ahead</text>
+          <text x="500" y="258" font-size="12" class="mut" text-anchor="end">time →</text>
+          <path d="M40 130 C 80 128 110 118 140 90 S 175 34 190 26 L 210 24" fill="none" class="s-red" stroke-width="3.5"></path>
+          <circle cx="210" cy="24" r="6" class="f-red"></circle>
+          <text x="218" y="28" font-size="12.5" font-weight="700" class="f-red-t">snowball: over by minute 12</text>
+          <path d="M40 130 C 70 120 90 96 120 104 S 160 168 200 160 S 250 82 280 92 S 320 170 350 150 S 370 60 385 52" fill="none" class="s-blue" stroke-width="3.5"></path>
+          <circle cx="385" cy="52" r="6" class="f-blue"></circle>
+          <text x="300" y="196" font-size="12.5" font-weight="700" class="f-blue-t">speed bumps: swings until late</text>
+        </svg>
+      </figure>
+      <div class="card">
+        <h3>Keeping it alive</h3>
+        <ul class="points small">
+          <li><b>Income penalties for big armies</b> (upkeep) and resource speed bumps.</li>
+          <li><b>Room to retreat</b> so a lost fight is a setback, not the end (section 03).</li>
+          <li><b>Objectives worth holding</b>, like Age of Empires' sacred sites, that make the leader come out and fight.</li>
+          <li><b>Map events that move people</b>, like rising lava, so nobody can sit still.</li>
+          <li><b>Campaigns in three acts:</b> a quiet start, a complication, a final battle; new mechanics arrive as threats.</li>
+        </ul>
+        <p class="note">Most competitive designs aim for matches under half an hour; big-scale games such as Sins of a Solar
+          Empire run far longer by design.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 CONTENT -------------------------------------------------------------------------------------->
+  <section class="part" id="content">
+    <div class="part-head"><span class="num">08</span><h2>Content and accessibility keep a niche alive</h2></div>
+    <p class="takeaway">Recent RTS launches stumbled less on multiplayer than on being only multiplayer. Players
+      come for campaigns and bots, and stay for custom games and mods.</p>
+    <div class="grid3">
+      <div class="card"><span class="tag green">keeps players</span><h3>Campaign</h3><p class="small muted">Stormgate's launch
+        without one was singled out as a reason it did not break out.</p></div>
+      <div class="card"><span class="tag green">keeps players</span><h3>AI opponents &amp; co-op</h3><p class="small muted">Bots
+        lower the barrier and fill empty lobbies; Offworld even hides which rivals are bots.</p></div>
+      <div class="card"><span class="tag green">keeps players</span><h3>Custom games &amp; mods</h3><p class="small muted">Configurable
+        matches and mod tools stretch a niche game's life for years.</p></div>
+      <div class="card"><span class="tag blue">gets players in</span><h3>Tutorials</h3><p class="small muted">Planetary Annihilation
+        was criticised for never teaching its own systems.</p></div>
+      <div class="card"><span class="tag blue">gets players in</span><h3>A readable UI</h3><p class="small muted">Minimap, resources,
+        commands, status; Supreme Commander replaced the minimap with zoom.</p></div>
+      <div class="card"><span class="tag amber">the open door</span><h3>Something new</h3><p class="small muted">Pottinger (Age of
+        Empires): the genre still plays like it did 20 years ago; genre-blending is where he sees openings.</p></div>
+    </div>
+  </section>
+
+  <!-- SCALE ------------------------------------------------------------------------------------------>
+  <section class="part" id="scale">
+    <div class="part-head"><span class="num">+</span><h2>Playing at scale</h2></div>
+    <p class="takeaway">The closest relatives of Orbis are the big-army games. They teach one lesson each: let the player
+      zoom from a soldier to the whole map, and solve how they see a world they cannot see all at once.</p>
+    <figure class="card">
+      <h3>Strategic zoom (Supreme Commander, 2007)</h3>
+      <svg class="dia" viewBox="0 0 960 250" role="img" aria-label="Zooming from ground units to regional view to the whole planet with icons">
+        <defs>
+          <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" class="f-muted"></path></marker>
+        </defs>
+        <rect x="10" y="20" width="270" height="180" rx="14" class="f-surface2"></rect>
+        <g class="f-blue"><rect x="60" y="120" width="44" height="22" rx="4"></rect><rect x="72" y="108" width="20" height="14" rx="3"></rect>
+          <rect x="140" y="132" width="44" height="22" rx="4"></rect><rect x="152" y="120" width="20" height="14" rx="3"></rect></g>
+        <g class="f-red"><rect x="196" y="70" width="40" height="20" rx="4"></rect><rect x="207" y="59" width="18" height="12" rx="3"></rect></g>
+        <path d="M30 170 C 100 150 170 180 260 160" class="s-amber" stroke-width="3" fill="none" opacity="0.6"></path>
+        <text x="145" y="228" text-anchor="middle" font-size="14" font-weight="700">Ground: every tank</text>
+
+        <path d="M290 110 L 340 110" class="s-muted" stroke-width="2" marker-end="url(#arr3)"></path>
+
+        <rect x="345" y="20" width="270" height="180" rx="14" class="f-surface2"></rect>
+        <g class="f-blue">
+          <rect x="380" y="130" width="10" height="6" rx="1.5"></rect><rect x="396" y="126" width="10" height="6" rx="1.5"></rect><rect x="412" y="134" width="10" height="6" rx="1.5"></rect>
+          <rect x="388" y="144" width="10" height="6" rx="1.5"></rect><rect x="404" y="148" width="10" height="6" rx="1.5"></rect><rect x="420" y="144" width="10" height="6" rx="1.5"></rect>
+          <rect x="370" y="160" width="40" height="22" rx="4" opacity="0.5"></rect>
+        </g>
+        <g class="f-red">
+          <rect x="530" y="56" width="10" height="6" rx="1.5"></rect><rect x="546" y="62" width="10" height="6" rx="1.5"></rect><rect x="560" y="50" width="10" height="6" rx="1.5"></rect>
+          <rect x="552" y="34" width="40" height="22" rx="4" opacity="0.5"></rect>
+        </g>
+        <path d="M360 120 C 430 100 500 130 600 90" class="s-amber" stroke-width="2" fill="none" opacity="0.6"></path>
+        <text x="480" y="228" text-anchor="middle" font-size="14" font-weight="700">Region: armies and bases</text>
+
+        <path d="M625 110 L 675 110" class="s-muted" stroke-width="2" marker-end="url(#arr3)"></path>
+
+        <rect x="680" y="20" width="270" height="180" rx="14" class="f-surface2"></rect>
+        <circle cx="815" cy="110" r="76" class="f-greensoft s-green" stroke-width="2"></circle>
+        <path d="M745 92 C 790 104 840 80 888 96" class="s-green" stroke-width="1.5" fill="none" opacity="0.6"></path>
+        <g class="f-blue"><polygon points="770,130 778,116 786,130"></polygon><polygon points="790,146 798,132 806,146"></polygon><circle cx="780" cy="152" r="5"></circle></g>
+        <g class="f-red"><polygon points="850,70 858,56 866,70"></polygon><circle cx="868" cy="86" r="5"></circle><polygon points="838,90 846,76 854,90"></polygon></g>
+        <text x="815" y="228" text-anchor="middle" font-size="14" font-weight="700">Planet: units become icons</text>
+      </svg>
+      <p class="cap">Its biggest units were around a hundred times the size of the smallest, so no single zoom level
+        worked. The zoom became the game's defining feature and replaced the minimap.</p>
+    </figure>
+    <div class="grid2 even" style="margin-top:16px">
+      <div class="card case">
+        <h3>Total Annihilation &amp; Supreme Commander <span class="yr">1997 · 2007</span></h3>
+        <ul class="pro small">
+          <li>Flow economy built for huge armies: income against spending, not a bank.</li>
+          <li>Strategic zoom from one unit to the whole map.</li>
+          <li>Interface and queueing built to command armies of ridiculous size.</li>
+        </ul>
+        <ul class="con small">
+          <li>Supreme Commander 2 fell back on genre norms and lost what made the first one different.</li>
+        </ul>
+      </div>
+      <div class="card case">
+        <h3>Planetary Annihilation <span class="yr">2014</span></h3>
+        <ul class="pro small">
+          <li>Whole planets, many at once; armies of a size few engines can run.</li>
+          <li>Advanced queueing, several windows, and teams sharing one army.</li>
+        </ul>
+        <ul class="con small">
+          <li>Never found an interface that fit round planets: you only ever see part of the map.</li>
+          <li>Breaking an entrenched enemy was very hard if you had not expanded fast.</li>
+          <li>Thin tutorials; players were left to discover core systems themselves.</li>
+          <li>The Titans expansion fixed much of it by moving closer to Supreme Commander.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY ---------------------------------------------------------------------------------------->
+  <section class="part" id="history">
+    <div class="part-head"><span class="num">+</span><h2>Thirty years in one line</h2></div>
+    <div class="card timeline">
+      <svg class="dia" viewBox="0 0 900 170" role="img" aria-label="Timeline of landmark RTS games from 1992 to 2025">
+        <rect x="488" y="58" width="84" height="17" rx="4" class="f-violetsoft"></rect>
+        <text x="530" y="70.5" text-anchor="middle" font-size="11" font-weight="700" class="f-violet-t">MOBA era</text>
+        <line x1="30" y1="83" x2="880" y2="83" class="s-line" stroke-width="4" stroke-linecap="round"></line>
+        <g font-size="12" font-weight="600">
+          <g class="f-amber"><circle cx="40" cy="83" r="6"></circle></g><text x="40" y="60" text-anchor="middle">Dune II</text><text x="40" y="46" text-anchor="middle" class="mut" font-weight="400">1992</text>
+          <g class="f-red"><circle cx="113.5" cy="83" r="6"></circle></g><text x="113.5" y="112" text-anchor="middle">Command &amp; Conquer</text><text x="113.5" y="126" text-anchor="middle" class="mut" font-weight="400">1995</text>
+          <g class="f-blue"><circle cx="162.5" cy="83" r="6"></circle></g><text x="150" y="40" text-anchor="middle">Total Annihilation</text><text x="150" y="26" text-anchor="middle" class="mut" font-weight="400">1997</text>
+          <g class="f-amber"><circle cx="167" cy="83" r="6"></circle></g><text x="185" y="148" text-anchor="middle">Age of Empires</text><text x="185" y="162" text-anchor="middle" class="mut" font-weight="400">1997</text>
+          <g class="f-violet"><circle cx="187" cy="83" r="6"></circle></g><text x="232" y="60" text-anchor="middle">StarCraft</text><text x="232" y="46" text-anchor="middle" class="mut" font-weight="400">1998</text>
+          <g class="f-amber"><circle cx="211.5" cy="83" r="6"></circle></g><text x="262" y="112" text-anchor="middle">Age of Empires II</text><text x="262" y="126" text-anchor="middle" class="mut" font-weight="400">1999</text>
+          <g class="f-violet"><circle cx="285" cy="83" r="6"></circle></g><text x="310" y="40" text-anchor="middle">Warcraft III</text><text x="310" y="26" text-anchor="middle" class="mut" font-weight="400">2002</text>
+          <g class="f-green"><circle cx="383" cy="83" r="6"></circle></g><text x="370" y="148" text-anchor="middle">Company of Heroes</text><text x="370" y="162" text-anchor="middle" class="mut" font-weight="400">2006</text>
+          <g class="f-blue"><circle cx="407.5" cy="83" r="6"></circle></g><text x="410" y="60" text-anchor="middle">Supreme Commander</text><text x="410" y="46" text-anchor="middle" class="mut" font-weight="400">2007</text>
+          <g class="f-violet"><circle cx="481" cy="83" r="6"></circle></g><text x="481" y="40" text-anchor="middle">StarCraft II</text><text x="481" y="26" text-anchor="middle" class="mut" font-weight="400">2010</text>
+          <g class="f-blue"><circle cx="579" cy="83" r="6"></circle></g><text x="579" y="112" text-anchor="middle">Planetary Annihilation</text><text x="579" y="126" text-anchor="middle" class="mut" font-weight="400">2014</text>
+          <g class="f-green"><circle cx="628" cy="83" r="6"></circle></g><text x="640" y="60" text-anchor="middle">Offworld Trading Co.</text><text x="640" y="46" text-anchor="middle" class="mut" font-weight="400">2016</text>
+          <g class="f-violet"><circle cx="824" cy="83" r="6"></circle></g><text x="790" y="40" text-anchor="middle">Stormgate (early access)</text><text x="790" y="26" text-anchor="middle" class="mut" font-weight="400">2024</text>
+          <g class="f-red"><circle cx="848.5" cy="83" r="6"></circle></g><text x="830" y="112" text-anchor="middle">Tempest Rising</text><text x="830" y="126" text-anchor="middle" class="mut" font-weight="400">2025</text>
+        </g>
+      </svg>
+    </div>
+    <p class="muted small" style="margin-top:10px">2025 was called the strongest RTS year in ages, without a breakout hit; Broken
+      Arrow was holding almost 10,000 concurrent players a day.</p>
+  </section>
+
+  <!-- ORBIS ------------------------------------------------------------------------------------------>
+  <section class="part" id="orbis">
+    <div class="part-head"><span class="num">→</span><h2>Where Orbis stands</h2></div>
+    <p class="takeaway">Orbis already has the hard technical parts the big-army games needed. What it doesn't have yet
+      is the design that decides what playing it feels like.</p>
+    <div class="card orbis">
+      <h3>From squads to armies: where could it sit?</h3>
+      <svg class="dia" viewBox="0 0 520 130" style="max-width:720px;margin:0 auto" role="img" aria-label="Scale axis from squads to huge armies with games placed and Orbis on the army end">
+        <defs><linearGradient id="scaleg" x1="0" x2="1"><stop offset="0" class="stop-violet"></stop><stop offset="1" class="stop-blue"></stop></linearGradient></defs>
+        <rect x="20" y="58" width="480" height="12" rx="6" fill="url(#scaleg)" opacity="0.6"></rect>
+        <text x="20" y="98" font-size="12.5" font-weight="700">Squads you nurse</text>
+        <text x="500" y="98" font-size="12.5" font-weight="700" text-anchor="end">Armies you command</text>
+        <g font-size="12" font-weight="600" text-anchor="middle">
+          <circle cx="60" cy="64" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="60" y="44">Company of Heroes</text>
+          <circle cx="190" cy="64" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="190" y="26">StarCraft</text>
+          <circle cx="250" cy="64" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="256" y="44">Age of Empires</text>
+          <circle cx="400" cy="64" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="400" y="26">Supreme Commander</text>
+          <circle cx="462" cy="64" r="6" class="f-surface s-ink" stroke-width="2"></circle><text x="508" y="44" text-anchor="end">Planetary Annihilation</text>
+        </g>
+        <path d="M330 64 L 500 64" class="s-blue" stroke-width="5" stroke-dasharray="2 6" stroke-linecap="round"></path>
+        <text x="500" y="122" text-anchor="end" font-size="12.5" font-weight="700" class="f-blue-t">Orbis: 100 000 units at 47 fps</text>
+      </svg>
+      <div class="grid2 even" style="margin-top:12px">
+        <div>
+          <h3>Already built</h3>
+          <ul class="have small">
+            <li>A whole planet with a camera from the ground to space: strategic zoom is already the camera.</li>
+            <li>No unit cap: 100 000 units, 105 fps standing and 47 fps all walking.</li>
+            <li>A* with shared paths, formations that keep their shape, separation.</li>
+            <li>Fog of war in three states, buildings on flattened ground.</li>
+            <li>Climate, day and night, weather, clouds, sea and mist: a world worth fighting over.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Questions to answer together</h3>
+          <ol class="q small">
+            <li>Squads or armies? Nursing a few units, or commanding tens of thousands?</li>
+            <li>How do you see a sphere? Planetary Annihilation never solved it; zoom to icons is the strongest lead.</li>
+            <li>Which economy? Stockpile, flow, or a market?</li>
+            <li>How do fights end? A retreat, partial losses, morale?</li>
+            <li>What does the planet itself do? Climate, weather, night and seasons as strategy?</li>
+            <li>Who do you play against? A campaign, bots, friends, the planet?</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASTE ------------------------------------------------------------------------------------------>
+  <section class="part" id="taste"><div class="part-head"><span class="num">♥</span><h2>Your taste</h2></div><p class="takeaway">Round 1 was filled in here. A builder and a turtle: base building 100, sci-fi 100, single-player, and you can't stand losing to an instant rush. The full readback, with the profile and your games, is on <a href="taste.html">the taste page</a>; the raw answers are on <a href="record.html#round1">the record</a>.</p></section>
+
+  <!-- SOURCES ---------------------------------------------------------------------------------------->
+  <section class="part" id="sources">
+    <div class="part-head"><span class="num">§</span><h2>Sources</h2></div>
+    <p class="muted small">Most of this is designers' essays, interviews, reviews and community discussion, not data.
+      Placements on the charts are rough, for discussion.</p>
+    <ul class="sources">
+      <li><a href="https://gamedesignskills.com/game-design/real-time-strategy/">Alexander Brazie: Real-time strategy game design</a></li>
+      <li><a href="https://quartertothree.com/columns/brad_wardell/brad_less_sucky_games.shtml">Brad Wardell: What is the ideal RTS game?</a></li>
+      <li><a href="https://waywardstrategy.com/2016/02/17/rts-design-thought-control-of-tactical-outcomes">Brandon Casteel: Control of tactical outcomes</a></li>
+      <li><a href="https://gamedeveloper.com/design/the-importance-of-control-over-tactical-outcomes-in-rts-design">Game Developer: Control over tactical outcomes</a></li>
+      <li><a href="https://gamecloud.net.au/features/opinion/what-makes-rts-games-fun-asymmetric-design">GameCloud: Asymmetric design</a></li>
+      <li><a href="https://gamecloud.net.au/features/opinion/why-we-play-rts">GameCloud: Why we play RTS</a></li>
+      <li><a href="https://designer-notes.com/offworld-trading-company-gdc-postmortem">Soren Johnson: Offworld Trading Company GDC postmortem</a></li>
+      <li><a href="https://pcgamer.com/the-making-of-supreme-commander">PC Gamer: The making of Supreme Commander</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Supreme_Commander_(video_game)">Wikipedia: Supreme Commander</a></li>
+      <li><a href="https://somebits.com/weblog/culture/games/supremeCommander.html">somebits: Supreme Commander</a></li>
+      <li><a href="https://gameinformer.com/games/supreme_commander_2/b/pc/archive/2010/03/02/review">Game Informer: Supreme Commander 2 review</a></li>
+      <li><a href="https://www.pcgamer.com/au/planetary-annihilation-review">PC Gamer: Planetary Annihilation review</a></li>
+      <li><a href="https://pcgamer.com/planetary-annihilation-titans-resurrects-a-flawed-rts-and-its-out-today">PC Gamer: Planetary Annihilation: Titans</a></li>
+      <li><a href="https://scientificgamer.com/thoughts-planetary-annihilation/">Scientific Gamer: Thoughts on Planetary Annihilation</a></li>
+      <li><a href="https://pcgamesn.com/indie/planetary-annihilations-jon-mavor-marshalling-robots-micromanagement-hell-and-using-asteroids-mobile-base">PCGamesN: Jon Mavor interview</a></li>
+      <li><a href="https://www.pcgamer.com/games/rts/former-age-of-empires-developer-says-the-rts-genres-stuck-in-a-rut-youre-still-playing-the-same-game">PC Gamer: Pottinger on a genre in a rut</a></li>
+      <li><a href="https://gamesradar.com/games/real-time-strategy/the-rts-genre-hasnt-changed-much-says-former-age-of-empires-developer-youre-still-playing-the-same-game-were-playing-20-years-ago">GamesRadar: Pottinger interview</a></li>
+      <li><a href="https://www.pcgamer.com/games/rts/real-time-strategy-almost-came-back-from-the-brink-of-death-and-then-fell-flat-on-its-face">PC Gamer: RTS almost came back</a></li>
+      <li><a href="https://www.gamepressure.com/newsroom/2025-is-the-strongest-year-for-rts-in-ages-but-the-big-breakout-h/zc8400">GamePressure: 2025, the strongest RTS year in ages</a></li>
+      <li><a href="https://www.si.com/esports/news/stormgate-rts-future">Sports Illustrated: Stormgate and the RTS future</a></li>
+      <li><a href="https://waywardstrategy.com/2023/07/07/re-sharing-my-tempest-rising-interview/">Wayward Strategy: Tempest Rising interview</a></li>
+      <li><a href="https://www.invenglobal.com/articles/20070/immortal-gates-of-pyre-aims-to-revive-rts-with-smarter-less-click-heavy-gameplay">Inven Global: IMMORTAL: Gates of Pyre</a></li>
+      <li><a href="https://redlib.hbubli.cc/r/RealTimeStrategy/comments/1l1tn4z/no_multiplayer_is_not_why_the_rts_genre_is">Reddit: multiplayer is not why the genre is struggling</a></li>
+      <li><a href="https://tildes.net/~games/138s/did_real_time_strategy_games_die_why">Tildes: Did RTS games die?</a></li>
+      <li><a href="https://gamedev.net/forums/topic/665213-why-are-rts-games-becoming-unpopular/page-1?page=5">Gamedev.net: Why are RTS games becoming unpopular?</a></li>
+      <li><a href="https://reddit.birdcat.cafe/r/BattleAces/comments/1dybg7b/design_discussion_increasing_the_strategy_in_real/lce42d1/?context=3">Reddit: Battle Aces design discussion</a></li>
+      <li><a href="https://forums.planetaryannihilation.com/posts/730892">PA forums: Micro and macro at high level</a></li>
+      <li><a href="https://www.cse.unr.edu/~simingl/papers/publish/CIG2014IMPFMicro.pdf">CIG 2014: RTS micro paper</a></li>
+    </ul>
+  </section>
+
+</div>
+</main>
+
+<footer><div class="wrap">Orbis concept v1, signed off 7 November 2026 · <a href="index.html">Contents</a> · <a href="guide.html">The guide</a> · <a href="taste.html">Your taste</a> · <a href="concept.html">The concept</a> · <a href="record.html">The record</a></div></footer>
+
+
+
+
+<script src="v1.js"></script></body></html>

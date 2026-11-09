@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbis Settlement Round 1</title>
+<meta name="description" content="Orbis settlement, round 1: getting the material out of the ground, reshaping the land, and where your people live.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%237656c9'/%3E%3Cpath d='M6 19c6-3 14-3 20 0' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<style>
+  table.plain { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.plain th, table.plain td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.plain th { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  .opt3 { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--bg); }
+  .opt3 h3 { margin: 4px 0 6px; }
+  .pick { display: inline-block; font-size: 11.5px; font-weight: 800; color: var(--green); border: 1.5px solid var(--green);
+    border-radius: 8px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; }
+  .wrap-scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="f-violet"/><path d="M6 19c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none"/></svg>
+      <span>Orbis settlement 1</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="index.html">☰ Menu</a>
+      <a href="#ladder">Digging</a>
+      <a href="#reshape">Reshaping</a>
+      <a href="#homes">Where they live</a>
+      <a href="#growth">How it grows</a>
+      <a href="#paths">By path</a>
+      <a href="#people">People</a>
+      <a href="#questions">Settlement round 1</a>
+      <a href="weapons1.html">Weapons 1 →</a>
+    </nav>
+    <button class="theme" id="theme" type="button" title="Switch light / dark">Theme</button>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+
+  <section class="hero">
+    <div class="kicker">Orbis · settlement round 1 · towards concept v2</div>
+    <h1>Digging in and living there</h1>
+    <p class="pitch">Two of your questions. How the material comes out of the ground, from surface seams to machines that
+      reshape the planet. And where your people live: domes, or a city that grows by itself. My answer to both is a
+      ladder: start small and gentle, and each step takes more from the planet and makes it angrier.</p>
+  </section>
+
+  <!-- LADDER ----------------------------------------------------------------------------------------->
+  <section class="part" id="ladder">
+    <div class="part-head"><span class="num">01</span><h2>Getting the material out: a ladder</h2></div>
+    <p class="takeaway">The substance crystallises in the rock. A little shows at the surface; the richest seams run deep,
+      toward the core and the poles. Each rung digs deeper, yields more, and raises the region's irritation more (the
+      lore page's agitation by region).</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 290" style="min-width:640px" role="img" aria-label="Cross-section of the ground with four rungs: a surface extractor on an exposed seam; a strip miner that has dug an open pit; a deep drill reaching a rich seam far down, near a Given tunnel; a terraformer raising a ridge. Yield and irritation rise from left to right.">
+        <path d="M0 96 H760 V290 H0 Z" class="f-ambersoft"/>
+        <!-- strip pit -->
+        <path d="M230 96 L262 140 H338 L370 96 Z" class="f-muted" opacity="0.35"/>
+        <path d="M0 96 H230 L262 140 H338 L370 96 H520" class="s-amber" stroke-width="2.5" fill="none"/>
+        <!-- ridge raised by terraformer -->
+        <path d="M600 96 Q 650 50 700 96" class="f-ambersoft"/>
+        <path d="M520 96 H600 Q 650 50 700 96 H760" class="s-amber" stroke-width="2.5" fill="none"/>
+        <!-- seams -->
+        <g class="f-violet">
+          <path d="M70 92 l10 -14 l10 14 z"/><path d="M90 94 l7 -10 l7 10 z"/>
+          <path d="M276 150 l12 -10 l12 10 l-12 8 z"/><path d="M304 152 l9 -8 l9 8 l-9 6 z"/>
+          <path d="M432 236 l16 -14 l16 14 l-16 12 z"/><path d="M466 240 l12 -10 l12 10 l-12 8 z"/><path d="M406 244 l10 -8 l10 8 l-10 6 z"/>
+        </g>
+        <!-- Given tunnel -->
+        <path d="M380 270 C 440 262, 520 266, 600 252" class="s-violet" stroke-width="3" stroke-dasharray="6 6" fill="none"/>
+        <text x="600" y="276" font-size="10.5" class="f-violet-t">a Given tunnel</text>
+        <!-- machines -->
+        <rect x="62" y="70" width="44" height="22" rx="4" class="f-blue"/>
+        <rect x="282" y="118" width="40" height="20" rx="4" class="f-blue"/>
+        <path d="M290 118 L300 104 L314 104" class="s-blue" stroke-width="3" fill="none"/>
+        <rect x="428" y="62" width="40" height="34" rx="4" class="f-blue"/>
+        <path d="M448 96 V226" class="s-blue" stroke-width="4"/>
+        <rect x="560" y="74" width="40" height="22" rx="4" class="f-blue"/>
+        <!-- labels -->
+        <g font-size="12" font-weight="800" text-anchor="middle">
+          <text x="84" y="30">1 · Surface extractor</text>
+          <text x="300" y="30">2 · Strip miner</text>
+          <text x="448" y="30">3 · Deep drill</text>
+          <text x="650" y="30">4 · Terraformer</text>
+        </g>
+        <g font-size="10.5" text-anchor="middle" class="mut">
+          <text x="84" y="46">exposed seams; gentle; runs out</text>
+          <text x="300" y="46">the land sinks into a pit</text>
+          <text x="448" y="46">down to rich seams</text>
+          <text x="650" y="46">raises ridges, cuts moats</text>
+        </g>
+        <path d="M40 286 H720" class="s-red" stroke-width="2"/><path d="M718 281 L728 286 L718 291 Z" class="f-red"/>
+        <text x="380" y="282" text-anchor="middle" font-size="10.5" class="f-red-t">more yield, more irritation</text>
+      </svg>
+      </div>
+    </figure>
+    <table class="plain" style="margin-top:14px">
+      <tr><th>Rung</th><th>What it does</th><th>Yield</th><th>Irritation</th><th>Catch</th><th>Tier</th></tr>
+      <tr><td><b>1 · Surface extractor</b></td><td>harvests crystal seams showing at the surface (today's extractor)</td><td>low</td><td>low</td><td>seams run dry; they sit outside your walls</td><td>T1</td></tr>
+      <tr><td><b>2 · Strip miner</b></td><td>a machine that digs the seam out, lowering the land as it goes into an open pit</td><td>medium</td><td>medium</td><td>leaves a pit in your map; the noise draws the Given</td><td>T1-T2</td></tr>
+      <tr><td><b>3 · Deep drill</b></td><td>a rig that bores down to the rich seams</td><td>high</td><td>high</td><td>can break into a Given tunnel: a breach under your rig</td><td>T2-T3</td></tr>
+      <tr><td><b>Core tap</b> (material)</td><td>a rig over a pit, drawing the core's energy straight up (pits on the lore page)</td><td>huge energy</td><td>huge</td><td>raises the heart's agitation too</td><td>T3</td></tr>
+    </table>
+  </section>
+
+  <!-- RESHAPE ---------------------------------------------------------------------------------------->
+  <section class="part" id="reshape">
+    <div class="part-head"><span class="num">02</span><h2>Reshaping the land</h2></div>
+    <p class="takeaway">v1 has terraforming that costs a lot, raises agitation and only works near your structures.
+      These machines are how it's done, and mining reshapes the land as a side effect.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>The machines</h3>
+        <ul class="points small">
+          <li><b>Engineer vehicles</b> (T1): flatten a build site, fill a crater, cut a ramp. Small jobs, near your
+            base.</li>
+          <li><b>Earthmovers</b> (T2): raise a ridge or dig a trench or moat. A moat filled with fire is the weapons
+            page's burning moat.</li>
+          <li><b>Terraform towers</b> (T3, material): reshape a whole area around them over minutes: lift a plateau to
+            build a fortress on, sink a valley to funnel a wave.</li>
+          <li><b>Planet-shaping</b> (T4, v1): material moves the sea and raises mountains; wildlife grows the land
+            (forests, climate); ancients command the weather.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Why it's good for a turtle</h3>
+        <ul class="points small">
+          <li><b>Shape the approach.</b> A ridge with one gap is a free wall line; a moat stops runners and brutes
+            alike (burrowers and flyers don't care, as in v1).</li>
+          <li><b>Strip mines become defences.</b> An old open pit is a ditch the swarm has to climb out of under your
+            guns.</li>
+          <li><b>The catch:</b> it's slow and costly, it raises irritation, and the planet answers terraforming with
+            burrowers under, flyers over and giants through (v1).</li>
+        </ul>
+        <h3 style="margin-top:12px">Can Orbis do it?</h3>
+        <p class="small">Yes. The land is already editable in the editor, and pathfinding re-routes when the ground
+          changes (P5: a ridge raised under a moving army). What it can't do is tunnels or overhangs: the land is a
+          heightfield, so mines are open pits, and deep drills go down a shaft we fake (like the pits).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOMES ------------------------------------------------------------------------------------------>
+  <section class="part" id="homes">
+    <div class="part-head"><span class="num">03</span><h2>Where your people live</h2></div>
+    <p class="takeaway">Three ways to do it. They're not exclusive: my pick is the third, which takes the best of the
+      other two.</p>
+    <div class="grid3">
+      <div class="opt3">
+        <span class="tag blue">A</span>
+        <h3>Domes</h3>
+        <p class="small">Sealed habitats, because the air outside isn't safe (spores, the mist). You place each dome;
+          it holds a set number of people.</p>
+        <p class="small"><b>Good:</b> the iconic frontier image. A clear thing to protect. Glowing domes read from orbit
+          at night.<br><b>Less good:</b> static; a base of identical bubbles.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag green">B</span>
+        <h3>A city that grows</h3>
+        <p class="small">You zone areas (homes, work, farms) and the town fills in by itself as people arrive, the way
+          They Are Billions' tents become houses.</p>
+        <p class="small"><b>Good:</b> a living city, little micro, and it looks different every game.<br><b>Less good:</b>
+          hard to defend if it sprawls; no strong image.</p>
+      </div>
+      <div class="opt3">
+        <span class="tag violet">C</span><span class="pick">my pick</span>
+        <h3>Domes that grow towns</h3>
+        <p class="small">You build the domes, a big investment and the heart of each settlement. Inside and around
+          them the town grows by itself as people and comfort rise: homes, lights, streets, gardens, tubes between
+          domes.</p>
+        <p class="small"><b>Good:</b> the image of A and the life of B. You decide where the domes go (defence), the
+          town decides how it looks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GROWTH ----------------------------------------------------------------------------------------->
+  <section class="part" id="growth">
+    <div class="part-head"><span class="num">04</span><h2>How a settlement grows</h2></div>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 230" style="min-width:640px" role="img" aria-label="Four stages: a landing pad and HQ; a first dome with homes filling in; domes linked by tubes with streets and lights; a walled city with towers and gardens.">
+        <path d="M20 170 H740" class="s-line" stroke-width="2"/>
+        <!-- stage 1 -->
+        <rect x="50" y="146" width="70" height="24" rx="3" class="f-blue"/><rect x="72" y="130" width="26" height="16" rx="2" class="f-blue"/>
+        <!-- stage 2 -->
+        <path d="M220 170 A 46 46 0 0 1 312 170 Z" class="f-bluesoft"/><path d="M220 170 A 46 46 0 0 1 312 170" class="s-blue" stroke-width="2" fill="none"/>
+        <g class="f-blue"><rect x="240" y="156" width="12" height="14"/><rect x="258" y="150" width="14" height="20"/><rect x="278" y="158" width="12" height="12"/></g>
+        <!-- stage 3 -->
+        <path d="M400 170 A 34 34 0 0 1 468 170 Z" class="f-bluesoft"/><path d="M400 170 A 34 34 0 0 1 468 170" class="s-blue" stroke-width="2" fill="none"/>
+        <path d="M486 170 A 26 26 0 0 1 538 170 Z" class="f-bluesoft"/><path d="M486 170 A 26 26 0 0 1 538 170" class="s-blue" stroke-width="2" fill="none"/>
+        <path d="M466 160 H488" class="s-blue" stroke-width="5"/>
+        <g class="f-amber"><circle cx="420" cy="152" r="2.5"/><circle cx="446" cy="148" r="2.5"/><circle cx="510" cy="156" r="2.5"/></g>
+        <!-- stage 4 -->
+        <path d="M600 170 V140 H612 V170 M716 170 V140 H728 V170" class="s-muted" stroke-width="3" fill="none"/>
+        <path d="M612 152 H716" class="s-muted" stroke-width="3"/>
+        <path d="M626 170 A 30 30 0 0 1 686 170 Z" class="f-bluesoft"/><path d="M626 170 A 30 30 0 0 1 686 170" class="s-blue" stroke-width="2" fill="none"/>
+        <g class="f-green"><circle cx="694" cy="164" r="6"/><circle cx="704" cy="166" r="4"/></g>
+        <rect x="644" y="110" width="12" height="40" class="f-blue"/>
+        <g font-size="12" font-weight="800" text-anchor="middle">
+          <text x="85" y="200">1 · Landing</text><text x="266" y="200">2 · The first dome</text>
+          <text x="468" y="200">3 · Linked domes</text><text x="664" y="200">4 · A walled town</text>
+        </g>
+        <g font-size="10.5" text-anchor="middle" class="mut">
+          <text x="85" y="216">HQ and the pad</text><text x="266" y="216">homes fill in by themselves</text>
+          <text x="468" y="216">tubes, streets, lights</text><text x="664" y="216">towers, gardens, the wall</text>
+        </g>
+      </svg>
+      </div>
+    </figure>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3>What you place, what grows</h3>
+        <ul class="points small">
+          <li><b>You place:</b> domes, the power grid, walls, turrets, extractors, factories, labs. The big decisions.</li>
+          <li><b>It grows:</b> homes, streets, lights, gardens, markets, inside and around the domes, as people
+            arrive and comfort rises. Little to manage.</li>
+          <li><b>Comfort</b> comes from v1's adjacency bonuses: power, safety (turrets near), light, gardens, a lab
+            or a church nearby. Comfortable domes grow faster and send more people to work.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>When a dome breaks</h3>
+        <ul class="points small">
+          <li>A breached dome loses its air: people evacuate to the next dome along the tubes, or are lost.</li>
+          <li>The Given take the people they reach. They may come back in a later wave (the lore page's "your dead
+            come back"), so a breach costs twice.</li>
+          <li>That's why the domes sit inside the walls, and why the turtle builds outward from them.</li>
+        </ul>
+        <h3 style="margin-top:12px">Can Orbis draw domes?</h3>
+        <p class="small">The shapes are easy. Glass that you see the town through needs a transparent material in Atlas,
+          which is an engine question for the Atlas chat; until then the domes can be frosted, lit from inside, or
+          lattice-framed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PATHS ------------------------------------------------------------------------------------------>
+  <section class="part" id="paths">
+    <div class="part-head"><span class="num">05</span><h2>The settlement changes with your path</h2></div>
+    <p class="takeaway">The town is where the three endings show most. By the late game, one look at a base tells you
+      which path it's on.</p>
+    <table class="plain">
+      <tr><th>Path</th><th>The settlement becomes</th><th>Why</th></tr>
+      <tr><td><span class="tag amber">Material</span><br><b>Dominate</b></td>
+        <td>Fortress arcologies: domes buried under armour, stacked industry, the open pits all around</td>
+        <td>you never make peace with the air or the planet: you wall it out</td></tr>
+      <tr><td><span class="tag green">Wildlife</span><br><b>Stabilise</b></td>
+        <td>The domes open. The air clears as the bond grows, and the town spills out into gardens and the forest</td>
+        <td>the planet stops treating you as an infection; the strongest image of the ending</td></tr>
+      <tr><td><span class="tag violet">Ancients</span><br><b>Inherit</b></td>
+        <td>You move into the ancients' city: their colony rebuilt, your domes under their arches</td>
+        <td>you take what they left, house and all, and walk their road</td></tr>
+    </table>
+  </section>
+
+  <!-- PEOPLE ------------------------------------------------------------------------------------------>
+  <section class="part" id="people">
+    <div class="part-head"><span class="num">06</span><h2>People in the economy</h2></div>
+    <p class="takeaway">v1's economy is mass and energy as a flow, plus people. This is what people would do.</p>
+    <div class="grid3">
+      <div class="card"><h3>Crews</h3><p class="small">Extractors, miners, drills and factories need crews to run. More
+        people, more of your economy running at once.</p></div>
+      <div class="card"><h3>Soldiers and scientists</h3><p class="small">Troops and research come out of the population:
+        you can't field an army and staff every lab at once.</p></div>
+      <div class="card"><h3>The reason to hold</h3><p class="small">The colonists are why you're here (v1: a way out,
+        not a mine). Losing people costs you economy, and it's the story's real loss.</p></div>
+    </div>
+  </section>
+
+  <!-- QUESTIONS --------------------------------------------------------------------------------------->
+  <section class="part" id="questions">
+    <div class="part-head"><span class="num">?</span><h2>Settlement round 1: pick what you like</h2></div>
+    <p class="takeaway">Pick any number on most questions. "My own idea" opens a note. Your answers stay in this browser.
+      When you're done, copy them and paste them into the chat.</p>
+    <div class="progress"><i id="progress" style="width:0%"></i></div>
+    <div id="qs"></div>
+    <div class="card">
+      <h3>Anything else about digging, the land or the settlement</h3>
+      <textarea id="extra" placeholder="games you like for this, what's missing, what's wrong..."></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn" id="copy" type="button">Copy my answers</button>
+      <button class="btn ghost" id="clear" type="button">Clear</button>
+      <span id="copied" aria-live="polite"></span>
+    </div>
+    <pre class="out" id="out" hidden></pre>
+  </section>
+
+</div>
+</main>
+
+<footer><div class="wrap">Orbis settlement round 1 · <a href="index.html">Menu</a> · <a href="lore1.html">Lore round 1</a> · <a href="weapons1.html">Weapons round 1</a> · <a href="v1/">Concept v1</a></div></footer>
+
+<script src="settle1.js"></script>
+</body>
+</html>
