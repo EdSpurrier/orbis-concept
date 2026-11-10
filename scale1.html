@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbis Unit Scale</title>
+<meta name="description" content="Orbis unit scale study: how many units other RTS games allow, what Orbis can run, how many fit on one screen, how many a player can command, and a cap that fits a planet.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%237656c9'/%3E%3Cpath d='M6 19c6-3 14-3 20 0' stroke='white' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<style>
+  table.plain { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.plain th, table.plain td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.plain th { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  table.plain td.n { font-family: var(--mono); white-space: nowrap; text-align: right; }
+  .wrap-scroll { overflow-x: auto; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+  .stat .v { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  .stat .l { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+  .stat.blue .v { color: var(--blue); } .stat.red .v { color: var(--red); } .stat.green .v { color: var(--green); }
+  .stat.amber .v { color: var(--amber); } .stat.violet .v { color: var(--violet); }
+  .stats.three { grid-template-columns: repeat(3, 1fr); }
+  table.crew td.n, table.tiers td.n { text-align: left; }
+  .answer { border-left: 4px solid var(--green); background: var(--green-soft); border-radius: 0 12px 12px 0; padding: 12px 16px; margin-top: 14px; }
+  .answer b:first-child { color: var(--green); }
+  .calc { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: start; }
+  .calc label { font-weight: 700; font-size: 14px; display: block; margin: 12px 0 4px; }
+  .calc label:first-child { margin-top: 0; }
+  .calc input[type="range"] { width: 100%; accent-color: var(--blue); }
+  .seg { display: flex; gap: 4px; flex-wrap: wrap; }
+  .seg button { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+  .seg button.on { border-color: var(--blue); background: var(--blue-soft); color: var(--blue); font-weight: 700; }
+  .readout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .readout div { background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+  .readout b { display: block; font-size: 22px; letter-spacing: -0.01em; }
+  .readout span { font-size: 12.5px; color: var(--muted); }
+  .verdict { margin-top: 10px; font-size: 15px; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); }
+  .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .side h3 { display: flex; align-items: center; gap: 8px; }
+  .side.colony { border-top: 5px solid var(--blue); } .side.planet { border-top: 5px solid var(--red); }
+  .side.towers { border-top: 5px solid var(--green); }
+  .dec-h { display: flex; align-items: center; gap: 10px; margin: 26px 0 12px; }
+  .superseded { border-left: 4px solid var(--amber); background: var(--amber-soft); border-radius: 0 12px 12px 0; padding: 10px 14px; margin-bottom: 14px; }
+  .ladder { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .rung { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--bg); text-align: center; }
+  .rung .px { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .rung b { display: block; font-size: 20px; margin: 4px 0 2px; }
+  .rung .small { display: block; }
+  .qs { counter-reset: q; list-style: none; padding: 0; }
+  .qs li { counter-increment: q; position: relative; padding: 12px 14px 12px 50px; margin: 10px 0; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 12px; }
+  .qs li::before { content: counter(q); position: absolute; left: 14px; top: 13px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--amber); color: #fff; font-size: 13px; font-weight: 800; display: grid; place-items: center; }
+  .qs li b { display: block; }
+  @media (max-width: 860px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .calc, .sides { grid-template-columns: 1fr; }
+    .ladder { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    table.stack thead { display: none; }
+    table.stack tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    table.stack td { display: block; border: 0; padding: 2px 4px; }
+    table.stack td::before { color: var(--muted); }
+    table.stack.grows td:nth-child(2)::before { content: "Grows with: "; }
+    table.stack.wwz td:nth-child(2)::before { content: "Orbis today: "; }
+    table.stack.wwz td:nth-child(3)::before { content: "To get there: "; }
+    table.stack.crew td:nth-child(2)::before { content: "Crew: "; }
+    table.stack.tiers td:nth-child(2)::before { content: "For: "; }
+    table.stack.tiers td:nth-child(3)::before { content: "1,024 Brutes: "; }
+    table.stack.tiers td:nth-child(4)::before { content: "The catch: "; }
+    .stats.three { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) { .readout { grid-template-columns: 1fr 1fr; } .readout b { font-size: 18px; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="f-violet"/><path d="M6 19c6-3 14-3 20 0" stroke="#fff" stroke-width="2.5" fill="none"/></svg>
+      <span>Orbis unit scale</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="index.html">☰ Menu</a>
+      <a href="#others">Other games</a>
+      <a href="#today">Orbis today</a>
+      <a href="#screen">One screen</a>
+      <a href="#triangles">Triangles</a>
+      <a href="#control">Control</a>
+      <a href="#why">Why so many?</a>
+      <a href="#swarm">The swarm</a>
+      <a href="#cap">The cap</a>
+      <a href="#decided">Decided</a>
+      <a href="#proposed">Crews and towers</a>
+      <a href="#questions">Questions</a>
+    </nav>
+    <button class="theme" id="theme" type="button" title="Switch light / dark">Theme</button>
+  </div>
+</header>
+
+<main id="top">
+<div class="wrap">
+
+  <section class="hero">
+    <div class="kicker">Orbis · study · 9–10 November 2026 · towards concept v2</div>
+    <h1>How many units?</h1>
+    <p class="pitch">Orbis can already run about 8,000 units in one fight. That doesn't mean it should. Ten thousand
+      units on one screen are a few pixels each, no player can command them one by one, and a planet you take region by
+      region keeps growing. This study looks at what other games do, what fits on a screen, what a player can control,
+      and proposes a cap: <b>a few dozen high-value colony units, managed one by one, against a planet that sends the
+      masses</b>.</p>
+  </section>
+
+  <!-- 01 OTHER GAMES ------------------------------------------------------------------------------------->
+  <section class="part" id="others">
+    <div class="part-head"><span class="num">01</span><h2>What other games allow</h2></div>
+    <p class="takeaway">Three families. Classic RTS caps each player at 100–200 so every unit matters. Big-army RTS allows
+      1,000–1,500 per player and leans on the hardware. Horde games give the huge numbers to the enemy, not the player.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 470" style="min-width:640px" role="img" aria-label="Bar chart on a log scale of the most units each game allows. Company of Heroes 3: 100 pop. StarCraft II and Age of Empires IV: 200. Age of Empires II DE: 500 in custom lobbies. Total War Warhammer III: 40 units, thousands of soldiers. Supreme Commander FAF: 1,500 per player. Sins of a Solar Empire II: 2,000 fleet supply. Planetary Annihilation: no cap, 3,000 in config. Ashes of the Singularity: 7,700 on the demo map. Beyond All Reason: 15,000 at an event. They Are Billions: 20,000 infected.">
+        <!-- log axis: x = 200 + 130 * log10(n), n = 10..100000 -> 330..850; scaled to 200..730 -->
+        <g class="s-line" stroke-width="1">
+          <line x1="200" y1="20" x2="200" y2="420"/><line x1="332.5" y1="20" x2="332.5" y2="420"/>
+          <line x1="465" y1="20" x2="465" y2="420"/><line x1="597.5" y1="20" x2="597.5" y2="420"/><line x1="730" y1="20" x2="730" y2="420"/>
+        </g>
+        <g font-size="11" text-anchor="middle" class="mut">
+          <text x="200" y="438">10</text><text x="332.5" y="438">100</text><text x="465" y="438">1,000</text>
+          <text x="597.5" y="438">10,000</text><text x="730" y="438">100,000</text>
+        </g>
+        <text x="465" y="460" text-anchor="middle" font-size="11.5" class="mut">units in play (log scale: each line is ten times the last)</text>
+        <g font-size="13" font-weight="700" text-anchor="end">
+          <text x="190" y="44">Company of Heroes 3</text><text x="190" y="80">StarCraft II</text>
+          <text x="190" y="116">Age of Empires IV</text><text x="190" y="152">Age of Empires II DE</text>
+          <text x="190" y="188">Total War: WH III</text><text x="190" y="224">Supreme Commander (FAF)</text>
+          <text x="190" y="260">Sins of a Solar Empire II</text><text x="190" y="296">Planetary Annihilation</text>
+          <text x="190" y="332">Ashes of the Singularity</text><text x="190" y="368">Beyond All Reason</text>
+          <text x="190" y="404">They Are Billions</text>
+        </g>
+        <!-- player caps (blue): width = 132.5*log10(n) - 132.5 -->
+        <rect x="200" y="30" width="132.5" height="20" rx="4" class="f-blue"/>
+        <rect x="200" y="66" width="172.4" height="20" rx="4" class="f-blue"/>
+        <rect x="200" y="102" width="172.4" height="20" rx="4" class="f-blue"/>
+        <rect x="200" y="138" width="225.1" height="20" rx="4" class="f-blue"/>
+        <rect x="200" y="174" width="79.8" height="20" rx="4" class="f-blue"/>
+        <rect x="200" y="210" width="288.3" height="20" rx="4" class="f-blue"/>
+        <rect x="200" y="246" width="304.9" height="20" rx="4" class="f-blue"/>
+        <!-- whole battles / engine showcases (amber) -->
+        <rect x="200" y="282" width="328.2" height="20" rx="4" class="f-amber"/>
+        <rect x="200" y="318" width="383.4" height="20" rx="4" class="f-amber"/>
+        <rect x="200" y="354" width="420.8" height="20" rx="4" class="f-amber"/>
+        <!-- enemy horde (red) -->
+        <rect x="200" y="390" width="437.4" height="20" rx="4" class="f-red"/>
+        <g font-size="11.5" class="mut">
+          <text x="340" y="45">100 pop (squads)</text><text x="380" y="81">200 supply</text><text x="380" y="117">200 pop</text>
+          <text x="433" y="153">500 in custom lobbies (200 ranked)</text>
+          <text x="288" y="189">40 units, each a block of soldiers: thousands of models</text>
+          <text x="496" y="225">1,500 per player</text><text x="513" y="261">2,000 fleet supply</text>
+          <text x="536" y="297">no cap by design (3,000 in config)</text><text x="591" y="333">7,700 on the demo map</text>
+          <text x="628" y="369">15,000 at an event</text><text x="645" y="405">20,000 infected</text>
+        </g>
+      </svg>
+      </div>
+      <div class="legend">
+        <span><i class="f-blue-bg" style="background:var(--blue)"></i>one player's cap</span>
+        <span><i style="background:var(--amber)"></i>a whole battle or engine showcase</span>
+        <span><i style="background:var(--red)"></i>the enemy horde</span>
+      </div>
+      <p class="cap">Numbers come from official guides, developer statements and community sources (listed at the
+        bottom); several are lobby settings or showcase figures, not everyday play.</p>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><span class="tag blue">Classic</span><h3>100–200, every unit counts</h3><p class="small">StarCraft II,
+        Age of Empires, Company of Heroes. Supply buildings raise the cap; bigger units cost more of it. Company of Heroes
+        counts squads, so 100 pop is a few dozen things to command.</p></div>
+      <div class="card"><span class="tag amber">Big army</span><h3>1,000–1,500, hardware is the limit</h3><p class="small">Supreme
+        Commander, Beyond All Reason, Planetary Annihilation, Sins II. Players command groups and factories, not units.
+        The fun is scale and logistics; the cost is slow late games.</p></div>
+      <div class="card"><span class="tag red">Horde</span><h3>The enemy brings the numbers</h3><p class="small">They Are
+        Billions: up to 20,000 infected against a small, defended colony. The player's side stays small and precious.
+        <b>This is the closest to Orbis's "the planet fights back".</b></p></div>
+    </div>
+  </section>
+
+  <!-- 02 ORBIS TODAY -------------------------------------------------------------------------------------->
+  <section class="part" id="today">
+    <div class="part-head"><span class="num">02</span><h2>What Orbis can run today</h2></div>
+    <p class="takeaway">Measured on your RTX 4080 Super. The limit is the processor's work per unit, not the graphics card.
+      These were measured before Atlas 1.11 moved unit posing to the GPU; in its own run 1.11 took the same 4,000-tank
+      battle from 7.78 to 4.81 ms a frame, so today is better still.</p>
+    <div class="stats">
+      <div class="stat green"><div class="v">~8,000</div><div class="l">units in one fight at 96 fps (4,000 tanks against
+        3,750 creatures, <code>--battle 4000</code>)</div></div>
+      <div class="stat blue"><div class="v">7 ms</div><div class="l">a frame for 10,000 tanks driving (144 fps); the GPU's
+        share 3.9 ms for about 6 million triangles</div></div>
+      <div class="stat amber"><div class="v">100,000</div><div class="l">units moved and pathed in the stress test (47 fps
+        walking): a test, not a game</div></div>
+      <div class="stat red"><div class="v">9,926</div><div class="l">triangles in one brute: 16 times a tank (620) or a
+        runner (548)</div></div>
+    </div>
+    <figure class="card" id="costs" style="margin-top:14px">
+      <h3>Where the time goes: per unit, not per path</h3>
+      <p class="small muted">Pathfinding was the big cost before flow fields. Now a path is worked out once per order or
+        per wave, on a background thread, and every unit in it just reads its direction. What grows with the number of
+        units is the work each one does every frame.</p>
+      <div class="wrap-scroll">
+      <table class="plain stack grows">
+        <thead><tr><th>Work</th><th>Grows with</th><th>What it costs</th></tr></thead>
+        <tbody>
+          <tr><td><b>Placing and posing units</b></td><td>units that move</td><td>10,000 tanks driving: 2.45 of 6.96 ms
+            before Atlas 1.11. Now the GPU poses them and a pan moves nothing (0.01 ms).</td></tr>
+          <tr><td><b>Fighting</b>: finding targets, firing</td><td>units in the fight</td><td>0.93 ms at 4,000 tanks
+            against 3,750 creatures (it was 4.3–5.0 ms until target searches went out in rings and deaths were
+            budgeted).</td></tr>
+          <tr><td><b>Steering</b>: avoiding and spacing out</td><td>units walking, and how tightly</td><td>a 10,000-tank
+            march: about 1.0–1.4 ms moving plus 0.85 ms spacing; up to about 4 ms when two armies of 3,000 push through each other.</td></tr>
+          <tr><td><b>Pathfinding</b>: flow fields</td><td>orders and waves, not units</td><td>about 4 ms a field, built on a
+            background thread: nothing on the frame. After an order, paths are handed out at most 4 ms a frame, for a
+            second or two (100,000 units all moving within 2–4 s).</td></tr>
+          <tr><td><b>Drawing</b> (graphics card)</td><td>triangles and instances</td><td>3.9 ms for 10,000 tanks' 6 million
+            triangles: room to spare.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="cap">From Orbis <code>docs/PATHFINDING.md</code> and <code>docs/IMPROVEMENTS.md</code> (Armies at
+        scale), Atlas <code>docs/studies/armies-at-scale-2026-11-08.md</code>. So the conclusion holds for a slightly
+        different reason: fewer units are cheaper because each one fights, steers and is drawn every frame. A turret
+        is cheaper still: it never paths or steers.</p>
+    </figure>
+  </section>
+
+  <!-- 03 ONE SCREEN --------------------------------------------------------------------------------------->
+  <section class="part" id="screen">
+    <div class="part-head"><span class="num">03</span><h2>How many fit on one screen?</h2></div>
+    <p class="takeaway">Your first question. Zoom out far enough to see 10,000 tanks and each one is a handful of
+      pixels. Try it: this uses Orbis's own numbers (a tank is 3 m long, the camera's field of view is 46°).</p>
+    <div class="card calc">
+      <div>
+        <label for="dist">Camera distance: <span id="distv">90 m</span></label>
+        <input id="dist" type="range" min="0" max="1000" value="327">
+        <label>Screen</label>
+        <div class="seg" id="res">
+          <button type="button" data-v="1080">1080p</button><button type="button" data-v="1440" class="on">1440p</button><button type="button" data-v="2160">4K</button>
+        </div>
+        <label>Unit</label>
+        <div class="seg" id="unit">
+          <button type="button" data-v="tank" class="on">Tank 3 m</button><button type="button" data-v="runner">Runner 1.6 m</button><button type="button" data-v="brute">Brute 3.2 m</button>
+        </div>
+        <label>How tightly they stand</label>
+        <div class="seg" id="space">
+          <button type="button" data-v="4">Packed (4 m)</button><button type="button" data-v="6" class="on">Formation (6 m)</button><button type="button" data-v="12">Spread (12 m)</button>
+        </div>
+        <p class="small muted" style="margin-top:12px">Seen from straight above. A tilted camera sees more ground, and the
+          far half of it smaller still.</p>
+      </div>
+      <div>
+        <svg class="dia" id="screenview" viewBox="0 0 480 270" role="img" aria-label="A screen-shaped box filled with dots, one per unit that fits, drawn at their size on screen"></svg>
+        <div class="readout" style="margin-top:10px">
+          <div><b id="o-px">–</b><span>one unit's length on screen</span></div>
+          <div><b id="o-fit">–</b><span>units that fit on the screen</span></div>
+          <div><b id="o-tpp">–</b><span>triangles per pixel it covers (over ~1 is wasted)</span></div>
+          <div><b id="o-need">–</b><span>triangles it actually needs at this size</span></div>
+        </div>
+        <div class="verdict" id="o-verdict"></div>
+      </div>
+    </div>
+    <div class="answer"><b>The answer:</b> to frame 10,000 tanks in formation (6 m apart) you zoom out to about 530 m, where
+      each tank is 7–10 pixels long (1080p to 1440p). At that size the tank's 620 triangles are around 10–20 per pixel, and a 12–50 triangle version
+      looks the same. Graphics cards also shade in 2×2-pixel blocks, so triangles smaller than a pixel waste work. You're right:
+      far away, a unit needs a tiny fraction of its triangles.</div>
+  </section>
+
+  <!-- 04 TRIANGLES ---------------------------------------------------------------------------------------->
+  <section class="part" id="triangles">
+    <div class="part-head"><span class="num">04</span><h2>Triangles a unit needs at each size</h2></div>
+    <p class="takeaway">Detail should follow size on screen: full models up close, simpler ones further out, and the
+      strategic icons from orbit. Atlas already has far LODs (1.11); Orbis's units don't use them yet.</p>
+    <div class="ladder">
+      <div class="rung"><span class="px">64 px and up</span><b>600</b><span class="small muted">the full model: turret,
+        gun, tracks</span></div>
+      <div class="rung"><span class="px">24–64 px</span><b>~200</b><span class="small muted">hull, turret and gun, no small
+        parts</span></div>
+      <div class="rung"><span class="px">10–24 px</span><b>~50</b><span class="small muted">a few boxes with the right
+        outline and colour</span></div>
+      <div class="rung"><span class="px">4–10 px</span><b>~12</b><span class="small muted">a box or a flat picture of the
+        unit (an impostor)</span></div>
+      <div class="rung"><span class="px">under 4 px</span><b>icon</b><span class="small muted">the strategic icon (the I key)
+        takes over</span></div>
+    </div>
+    <div class="note">The brute is the big one to fix: 9,926 triangles even at 10 pixels. A 300–600 triangle brute up
+      close plus a far version would cut most of a big battle's triangles. It matters less than the CPU work per unit
+      today, but more once the counts grow.</div>
+  </section>
+
+  <!-- 05 CONTROL ------------------------------------------------------------------------------------------>
+  <section class="part" id="control">
+    <div class="part-head"><span class="num">05</span><h2>Can a player command that many?</h2></div>
+    <p class="takeaway">Your second question. No: not one by one. A top StarCraft II player makes about 300 actions a
+      minute (most players 50–100). Spread over the army, that's the attention each unit gets.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 250" style="min-width:600px" role="img" aria-label="At 300 actions a minute: with 50 units each gets 6 actions a minute; 200 units, 1.5; 1,000 units, 0.3, one every three minutes; 10,000 units, 0.03, one every half hour.">
+        <g font-size="13" font-weight="700" text-anchor="end">
+          <text x="140" y="44">50 units</text><text x="140" y="94">200 units</text><text x="140" y="144">1,000 units</text><text x="140" y="194">10,000 units</text>
+        </g>
+        <rect x="150" y="28" width="560" height="24" rx="5" class="f-green"/>
+        <rect x="150" y="78" width="140" height="24" rx="5" class="f-blue"/>
+        <rect x="150" y="128" width="28" height="24" rx="5" class="f-amber"/>
+        <rect x="150" y="178" width="3" height="24" rx="1" class="f-red"/>
+        <g font-size="12.5">
+          <text x="300" y="45" class="f-bg-text" font-weight="700">6 actions a minute each: every unit is micro'd</text>
+          <text x="300" y="95">1.5 a minute: StarCraft's late game</text>
+          <text x="188" y="145">0.3: one order every three minutes</text>
+          <text x="163" y="195">0.03: one order every half hour. Nobody is commanding these.</text>
+        </g>
+        <text x="150" y="236" font-size="11.5" class="mut">a pro's 300 actions a minute, shared out over the army</text>
+      </svg>
+      </div>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><h3>Command groups, not units</h3><p class="small">Squads of 3–5 (Company of Heroes, Total War):
+        one order moves them all and they keep formation. 150 squads are 450 models but only 150 things to command.</p></div>
+      <div class="card"><h3>Let them think a little</h3><p class="small">Stances already exist (hold, guard, hunt). Add
+        rally points, patrols and "defend this region", so a front holds itself while you're elsewhere on the planet.</p></div>
+      <div class="card"><h3>Command the planet, not the fight</h3><p class="small">From orbit you set where the fronts
+        are; zoomed in you fight one battle. The strategic icons are the bridge between the two.</p></div>
+    </div>
+  </section>
+
+  <!-- 06 WHY -------------------------------------------------------------------------------------------------->
+  <section class="part" id="why">
+    <div class="part-head"><span class="num">06</span><h2>Why would you need that many?</h2></div>
+    <p class="takeaway">Your third question, and your idea: you don't. The colony is few, strong and precious; the planet
+      is many, fast and cheap. That's also the story: a small company on a world that treats it as an infection.</p>
+    <div class="sides">
+      <div class="card side colony">
+        <h3><span class="tag blue">You</span>The colony: quality</h3>
+        <ul class="points small">
+          <li><b>Fewer, bigger units</b> that cost more, take longer to build and do much more: a heavy tank is worth five
+            light ones, a walker ten.</li>
+          <li><b>Each loss hurts</b>, so you protect and repair them (the turtle you are).</li>
+          <li><b>Smart</b>: formations, stances, target choice. Paths cost per order, not per unit; it's the fighting and
+            steering every frame that few units keep cheap.</li>
+          <li><b>Late tech gets stronger, not more numerous</b>: experimental-class units, like Supreme Commander's, instead
+            of a bigger cap.</li>
+        </ul>
+      </div>
+      <div class="card side planet">
+        <h3><span class="tag red">The planet</span>The masses: quantity</h3>
+        <ul class="points small">
+          <li><b>Many, fast, fragile</b>: runners die in a hit or two. The fun is mowing down a wave that almost reaches
+            the wall.</li>
+          <li><b>Simple minds</b>: a whole wave follows one flow field (Orbis already does this) and only steers when it is
+            near something.</li>
+          <li><b>Cheap to draw</b>: small, similar, far: ideal for low-detail models and shared animation.</li>
+          <li><b>The Given</b> and the giants are the exception: few, huge and clever, the planet's own "big units".</li>
+        </ul>
+      </div>
+    </div>
+    <figure class="card" style="margin-top:14px">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 170" style="min-width:600px" role="img" aria-label="The same strength two ways: the colony as 6 big blocks, the planet as 300 small dots.">
+        <text x="20" y="22" font-size="13" font-weight="800">The same strength, two ways</text>
+        <g class="f-blue">
+          <rect x="30" y="50" width="44" height="30" rx="5"/><rect x="88" y="50" width="44" height="30" rx="5"/><rect x="146" y="50" width="44" height="30" rx="5"/>
+          <rect x="30" y="96" width="44" height="30" rx="5"/><rect x="88" y="96" width="44" height="30" rx="5"/><rect x="146" y="96" width="44" height="30" rx="5"/>
+        </g>
+        <text x="110" y="152" font-size="12" text-anchor="middle" class="mut">6 heavy units: 6 things to command</text>
+        <g id="dots" class="f-red"></g>
+        <text x="520" y="152" font-size="12" text-anchor="middle" class="mut">300 runners: one wave, one flow field</text>
+      </svg>
+      </div>
+    </figure>
+  </section>
+
+  <!-- 07 SWARM ------------------------------------------------------------------------------------------------>
+  <section class="part" id="swarm">
+    <div class="part-head"><span class="num">07</span><h2>The swarm: scale the threat, not the crowd</h2></div>
+    <p class="takeaway">Your fourth idea. As the game gets harder the crowds stay the same size, or shrink, and bigger
+      creatures come out. That keeps every fight affordable and makes each step up feel new rather than just bigger.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 300" style="min-width:600px" role="img" aria-label="Over the game, the number of creatures in a wave rises early then levels off and falls, while their average size and toughness keeps rising: runners first, then brutes, then giants.">
+        <line x1="70" y1="250" x2="720" y2="250" class="s-line" stroke-width="2"/>
+        <line x1="70" y1="30" x2="70" y2="250" class="s-line" stroke-width="2"/>
+        <g font-size="11" text-anchor="middle" class="mut">
+          <text x="135" y="270">wave 1</text><text x="265" y="270">early</text><text x="395" y="270">mid</text>
+          <text x="525" y="270">late</text><text x="655" y="270">endgame</text>
+        </g>
+        <text x="395" y="292" font-size="11.5" text-anchor="middle" class="mut">how far into the game</text>
+        <path d="M80 200 C 180 120, 260 80, 340 78 S 520 92, 710 130" class="s-red" stroke-width="4" fill="none"/>
+        <path d="M80 236 C 220 230, 360 190, 460 140 S 640 50, 710 40" class="s-violet" stroke-width="4" fill="none"/>
+        <text x="90" y="50" font-size="12.5" font-weight="700" class="f-red-t">creatures in a wave: up, then level, then down</text>
+        <text x="400" y="222" font-size="12.5" font-weight="700" class="f-violet-t">size and toughness: always up</text>
+        <g font-size="11.5" font-weight="700">
+          <rect x="96" y="208" width="70" height="20" rx="10" class="f-redsoft"/><text x="131" y="222" text-anchor="middle">runners</text>
+          <rect x="330" y="162" width="62" height="20" rx="10" class="f-ambersoft"/><text x="361" y="176" text-anchor="middle">brutes</text>
+          <rect x="520" y="112" width="64" height="20" rx="10" class="f-violetsoft"/><text x="552" y="126" text-anchor="middle">giants</text>
+          <rect x="628" y="170" width="84" height="20" rx="10" class="f-violetsoft"/><text x="670" y="184" text-anchor="middle">the Given</text>
+        </g>
+      </svg>
+      </div>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><h3>A budget, not a count</h3><p class="small">The planet has one pool of life to spend. A
+        director keeps up to about 5,000 creatures active near you and holds the rest off-screen as numbers in each
+        region, ready to wake.</p></div>
+      <div class="card"><h3>Mob minds are cheap</h3><p class="small">One flow field per wave, steering only when close,
+        target searches in rings (done in November): the cost per creature stays small however big the wave.</p></div>
+      <div class="card"><h3>Set pieces can go huge</h3><p class="small">A scripted moment, a migration across the plains
+        seen from far away, can still show 20,000, drawn as low-detail models or impostors, because nobody fights them
+        one by one.</p></div>
+    </div>
+
+    <h3 id="wwz" class="dec-h" style="margin-top:30px"><span class="tag red">ref</span>World War Z: the swarm to aim for</h3>
+    <p class="small muted" style="margin-top:-4px">Saber's co-op zombie shooter (2019; Aftermath 2021), on its own Swarm Engine.
+      Your question of 10 November: how detailed, how many, how they find their way.</p>
+    <div class="stats">
+      <div class="stat red"><div class="v">500</div><div class="l">zombies on screen: what the Swarm Engine was built for
+        (2019, PS4 and Xbox One at 30 fps)</div></div>
+      <div class="stat red"><div class="v">1,000+</div><div class="l">in Horde Mode XL's big waves (2023, PS5, Xbox Series
+        and PC)</div></div>
+      <div class="stat green"><div class="v">~8,000</div><div class="l">units in one Orbis fight today, tanks and creatures
+        together (96 fps)</div></div>
+      <div class="stat amber"><div class="v">3,000</div><div class="l">Orbis's cap on animated creature models: the crawler
+        is 9 parts, each posed every frame</div></div>
+    </div>
+    <div class="answer"><b>The short of it:</b> Orbis already runs more creatures than World War Z shows. What World War
+      Z has is the look up close and the way the horde behaves: it flows as one, piles up and climbs. That's what to
+      take.</div>
+    <figure class="card" style="margin-top:14px">
+      <div class="wrap-scroll">
+      <table class="plain stack wwz">
+        <thead><tr><th>World War Z</th><th>Orbis today</th><th>To get there</th></tr></thead>
+        <tbody>
+          <tr><td><b>Moves as one</b>, and individuals break off when they get near you</td><td>a wave follows one flow
+            field and steers only near something</td><td>done</td></tr>
+          <tr><td><b>Pyramids</b>: the horde piles against a wall and climbs itself to get over</td><td>walls stop the swarm
+            or are broken</td><td>new: piles at walls (below)</td></tr>
+          <tr><td><b>Surges</b>: calm, then a rush from every side</td><td>waves from nests</td><td>the swarm's director
+            (section 08)</td></tr>
+          <tr><td><b>Deaths you feel</b>: bodies blown apart, falling off the pile</td><td>death effects within a budget,
+            particle bursts beyond it</td><td>more, kept cheap</td></tr>
+          <tr><td><b>Many drawn at once</b>: GPU-driven visibility, up to 3,000 draw calls, command lists recorded on several
+            threads</td><td>Atlas is GPU-driven: one dispatch per task list</td><td>done</td></tr>
+          <tr><td><b>Detailed animated bodies</b> seen from a few metres</td><td>the crawler: 9 rigid parts, a cap of
+            3,000</td><td>one skinned mesh, or animation baked into a texture (Atlas armies step 4)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="cap">Saber hasn't published triangle counts for its zombies. Its GDC 2019 talk on zombie rendering has the
+        details; this page uses its public talk on Vulkan and the release notes.</p>
+    </figure>
+    <div class="sides" style="margin-top:14px">
+      <div class="card"><h3>The camera is the difference</h3><p class="small">World War Z is played a few metres from the
+        zombies, so each one needs a detailed body. At Orbis's play zoom (60–100 m) a 1.6 m runner is about 27–45 pixels
+        tall on a 1440p screen: the crowd's motion matters more than each body. Close detail matters at ground zoom, for
+        the few nearest the camera.</p></div>
+      <div class="card side planet"><h3>The idea to take: piles at the walls</h3><p class="small">It fits the tower-defence
+        decision. Runners blocked at a wall heap up against it; once the heap reaches the top, they pour over. Walls buy
+        time instead of being a hard stop, and every tower that thins the heap keeps it down. Only the creatures at the
+        wall pay for it, a few hundred at most.</p></div>
+    </div>
+
+    <h3 id="daysgone" class="dec-h" style="margin-top:30px"><span class="tag red">ref</span>Days Gone: hordes that live in the world</h3>
+    <p class="small muted" style="margin-top:-4px">Bend Studio's open-world survival game (2019, PS4; on Unreal Engine 4).
+      Its hordes aren't waves: they're places on the map with a routine.</p>
+    <div class="stats">
+      <div class="stat red"><div class="v">500</div><div class="l">Freakers in the biggest hordes (the story's are in the
+        300s and 400s)</div></div>
+      <div class="stat red"><div class="v">40</div><div class="l">hordes roaming the open world, each of 50 to 500</div></div>
+      <div class="stat amber"><div class="v">8</div><div class="l">meshes for the whole horde: size, height and speed
+        varied per Freaker</div></div>
+      <div class="stat green"><div class="v">0</div><div class="l">respawns: kill 100 of a 300 horde and 200 are there when
+        you come back</div></div>
+    </div>
+    <div class="answer"><b>The short of it:</b> Days Gone makes a horde a thing in the world, with a home, a daily
+      routine and a count that remembers what you did to it. That suits a planet you take region by region better than
+      waves do.</div>
+    <figure class="card" style="margin-top:14px">
+      <div class="wrap-scroll">
+      <table class="plain stack wwz">
+        <thead><tr><th>Days Gone</th><th>Orbis today</th><th>To get there</th></tr></thead>
+        <tbody>
+          <tr><td><b>A routine</b>: hordes shelter in buildings by day; at night they go to water and migrate</td><td>waves
+            from nests; Orbis has a day and night clock</td><td>hordes per region that sleep by day and roam at night</td></tr>
+          <tr><td><b>They remember</b>: kills stick, and a horde picks up stragglers as it goes</td><td>waves, topped up</td>
+            <td>the planet's pool of life per region (the director)</td></tr>
+          <tr><td><b>Alone or in a horde</b>: two sets of behaviour, switched to keep the horde cheap on PS4</td><td>a wave
+            follows one flow field; steering only near something</td><td>done</td></tr>
+          <tr><td><b>Variety from 8 meshes</b>, each Freaker sized, shaped and paced differently</td><td>one runner and one
+            brute model</td><td>size, colour and pace per creature (Atlas has tints per copy)</td></tr>
+          <tr><td><b>Beaten with the land</b>: traps, choke points, explosives, lures; holding the trigger doesn't
+            work</td><td>towers and walls</td><td>lures: bait a horde into your killing zone</td></tr>
+          <tr><td><b>Infestations</b>: clearing a nest changes the area around it</td><td>nests</td><td>a cleared nest calms
+            its region</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="cap">From developer interviews (IGN via AltChar; GamingBolt). Bend hasn't published the horde's technical
+        details; a GDC 2018 talk covered its AI.</p>
+    </figure>
+    <div class="sides" style="margin-top:14px">
+      <div class="card"><h3>Why it fits Orbis</h3><p class="small">The swarm's director already holds creatures as
+        numbers in each region. Days Gone shows what to do with them: a horde with a home and a routine, on Orbis's own
+        clock. Night is when they move, so lights, walls and towers matter most after dark.</p></div>
+      <div class="card side planet"><h3>The idea to take: hordes your units scout</h3><p class="small">It fits the
+        expanding half of the towers-and-units decision. Units find where a region's horde sleeps and where it goes at
+        night. Then you choose: build away from its path, lure it into your towers, or hit its nest by day.</p></div>
+    </div>
+  </section>
+
+  <!-- 08 CAP ---------------------------------------------------------------------------------------------------->
+  <section class="part" id="cap">
+    <div class="part-head"><span class="num">08</span><h2>A cap that fits a planet</h2></div>
+    <div class="superseded small"><b>Replaced on 10 November</b> by <a href="#decided">09</a>: units now cost crews from
+      your people and towers cost power. The relay points are dropped; the hard ceiling, upkeep, squads and the swarm's
+      director carry over.</div>
+    <p class="takeaway">The proposal: command points that grow with the land you hold, up to a hard ceiling. Taking over
+      the planet raises your cap instead of breaking it, and upkeep makes a big army a real cost.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 300" style="min-width:640px" role="img" aria-label="Command points: you land with 100. Each region you hold with a command relay adds 40. A hard ceiling of 500. Units cost points by size: a light tank 2, a heavy tank 5, a walker 10, an experimental 40. Turrets and walls cost none; they are limited by power.">
+        <circle cx="150" cy="150" r="118" class="f-surface2"/>
+        <!-- eight regions as slices; three held (the landing site and two with relays) -->
+        <path d="M150 150 L150 32 A118 118 0 0 1 233.4 66.6 Z" class="f-blue"/>
+        <path d="M150 150 L233.4 66.6 A118 118 0 0 1 268 150 Z" class="f-blue" opacity="0.7"/>
+        <path d="M150 150 L66.6 66.6 A118 118 0 0 1 150 32 Z" class="f-blue" opacity="0.7"/>
+        <g class="s-line" stroke-width="2">
+          <line x1="150" y1="32" x2="150" y2="268"/><line x1="32" y1="150" x2="268" y2="150"/>
+          <line x1="66.6" y1="66.6" x2="233.4" y2="233.4"/><line x1="233.4" y1="66.6" x2="66.6" y2="233.4"/>
+        </g>
+        <circle cx="150" cy="150" r="118" fill="none" class="s-line" stroke-width="2"/>
+        <circle cx="178" cy="84" r="9" class="f-green"/>
+        <g class="f-amber"><circle cx="216" cy="122" r="7"/><circle cx="122" cy="84" r="7"/></g>
+        <text x="150" y="288" font-size="12" text-anchor="middle" class="mut">regions held (blue): landing site (green), relays (amber)</text>
+        <g font-size="13">
+          <text x="310" y="40" font-weight="800">Your command points</text>
+          <rect x="310" y="54" width="420" height="26" rx="6" class="f-surface2"/>
+          <rect x="310" y="54" width="84" height="26" rx="6" class="f-blue"/>
+          <rect x="394" y="54" width="67" height="26" class="f-blue" opacity="0.6"/>
+          <line x1="730" y1="48" x2="730" y2="86" class="s-red" stroke-width="3"/>
+          <text x="352" y="72" text-anchor="middle" class="f-bg-text" font-weight="700">100</text>
+          <text x="428" y="72" text-anchor="middle" class="f-bg-text" font-weight="700">+80</text>
+          <text x="730" y="104" text-anchor="end" font-size="11.5" class="f-red-t">hard ceiling 500</text>
+          <text x="310" y="104" font-size="11.5" class="mut">land with 100; +40 per region held with a relay</text>
+          <text x="310" y="146" font-weight="800">What units cost</text>
+          <g font-size="12.5">
+            <rect x="310" y="160" width="12" height="12" rx="2" class="f-blue"/><text x="330" y="171">light tank: 2</text>
+            <rect x="460" y="157" width="18" height="18" rx="3" class="f-blue"/><text x="486" y="171">heavy tank: 5</text>
+            <rect x="610" y="154" width="24" height="24" rx="4" class="f-blue"/><text x="642" y="171">walker: 10</text>
+            <rect x="310" y="196" width="34" height="34" rx="5" class="f-violet"/><text x="352" y="218">experimental: 40</text>
+            <rect x="520" y="200" width="26" height="26" rx="4" class="f-green"/><text x="554" y="218">turrets, walls: 0</text>
+          </g>
+          <text x="310" y="258" font-size="12" class="mut">Buildings don't count: power limits them, so holding the planet means</text>
+          <text x="310" y="274" font-size="12" class="mut">fortified regions, not armies everywhere. Upkeep: each point drains a</text>
+          <text x="310" y="290" font-size="12" class="mut">little energy, more as the army grows, so 500 is a choice, not a default.</text>
+        </g>
+      </svg>
+      </div>
+      <p class="cap">The numbers are a starting point to tune in play, not a decision.</p>
+    </figure>
+    <div class="grid4" style="margin-top:14px">
+      <div class="card"><span class="tag blue">1</span><h3>Points from land</h3><p class="small">Like Company of Heroes 3's
+        ports or StarCraft's depots, but tied to regions: expansion is how you grow.</p></div>
+      <div class="card"><span class="tag blue">2</span><h3>Upkeep</h3><p class="small">The flow economy already has it. A
+        rising cost per point is a soft cap well below the hard one.</p></div>
+      <div class="card"><span class="tag blue">3</span><h3>Squads</h3><p class="small">A platoon is one order and one
+        price; it looks like an army and costs like a unit.</p></div>
+      <div class="card"><span class="tag red">4</span><h3>The swarm's budget</h3><p class="small">The planet isn't capped
+        by points but by a director: about 5,000 active near you.</p></div>
+    </div>
+    <figure class="card" style="margin-top:14px">
+      <h3>One big fight, added up</h3>
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 120" style="min-width:600px" role="img" aria-label="A big fight at the ceiling: about 450 colony models in 150 squads, plus up to 5,000 creatures, about 5,500 units. Orbis runs about 8,000 at 96 fps today.">
+        <rect x="20" y="30" width="720" height="34" rx="5" class="f-surface2"/>
+        <rect x="20" y="30" width="41" height="34" rx="5" class="f-blue"/>
+        <rect x="61" y="30" width="450" height="34" class="f-red"/>
+        <line x1="740" y1="20" x2="740" y2="74" class="s-green" stroke-width="3" stroke-dasharray="5 4"/>
+        <text x="286" y="52" text-anchor="middle" class="f-bg-text" font-size="13" font-weight="700">up to 5,000 creatures</text>
+        <text x="20" y="92" font-size="12" class="f-blue-t" font-weight="700">~450 colony models (150 squads, 500 points)</text>
+        <text x="740" y="92" font-size="12" text-anchor="end" class="f-green-t" font-weight="700">today: ~8,000 at 96 fps</text>
+        <text x="20" y="112" font-size="11.5" class="mut">about 5,500 in all: room to spare on your PC, and for slower ones.</text>
+      </svg>
+      </div>
+    </figure>
+  </section>
+
+  <!-- 09 DECIDED ---------------------------------------------------------------------------------------------->
+  <section class="part" id="decided">
+    <div class="part-head"><span class="num">09</span><h2>Decided: towers hold, units go out</h2></div>
+    <p class="takeaway">Your four ideas of 10 November, agreed. The colony becomes a tower-defence turtle that sends
+      units out to expand. Its cap comes from your people rather than section 08's command points, and the view
+      switches to radar sooner.</p>
+
+    <h3 class="dec-h"><span class="tag green">1</span>Radar view nearer the ground</h3>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 214" style="min-width:600px" role="img" aria-label="What draws a unit at each camera distance, on a log scale from 10 m to 10 km, for a tank at 1440p. Today: models draw out to about 5 km; icons fade in from 270 m and are full at 450 m; dots fade in from 700 m and are full at 1.8 km. So from 450 m to 5 km the models draw under the icons. Decided: icons fade in from about 200 m and are full at about 350 m, and the models go as the icons come in; dots unchanged.">
+        <!-- log axis: x = 170 + 190 * log10(d / 10 m) -->
+        <g class="s-line" stroke-width="1">
+          <line x1="170" y1="26" x2="170" y2="176"/><line x1="360" y1="26" x2="360" y2="176"/>
+          <line x1="550" y1="26" x2="550" y2="176"/><line x1="740" y1="26" x2="740" y2="176"/>
+        </g>
+        <g font-size="11" text-anchor="middle" class="mut">
+          <text x="170" y="192">10 m</text><text x="360" y="192">100 m</text><text x="550" y="192">1 km</text><text x="740" y="192">10 km</text>
+        </g>
+        <text x="455" y="210" text-anchor="middle" font-size="11.5" class="mut">camera distance (a tank on a 1440p screen)</text>
+        <g font-size="13" font-weight="800" text-anchor="end">
+          <text x="158" y="67">Today</text><text x="158" y="139">Decided</text>
+        </g>
+        <!-- today -->
+        <rect x="170" y="40" width="513" height="14" rx="3" class="f-blue"/>
+        <rect x="484" y="40" width="199" height="14" rx="3" fill="none" class="s-red" stroke-width="2.5"/>
+        <rect x="442" y="58" width="42" height="14" class="f-amber" opacity="0.4"/><rect x="484" y="58" width="256" height="14" rx="3" class="f-amber"/>
+        <rect x="521" y="76" width="78" height="14" class="f-violet" opacity="0.4"/><rect x="599" y="76" width="141" height="14" rx="3" class="f-violet"/>
+        <text x="583" y="34" text-anchor="middle" font-size="11.5" font-weight="700" class="f-red-t">models drawn under the icons, 450 m to 5 km</text>
+        <!-- decided -->
+        <rect x="170" y="112" width="247" height="14" rx="3" class="f-blue"/><rect x="417" y="112" width="46" height="14" class="f-blue" opacity="0.4"/>
+        <rect x="417" y="130" width="46" height="14" class="f-amber" opacity="0.4"/><rect x="463" y="130" width="277" height="14" rx="3" class="f-amber"/>
+        <rect x="521" y="148" width="78" height="14" class="f-violet" opacity="0.4"/><rect x="599" y="148" width="141" height="14" rx="3" class="f-violet"/>
+        <text x="475" y="123" font-size="11.5" font-weight="700" class="f-green-t">models gone once the icons are in (~350 m)</text>
+      </svg>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--blue)"></i>3D models</span>
+        <span><i style="background:var(--amber)"></i>strategic icons</span>
+        <span><i style="background:var(--violet)"></i>dots</span>
+        <span><i style="background:var(--muted);opacity:0.45"></i>pale: fading in or out</span>
+      </div>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><h3>What changes</h3><p class="small">Icons fade in from about 200 m and are full by about 350 m.
+        Once they are, the unit models are hidden: not drawn, not posed, out of the rays. The dots further out stay as
+        they are.</p></div>
+      <div class="card"><h3>What it saves</h3><p class="small">Drawing work: roughly 1–3 ms of a big battle seen from
+        above (an estimate, to measure). Not the fighting or steering: those run whether anyone looks, and multiplayer
+        needs the same simulation on every machine, whatever each camera sees.</p></div>
+      <div class="card"><h3>What we keep</h3><p class="small">A toggle to see the models from any height, and set pieces
+        that keep theirs. What's lost by default is the 300–500 m view of the swarm hitting your wall. Supreme
+        Commander's strategic zoom shows players like the trade.</p></div>
+    </div>
+
+    <h3 class="dec-h"><span class="tag green">2</span>Units cost crews, towers cost power</h3>
+    <div class="card">
+      <div class="wrap-scroll">
+      <table class="plain">
+        <thead><tr><th></th><th>People (crews)</th><th>Power</th><th>Mass</th></tr></thead>
+        <tbody>
+          <tr><td><b>Units</b></td><td><b>yes: this is the unit cap</b></td><td>–</td><td>yes</td></tr>
+          <tr><td><b>Towers, shield walls, gates</b></td><td>–</td><td><b>yes: this is the tower cap</b></td><td>yes</td></tr>
+          <tr><td><b>Plain walls</b></td><td>–</td><td>– (since <a href="#proposed">10</a>)</td><td>yes</td></tr>
+          <tr><td><b>Extractors, factories, labs</b></td><td>crews</td><td>yes</td><td>yes</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <ul class="points small" style="margin-top:12px">
+        <li><b>One pool of people.</b> Homes and domes raise it (v1: "people are one number"). Army, economy and research
+          all draw on it, so you can't field an army and staff every lab at once (the settlement page).</li>
+        <li><b>The relay command points are dropped.</b> Taking a region still raises the cap, because it gives you room
+          for more domes. Factories' build rate limits how fast an army comes.</li>
+        <li><b>A hard ceiling stays in the code</b> (about 500 units) as a safety net that normal play never reaches.</li>
+        <li><b>Softening the spiral:</b> a breach kills people, so you lose workers and army at once. Crews can escape
+          their wrecks, and the planet eases off for a while after a big loss.</li>
+      </ul>
+    </div>
+
+    <h3 class="dec-h"><span class="tag green">3</span>Towers defend, units expand</h3>
+    <div class="sides">
+      <div class="card side towers">
+        <h3><span class="tag green">Towers</span>Hold the wave</h3>
+        <ul class="points small">
+          <li><b>Much better value against the swarm</b> than units, for what they cost.</li>
+          <li><b>Power is their limit</b>, so generators are what the swarm goes for (v1: lose a generator and its
+            turrets go dark).</li>
+          <li><b>Walls funnel</b> the waves into killing zones; the swarm can break through them (Orbis already does), so a
+            perfect maze is never safe.</li>
+          <li><b>Cheapest for the frame:</b> a turret never paths or steers.</li>
+          <li><b>Each path has its own defences</b> in the tech tree, its strongest line at the top of the branch.</li>
+        </ul>
+      </div>
+      <div class="card side colony">
+        <h3><span class="tag blue">Units</span>Go out</h3>
+        <ul class="points small">
+          <li><b>They lose an even fight left to themselves:</b> a wave beats an army of the same cost. Good micro (focus
+            fire, pulling back, abilities) wins well above their mass (<a href="#feel">10</a>).</li>
+          <li><b>They win by picking their fights:</b> hitting nests between waves, escorting builders to new regions,
+            plugging a breach, scouting.</li>
+          <li><b>They're how you grow:</b> the rich ground is outside the wall (v1), and new regions mean new domes and a
+            higher cap.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px"><b>What keeps it from being passive.</b> Waves that test different
+      layers (burrowers under, flyers over, giants through). Things to do during a wave: overcharge turrets, light a
+      fire moat, call in artillery. A nest you destroy stops its wave, so your units race a clock. And a planet that
+      answers what you build most.</div>
+
+    <h3 class="dec-h"><span class="tag green">4</span>The cost is per unit, not per path</h3>
+    <div class="answer" style="margin-top:0"><b>Agreed:</b> fewer, smarter units, for a slightly different reason than
+      we thought. Paths are worked out once per order or wave, off the frame. What grows with the count is each unit's
+      fighting, steering and drawing every frame (<a href="#costs">the table in 02</a>). Towers are cheaper still.</div>
+  </section>
+
+  <!-- 10 PROPOSED --------------------------------------------------------------------------------------------->
+  <section class="part" id="proposed">
+    <div class="part-head"><span class="num">10</span><h2>Decided: crews, towers and the swarm's tiers</h2></div>
+    <p class="small muted" style="margin-top:-6px">Decided on 10 November. The numbers are starting points to tune in
+      play; 09 is updated where this changes it (plain walls, micro).</p>
+    <p class="takeaway">A colony of 20–60 crewed machines, each worth managing by hand, towers worth two to three times a
+      unit behind good walls, and a swarm of thousands drawn in three tiers now that Atlas has crowds.</p>
+
+    <div class="answer" id="feel" style="margin-top:0"><b>The feel, in your words (10 November):</b> a classic RTS at the
+      micro level with a macro feel. Few units, each of high value, managed one by one, fighting hordes with a feeling of
+      massive effect.</div>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card side colony"><h3>Micro: few units that matter</h3><p class="small">Single units, not squads, with
+        control groups. One or two abilities each. Crews earn ranks, and a crew that escapes its wreck keeps its rank:
+        the machine is replaceable, the crew isn't. At 30–60 units even a 100-actions-a-minute player gives each one a
+        command every minute or so (<a href="#control">05</a>).</p></div>
+      <div class="card side planet"><h3>Massive effect: each shot kills many</h3><p class="small">A late army of 60
+        against about 5,000 creatures is 80 to a unit, so the weapons have to mow: splash, flame, chain lightning,
+        artillery. Creatures die in bursts and pile up, fire chars the ground, and Orbis's budgeted death effects keep it
+        cheap.</p></div>
+      <div class="card side towers"><h3>Macro: the planet around it</h3><p class="small">Domes, the power grid and tower
+        lines run the economy and hold the waves while your attention is on the units. Region by region, the planet is
+        the macro game.</p></div>
+    </div>
+    <p class="small muted" style="margin-top:10px">09 is updated to match: units still lose an even fight left to
+      themselves, but good micro (focus fire, pulling back, abilities) wins well above their mass. That's the skill on
+      the unit side, as the wall layout is on the tower side.</p>
+
+    <h3 class="dec-h"><span class="tag green">1</span>How many people a unit needs</h3>
+    <div class="card">
+      <div class="wrap-scroll">
+      <table class="plain stack crew">
+        <thead><tr><th>Unit</th><th>Crew</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><b>Scout buggy</b></td><td class="n">2</td><td>cheap eyes; losing one doesn't hurt much</td></tr>
+          <tr><td><b>Builder</b></td><td class="n">2</td><td>how you expand, so it can't be dear</td></tr>
+          <tr><td><b>Light tank</b></td><td class="n">4</td><td>the bulk of an army</td></tr>
+          <tr><td><b>Artillery</b></td><td class="n">6</td><td>fragile: it needs an escort</td></tr>
+          <tr><td><b>Heavy tank</b></td><td class="n">8</td><td>a real loss when it dies</td></tr>
+          <tr><td><b>Walker</b></td><td class="n">12</td><td>late game, a big investment</td></tr>
+          <tr><td><b>Experimental</b></td><td class="n">40</td><td>one per tech branch: a capstone</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <ul class="points small" style="margin-top:12px">
+        <li><b>Where people come from:</b> you land with 50, and each dome holds 50. An extractor needs a crew of 5, a
+          factory or a lab 10.</li>
+        <li><b>Escape pods:</b> half a wreck's crew (rounded down) gets away in a pod that heads for the nearest dome. The
+          swarm can catch it, so a loss far from home costs more people.</li>
+        <li><b>Crews are doubled</b> from the first version of this proposal, so the late army is about 60, not 200: few
+          enough to manage one by one.</li>
+        <li><b>The ceiling of about 500 units</b> is never reached by people alone.</li>
+      </ul>
+    </div>
+    <div class="stats three" style="margin-top:14px">
+      <div class="stat blue"><div class="v">~4</div><div class="l"><b>Landing.</b> 50 people: 35 at work, 15 crewing a
+        scout, a builder and two light tanks.</div></div>
+      <div class="stat blue"><div class="v">~25</div><div class="l"><b>Mid game.</b> 400 people in 8 domes: 250 in work
+        and research, 150 in the army.</div></div>
+      <div class="stat blue"><div class="v">40–60</div><div class="l"><b>Late game.</b> 1,500 people in 30 domes: 900 in
+        work and research, 600 in the army.</div></div>
+    </div>
+    <p class="small muted" style="margin-top:8px">Units in the field, against swarms of thousands. The colony's side of a
+      battle costs next to nothing; the frame goes on the horde.</p>
+
+    <h3 class="dec-h"><span class="tag green">2</span>How much better towers are</h3>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <svg class="dia" viewBox="0 0 760 190" style="min-width:600px" role="img" aria-label="Mass needed to stop the same wave of 300 mass of creatures. Units in the open: 300 mass, and they lose an even fight. Towers in a careless line: 150 mass, twice a unit's value. Towers behind good walls: 100 mass, three times a unit's value.">
+        <g font-size="13" font-weight="700" text-anchor="end">
+          <text x="215" y="45">Units in the open</text>
+          <text x="215" y="95">Towers in a line</text>
+          <text x="215" y="145">Towers behind good walls</text>
+        </g>
+        <rect x="230" y="26" width="450" height="28" rx="5" class="f-blue"/>
+        <text x="455" y="45" text-anchor="middle" font-size="12.5" font-weight="700" class="f-bg-text">300 mass: they lose the even fight</text>
+        <rect x="230" y="76" width="225" height="28" rx="5" class="f-green" opacity="0.7"/>
+        <text x="342" y="95" text-anchor="middle" font-size="12.5" font-weight="700" class="f-bg-text">150: they hold</text>
+        <text x="467" y="95" font-size="12.5" font-weight="700" class="f-green-t">2×, a careless line</text>
+        <rect x="230" y="126" width="150" height="28" rx="5" class="f-green"/>
+        <text x="305" y="145" text-anchor="middle" font-size="12.5" font-weight="700" class="f-bg-text">100: they hold</text>
+        <text x="392" y="145" font-size="12.5" font-weight="700" class="f-green-t">3×, a good funnel into a killing zone</text>
+        <text x="230" y="180" font-size="11.5" class="mut">mass needed to stop the same wave (300 mass of creatures)</text>
+      </svg>
+      </div>
+      <p class="cap">The extra over 2× comes from the layout, not the tower: building good defences is the skill.
+        Above 3× the turtle wins without trying; below 2× walls aren't worth building.</p>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><h3>Power is the tower cap</h3><p class="small">A generator gives 100 power. A light tower draws
+        10, a heavy one 25, a shield 40. Four to six generators keep a decent line lit, so they're what the swarm goes
+        for.</p></div>
+      <div class="card"><h3>Plain walls cost mass only</h3><p class="small">A wall doesn't need power to stand, and
+        drawing power would make long walls pointless. Shield walls and gates draw power. <b>This changes 09's
+        table.</b></p></div>
+      <div class="card"><h3>What towers don't get</h3><p class="small">No people, so a tower line doesn't take soldiers
+        from expanding. They don't move or pack up, and repairs need a builder nearby: a job for builders during
+        waves.</p></div>
+    </div>
+
+    <h3 class="dec-h"><span class="tag green">3</span>Machines, crewed by people</h3>
+    <p class="small muted" style="margin-top:-4px">No humanoid units: every unit is a machine with a crew inside. The other
+      two options are kept below for reference.</p>
+    <div class="grid3">
+      <div class="card side towers"><h3><span class="tag green">chosen</span>Crewed machines</h3><p class="small">People stay
+        the unit cap (09). They're seen only as the domes' life, or not at all. Metal against creature reads at a glance,
+        with fewer animations to make.</p></div>
+      <div class="card"><h3>Power armour or small mechs</h3><p class="small">Humanoid in shape, built of rigid parts, so
+        they animate as cheaply as the walker. Keeps a soldier role without skinned humans.</p></div>
+      <div class="card"><h3>Fully robotic, no crews</h3><p class="small">Undoes the people cap, which would need a new
+        source (control range, a drone limit). Not recommended: crews tie the army to the settlement, which is what makes
+        a breach hurt.</p></div>
+    </div>
+    <div class="note" style="margin-top:14px"><b>Not a performance question any more.</b> With Atlas's bone parts
+      (below), a humanoid costs about what a rigid walker does, shadows kept. Machines-only is now a choice about the
+      look and the art work.</div>
+
+    <h3 class="dec-h"><span class="tag green">4</span>The swarm in three tiers</h3>
+    <p class="small muted" style="margin-top:-4px">Atlas's crowds (armies step 4) are merged into Atlas develop at e7b4b2a,
+      for 1.17; not released yet.</p>
+    <figure class="card">
+      <div class="wrap-scroll">
+      <table class="plain stack tiers">
+        <thead><tr><th>How it's drawn</th><th>For</th><th>1,024 walking Brutes, RT on</th><th>The catch</th></tr></thead>
+        <tbody>
+          <tr><td><b>Crowd</b>: copies share baked frames</td><td>the mass: runners, crawlers</td><td class="n">~4.2 ms GPU</td>
+            <td>clips cut, no blending; no ground shadow under RT shadows yet</td></tr>
+          <tr><td><b>Bone parts</b>: each joint a rigid part</td><td>brutes and giants, the ones you watch at the walls</td>
+            <td class="n">~4.1 ms GPU</td><td>creases at joints, closed up</td></tr>
+          <tr><td><b>Skinned</b>, as today</td><td>a few bosses near the camera</td><td class="n">~103 ms GPU</td><td>only
+            for tens, traced near the camera only</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="cap">Atlas's measurements (08_models, release, RTX 4080 Super, every copy posed every frame). Ground
+        shadows for crowd copies are a separate Atlas card.</p>
+    </figure>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card"><h3>About 5,000 near you</h3><p class="small">Crowd copies cost almost no memory each, so the
+        director's figure looks reachable. To measure: the unit lab's crowd runs at 1,000 and 5,000.</p></div>
+      <div class="card"><h3>The radar band helps</h3><p class="small">Past about 350 m the models go anyway, so the
+        creatures only need to look right in the first few hundred metres.</p></div>
+      <div class="card"><h3>The colony doesn't change</h3><p class="small">Its machines are rigid parts posed on the GPU
+        already, and 40–60 of them is cheap.</p></div>
+    </div>
+  </section>
+
+  <!-- 11 QUESTIONS --------------------------------------------------------------------------------------------->
+  <section class="part" id="questions">
+    <div class="part-head"><span class="num">?</span><h2>What to decide</h2></div>
+    <p class="takeaway">Nothing here is built. Settled on 10 November (sections 09 and 10): the cap from your people,
+      crew sizes, towers at 2–3×, single units, and crewed machines with no humanoids. Two questions are left, plus the
+      weapons that give the massive effect, for the concept's weapons round.</p>
+    <ol class="qs">
+      <li><b>Does the swarm ever come at 10,000+?</b><span class="small muted">As a set piece seen from afar, or never.
+        Crowd copies may make it possible: that waits on the unit lab's numbers at 5,000 and on ground shadows for
+        crowds.</span></li>
+      <li><b>Low-detail models first?</b><span class="small muted">Mostly answered for the creatures: Atlas's crowds and
+        bone parts do the job (<a href="#proposed">10</a>, part 4). Far versions of the colony's units remain.</span></li>
+      <li><b>Which weapons mow the horde?</b><span class="small muted">Splash, flame, chain lightning, artillery: each
+        unit has to kill dozens per wave (<a href="#feel">10</a>). For the concept's weapons round.</span></li>
+    </ol>
+  </section>
+
+  <!-- SOURCES ----------------------------------------------------------------------------------------------------->
+  <section class="part" id="sources">
+    <div class="part-head"><span class="num">§</span><h2>Sources</h2></div>
+    <ul class="sources">
+      <li><a href="https://news.blizzard.com/en-us/starcraft2/4488314/game-guide-supply">Blizzard: StarCraft II supply guide</a></li>
+      <li><a href="https://forums.ageofempires.com/t/is-nobody-else-concerned-about-the-population-limit/124333">AoE IV population limit thread</a></li>
+      <li><a href="https://forums.ageofempires.com/t/poll-population-limit/137760">AoE II DE population poll</a></li>
+      <li><a href="https://steamcommunity.com/app/813780/discussions/0/3839927185125721028">AoE II DE skirmish population (Steam)</a></li>
+      <li><a href="https://ggrecon.com/guides/company-of-heroes-3-population-cap">Company of Heroes 3 population cap (GGRecon)</a></li>
+      <li><a href="https://www.gamepressure.com/newsroom/how-to-get-more-companies-in-company-of-heroes-3-population-cap-e/za5140">Company of Heroes 3 population cap (Gamepressure)</a></li>
+      <li><a href="https://steamcommunity.com/app/1142710/discussions/0/4327475903877084347">Total War: Warhammer III unit cap discussion</a></li>
+      <li><a href="https://strategywiki.org/wiki/Sins_of_a_Solar_Empire_II/Fleet_supply">Sins of a Solar Empire II fleet supply (StrategyWiki)</a></li>
+      <li><a href="https://forum.faforever.com/post/11861">FAF forum: an unlimited unit cap option</a></li>
+      <li><a href="https://mein-mmo.de/en/developers-hold-a-mega-battle-with-10000-units-in-their-strategy-game-showing-fights-that-would-overwhelm-other-games,1240853">Beyond All Reason mega battle</a></li>
+      <li><a href="https://wiki.palobby.com/wiki/Planetary_Annihilation_Titans">Planetary Annihilation Titans wiki</a></li>
+      <li><a href="https://forums.planetaryannihilation.com/goto/post?id=1131839">Planetary Annihilation unit cap thread</a></li>
+      <li><a href="https://gamingbolt.com/ashes-of-the-singularity-can-handle-upto-20000-units-at-once-dx12-allows-thousands-of-light-sources">Ashes of the Singularity (GamingBolt)</a></li>
+      <li><a href="https://techgage.com/?p=36939">Ashes of the Singularity review (Techgage)</a></li>
+      <li><a href="https://store.steampowered.com/app/644930/They_Are_Billions/">They Are Billions (Steam)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/Actions_per_minute">Actions per minute (Wikipedia)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/World_War_Z_(2019_video_game)">World War Z (2019 video game), Wikipedia</a></li>
+      <li><a href="https://saber.games/hordemodexl/">Saber: World War Z Aftermath, Horde Mode XL</a></li>
+      <li><a href="https://www.khronos.org/assets/uploads/developers/presentations/World-War-Z-Using-Vulkan-to-tame-the-zombie-swarm_Oct19.pdf">Saber and AMD: World War Z, using Vulkan to tame the zombie swarm (2019)</a></li>
+      <li><a href="https://gdcvault.com/play/1025817/Advanced-Graphics-Techniques-Tutorial-High">GDC 2019: High zombie throughput in modern graphics (Saber)</a></li>
+      <li><a href="https://www.altchar.com/game-news/days-gone-will-have-40-hordes-roaming-the-open-world-ajD6C6l4KfWG">Days Gone will have around 40 hordes (AltChar, from IGN)</a></li>
+      <li><a href="https://gamingbolt.com/days-gones-hordes-will-be-persistent-can-have-up-to-500-freakers">Days Gone's hordes will be persistent (GamingBolt)</a></li>
+      <li><a href="https://www.gamingnexus.com/News/43551/Up-to-500-zombies-on-the-screen-chase-you-down-in-Days-Gone">Up to 500 zombies on screen in Days Gone (Gaming Nexus)</a></li>
+      <li><a href="https://gamingbolt.com/days-gones-freak-o-system-will-be-discussed-by-sony-bend-at-gdc-2018">Days Gone's AI at GDC 2018 (GamingBolt)</a></li>
+      <li>Orbis: <code>docs/IMPROVEMENTS.md</code> (Armies at scale), <code>docs/PATHFINDING.md</code>, <code>game/unit_models.cpp</code>, <code>game/rts_camera.h</code>; Atlas <code>docs/studies/armies-at-scale-2026-11-08.md</code></li>
+    </ul>
+  </section>
+
+</div>
+</main>
+
+<footer><div class="wrap">Orbis unit scale study · <a href="index.html">Menu</a> · <a href="settle1.html">Settlement round 1</a> · <a href="lore1.html">Lore round 1</a> · <a href="v1/">Concept v1</a></div></footer>
+
+<script src="scale1.js"></script>
+</body>
+</html>
